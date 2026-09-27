@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<!--
+  STV Traders — Deriv Bulk Trader + AI Digit Scanner + calculator — single file, no dependencies
+  Built for the NEW Deriv API (2026): REST https://api.derivws.com + WebSocket wss://api.derivws.com/trading/v1/...
+  ---------------------------------------------------------------------------------------------------
+  WHAT YOU NEED (both free, from https://developers.deriv.com):
+    1. Dashboard → Register application → type "PAT"  → copy the App ID  (alphanumeric — this is correct!)
+    2. Dashboard → API tokens → Create token → scope "trade" → copy the PAT (shown only once)
+  The old numeric app_id (e.g. 1089) and old app.deriv.com API tokens do NOT work with the new API.
+
+  HOW TO RUN (Acode on Android): save as index.html → tap ▶ Run. Market data loads immediately (no login).
+  Paste App ID + PAT → Connect account → pick DEMO first → AI Scanner tab → switch on → Start.
+  Nothing here talks to any server except Deriv's own API. Credentials are stored only in this browser.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<!-- Security policy: this page may talk ONLY to Deriv's API, load nothing external, submit no forms, embed no objects. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src https://api.derivws.com wss://api.derivws.com https://*.derivws.com wss://*.derivws.com; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta name="referrer" content="no-referrer" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#0b0d10" />
+<title>STV Traders · AI Digit Scanner</title>
+<script>(function(){try{var t=localStorage.getItem('dbt_theme');t=t?JSON.parse(t):null;if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+/* ---------- design tokens (dark is the default; light overrides below) ---------- */
+:root{
+  --gold:#e2a83c;--gold-2:#f5c65e;--gold-3:#c78a17;--on-gold:#1b1405;
+  --bg:#0b0d10;--card:#13161b;--card2:#1a1e25;--card3:#232833;
+  --border:rgba(255,255,255,.08);--border-2:rgba(255,255,255,.15);
+  --text:#f2f3f5;--muted:#a3a9b6;--dim:#6d7482;
+  --green:#3ccf8e;--red:#f2545f;--blue:#5b9cf6;--amber:var(--gold);
+  --green-bg:rgba(60,207,142,.14);--red-bg:rgba(242,84,95,.14);--gold-bg:rgba(226,168,60,.14);--blue-bg:rgba(91,156,246,.14);
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px -16px rgba(0,0,0,.7);
+  --focus:0 0 0 3px rgba(226,168,60,.28);
+  --r:18px;--rs:12px;
+  color-scheme:dark;
+}
+:root[data-theme=light]{
+  --gold:#c98d19;--gold-2:#e2ab3c;--gold-3:#a5720f;--on-gold:#1b1405;
+  --bg:#f6f4ee;--card:#ffffff;--card2:#f3f0e8;--card3:#e9e5da;
+  --border:rgba(28,24,12,.09);--border-2:rgba(28,24,12,.18);
+  --text:#1b1c20;--muted:#5f6472;--dim:#8b9099;
+  --green:#1f9e6a;--red:#d9394a;--blue:#2f6fe0;
+  --green-bg:rgba(31,158,106,.12);--red-bg:rgba(217,57,74,.12);--gold-bg:rgba(201,141,25,.14);--blue-bg:rgba(47,111,224,.12);
+  --shadow:0 1px 2px rgba(30,25,10,.05),0 12px 30px -16px rgba(30,25,10,.22);
+  --focus:0 0 0 3px rgba(201,141,25,.25);
+  color-scheme:light;
+}
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent;transition:background .25s,color .25s}
+body{background:radial-gradient(900px 420px at 50% -160px,var(--gold-bg),transparent 65%) no-repeat,var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--gold);text-decoration:none;font-weight:600}
+a:hover{text-decoration:underline}
+b{font-weight:650}
+code{background:var(--card3);padding:1px 6px;border-radius:6px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+svg.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hidden{display:none!important}
+.wrap{max-width:740px;margin:0 auto;padding:12px 14px 96px}
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--border)}
+@supports not (background:color-mix(in srgb,red 50%,blue)){header{background:var(--bg)}}
+.hd{max-width:740px;margin:0 auto;padding:10px 14px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,var(--gold-2),var(--gold-3));color:var(--on-gold);display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -6px rgba(226,168,60,.6)}
+.logo svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.logo.lg{width:56px;height:56px;border-radius:18px;margin:0 auto}
+.logo.lg svg{width:32px;height:32px}
+.title{min-width:0}
+.title b{display:block;font-size:16px;font-weight:750;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.title small{display:block;color:var(--muted);font-size:12px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-actions{display:flex;gap:8px;flex:none}
+.ibtn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 10px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:13px;font-weight:600}
+.ibtn:active{transform:scale(.97)}
+.ibtn .ic-sun{display:none}
+:root[data-theme=light] .ibtn .ic-sun{display:block}
+:root[data-theme=light] .ibtn .ic-moon{display:none}
+/* ---------- hero / account ---------- */
+.hero{position:relative;overflow:hidden;padding:16px 18px;margin:12px 0}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(240px 140px at 100% 0%,var(--gold-bg),transparent 70%);pointer-events:none}
+.hero .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);font-weight:650}
+.hero .bal{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums;margin:2px 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero .pill{white-space:nowrap}
+.hero-r{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);position:relative}
+.st{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--dim);flex:none;display:inline-block}
+.dot.connected{background:var(--green);box-shadow:0 0 0 3px var(--green-bg)}
+.dot.connecting{background:var(--gold);box-shadow:0 0 0 3px var(--gold-bg)}
+.dot.disconnected{background:var(--red);box-shadow:0 0 0 3px var(--red-bg)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--card2);border:1px solid var(--border);color:var(--muted);letter-spacing:.02em;vertical-align:middle}
+.pill.demo{background:var(--blue-bg);border-color:transparent;color:var(--blue)}
+.pill.real{background:var(--red-bg);border-color:transparent;color:var(--red)}
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin:12px 0;overflow:hidden;box-shadow:var(--shadow)}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;font-weight:700;cursor:pointer;user-select:none}
+.ch-t{display:inline-flex;align-items:center;gap:9px}
+.ch-t .ic{color:var(--gold)}
+.chev{color:var(--dim);display:inline-flex;transition:transform .22s}
+.card.collapsed .chev{transform:rotate(-90deg)}
+.card.collapsed .card-b{display:none}
+.card-b{padding:2px 18px 18px}
+.card > .card-b:first-child{padding-top:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.grid2,.grid3{display:grid;gap:10px}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid3.wide{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.grid3:not(.wide) label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:420px){.grid2.stack{grid-template-columns:1fr}}
+.f{flex:1;min-width:0;margin-top:12px}
+.grid2 .f,.grid3 .f{margin-top:12px}
+.f label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.f input,.f select,.f textarea,.lockbox input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:0 12px;height:44px;outline:none;transition:border-color .15s,box-shadow .15s;font-variant-numeric:tabular-nums}
+.f select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.f textarea{height:auto;padding:10px 12px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus,.lockbox input:focus{border-color:var(--gold);box-shadow:var(--focus)}
+.f input::placeholder{color:var(--dim)}
+.hint{font-size:12px;color:var(--dim);margin-top:5px;line-height:1.4}
+.hint.bad{color:var(--red)}
+.hint.good{color:var(--muted)}
+.pw{position:relative}
+.pw input{padding-right:64px}
+.pw button{position:absolute;right:6px;top:6px;bottom:6px;border:0;background:var(--card3);color:var(--muted);padding:0 10px;border-radius:8px;font-size:12px;font-weight:600}
+.chk{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);margin-top:14px;line-height:1.4;cursor:pointer}
+.chk input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--gold);flex:none}
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:var(--rs);padding:10px 16px;font-weight:700;background:var(--card2);color:var(--text);border:1px solid var(--border);transition:transform .08s,filter .15s,background .15s}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(145deg,var(--gold-2),var(--gold-3));border-color:transparent;color:var(--on-gold);box-shadow:0 8px 18px -8px rgba(226,168,60,.65)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.danger:not(:disabled){color:var(--red);border-color:var(--red-bg);background:var(--red-bg)}
+.btn:disabled{opacity:.42;cursor:not-allowed;box-shadow:none;transform:none}
+.btn.block{width:100%;margin-top:14px}
+.btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btns .btn{flex:1}
+.btns .btn.primary{flex:2}
+.msg{font-size:13px;color:var(--muted);margin-top:10px;min-height:18px;line-height:1.4}
+.msg.err{color:var(--red)}
+.msg.ok{color:var(--green)}
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:4px;margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:4px;box-shadow:var(--shadow)}
+.tab{flex:1;min-width:0;border:0;background:transparent;color:var(--muted);padding:8px 2px 7px;border-radius:14px;font-weight:700;font-size:11px;letter-spacing:.01em;display:flex;flex-direction:column;align-items:center;gap:4px;transition:background .15s,color .15s;white-space:nowrap}
+.tab .ic{width:20px;height:20px;stroke-width:1.9}
+.tab span{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.tab.active{background:linear-gradient(145deg,var(--gold-2),var(--gold-3));color:var(--on-gold)}
+.tab .pill{margin-left:2px;padding:0 6px;font-size:10px;line-height:15px}
+.tab.active .pill{background:rgba(0,0,0,.18);border-color:transparent;color:var(--on-gold)}
+.panel{display:none}.panel.active{display:block}
+/* ---------- switch ---------- */
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px}
+.switch .t{font-weight:750;font-size:16px;letter-spacing:-.01em}
+.switch .s{font-size:12.5px;color:var(--muted);margin-top:2px}
+.sw{position:relative;width:50px;height:30px;flex:none}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw span{position:absolute;inset:0;background:var(--card3);border-radius:999px;transition:.2s;border:1px solid var(--border)}
+.sw span:before{content:"";position:absolute;width:24px;height:24px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+span{background:linear-gradient(145deg,var(--gold-2),var(--gold-3));border-color:transparent}
+.sw input:checked+span:before{transform:translateX(20px)}
+.sw input:focus-visible+span{box-shadow:var(--focus)}
+/* ---------- details / help ---------- */
+details{margin-top:12px;border:1px solid var(--border);border-radius:var(--rs);background:var(--card2);overflow:hidden}
+details summary{list-style:none;cursor:pointer;padding:11px 14px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:10px;user-select:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"";width:7px;height:7px;border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);transform:translateY(-2px) rotate(45deg);transition:transform .2s;flex:none;margin-right:3px}
+details[open] summary::after{transform:translateY(2px) rotate(-135deg)}
+details[open] summary{color:var(--text)}
+details > *:not(summary){margin-left:14px;margin-right:14px}
+details > .note{margin:0;border-radius:0;background:transparent;padding:4px 14px 14px}
+details > .grid2,details > .grid3{margin-top:0}
+details > .btns{margin-bottom:0}
+details > .sub{margin-top:14px}
+.dpad{padding-bottom:14px}
+.help{margin-top:14px}
+.help details{margin-top:8px}
+.sub{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);font-weight:700;margin-top:16px}
+.plan{margin-top:8px;padding:10px 12px;background:var(--card2);border-radius:var(--rs);border:1px dashed var(--border-2)}
+.plan .hint{margin-top:0;color:var(--muted)}
+.plan .hint + .hint{margin-top:4px}
+/* ---------- stats / status ---------- */
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.chips.c3{grid-template-columns:repeat(3,1fr)}
+.chip b .neg,.chip b .pos{font-weight:800}
+.chip{background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 4px;text-align:center;min-width:0}
+.chip small{display:block;color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:650;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip b{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pos{color:var(--green)}.neg{color:var(--red)}
+.status{margin-top:12px;font-size:13px;color:var(--muted);padding:11px 14px 11px 34px;background:var(--card2);border-radius:var(--rs);border:1px solid var(--border);position:relative;line-height:1.4}
+.status:before{content:"";position:absolute;left:14px;top:15px;width:9px;height:9px;border-radius:50%;background:var(--dim)}
+.status.live{border-color:var(--green);color:var(--text);background:var(--green-bg)}
+.status.live:before{background:var(--green);box-shadow:0 0 0 0 var(--green);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,207,142,.55)}100%{box-shadow:0 0 0 9px rgba(60,207,142,0)}}
+/* ---------- tables ---------- */
+.tblwrap{margin-top:14px}
+.legend{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-weight:650;padding:0 2px 8px;border-bottom:1px solid var(--border)}
+.legend span:last-child{text-transform:none;letter-spacing:0;font-weight:500}
+/* market + trade tables are rendered as stacked cards: each <tr> is a wrapping flex row */
+.tbl thead{display:none}
+.tbl,.tbl tbody{display:block}
+.tbl tr{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;padding:11px 8px;border-bottom:1px solid var(--border)}
+.tbl tr:last-child{border-bottom:0}
+.tbl td{display:block;padding:0;border:0}
+.tbl td[colspan]{flex:1 1 100%;text-align:center;padding:10px 0}
+.tbl tr.best{background:var(--gold-bg);border-radius:var(--rs)}
+.tbl tr.q .mname:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:1px}
+#marketTable td:first-child{order:1;flex:1 1 60%;min-width:0}
+#marketTable .mlast{order:2}
+#marketTable tr:after{content:"";order:3;flex-basis:100%;height:0}
+#marketTable .mstreak{order:4}#marketTable .mtop{order:5}#marketTable .mstatus{order:6}
+#marketTable td[colspan]{order:0}
+#marketTable .mlast{font-size:26px;font-weight:800;line-height:1;min-width:34px;text-align:right;padding-top:2px}
+#marketTable .mstreak,#marketTable .mtop{font-size:12.5px;color:var(--muted);margin-top:6px;white-space:nowrap}
+#marketTable .mstreak .sk{font-size:12.5px;margin-right:6px}
+#marketTable .mtop:before{content:"top ";color:var(--dim)}
+#marketTable .mstatus{flex:1 1 0;min-width:0;margin-top:6px;text-align:right}
+#marketTable .mstatus .badge{max-width:100%;overflow:hidden;text-overflow:ellipsis;letter-spacing:0;font-size:10px;vertical-align:middle}
+#tradeRows tr{position:relative}
+#tradeRows td:nth-child(1){order:5;color:var(--dim);font-size:12px}
+#tradeRows td:nth-child(2){order:1;font-weight:650;white-space:nowrap}
+#tradeRows td:nth-child(3){order:2;color:var(--muted)}
+#tradeRows td:nth-child(6){order:3;margin-left:auto}
+#tradeRows tr:after{content:"";order:4;flex-basis:100%;height:0}
+#tradeRows td:nth-child(4){order:6;font-size:12px;color:var(--muted)}
+#tradeRows td:nth-child(4):not(:empty):before{content:"stake ";color:var(--dim)}
+#tradeRows td:nth-child(5){order:7;font-size:12px;color:var(--muted)}
+#tradeRows td:nth-child(5):not(:empty):before{content:"exit ";color:var(--dim)}
+#tradeRows td:nth-child(7){order:8;margin-left:auto;font-weight:800;font-size:15px}
+#tradeRows td[colspan]{order:0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.tbl th{text-align:left;color:var(--dim);font-weight:650;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--border)}
+.tbl th small{font-weight:500;letter-spacing:0;text-transform:none;font-size:10.5px}
+.mname{font-weight:650;white-space:nowrap}
+.strip{display:flex;gap:3px;margin-top:5px}
+.d{width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:10.5px;font-weight:700;background:var(--card3);color:var(--muted)}
+.d.hi{background:var(--green-bg);color:var(--green)}
+.d.lo{background:var(--red-bg);color:var(--red)}
+.d.mid{background:var(--gold-bg);color:var(--gold)}
+.sk{display:inline-block;font-weight:800;font-size:13px;margin-right:8px;color:var(--dim)}
+.sk.on{color:var(--text)}
+.sk.hit{color:var(--green)}
+.sk.off{opacity:.35}
+.big{font-size:18px;font-weight:800}
+.badge{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--card3);color:var(--dim);white-space:nowrap;letter-spacing:.03em}
+.badge.ok{background:var(--green-bg);color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.badge.won{background:var(--green-bg);color:var(--green)}
+.badge.lost{background:var(--red-bg);color:var(--red)}
+.badge.open{background:var(--gold-bg);color:var(--gold)}
+.badge.unknown{background:var(--gold-bg);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+/* ---------- calculator ---------- */
+.calc{padding:16px 18px 18px}
+.calc-disp{background:var(--card2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 16px;text-align:right;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc-disp small{color:var(--dim);font-size:13px;min-height:18px;font-variant-numeric:tabular-nums}
+.calc-disp b{font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.key{height:58px;border-radius:14px;border:1px solid var(--border);background:var(--card2);font-size:21px;font-weight:650;color:var(--text);transition:transform .08s,filter .15s;font-variant-numeric:tabular-nums}
+.key:active{transform:scale(.95);filter:brightness(1.12)}
+.key.fn{color:var(--muted);font-size:17px}
+.key.op{background:var(--gold-bg);color:var(--gold);font-size:24px;border-color:transparent}
+.key.eq{background:linear-gradient(145deg,var(--gold-2),var(--gold-3));color:var(--on-gold);border-color:transparent;box-shadow:0 8px 18px -8px rgba(226,168,60,.65);font-size:26px}
+/* ---------- notes / strips / log ---------- */
+.note{font-size:12.5px;color:var(--muted);margin-top:12px;padding:12px 14px;background:var(--card2);border-radius:var(--rs);line-height:1.5}
+.note.warn{border-left:3px solid var(--gold)}
+.note ol,.note ul{margin:6px 0 0 18px;padding:0}.note li{margin:4px 0}
+.stripbox{margin-top:12px;padding:12px 14px;background:var(--card2);border-radius:var(--rs);border:1px solid var(--border)}
+.stripbox .top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.stripbox .strip{flex-wrap:wrap;margin-top:8px}
+.stripbox .d{width:24px;height:24px;font-size:12px;border-radius:7px}
+.logbox{max-height:240px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;color:var(--muted);padding:6px 18px 14px}
+.logline{padding:3px 0;border-bottom:1px solid var(--border);word-break:break-word}
+.logline.err{color:var(--red)}.logline.ok{color:var(--green)}
+.foot{font-size:11.5px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.5}
+/* ---------- lock screen ---------- */
+.lockbtn span{font-size:13px}
+.lock{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+@supports not (background:color-mix(in srgb,red 50%,blue)){.lock{background:var(--bg)}}
+.lockbox{width:100%;max-width:360px;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:26px 22px;text-align:center;box-shadow:var(--shadow)}
+.lockbox h2{margin:14px 0 4px;font-size:19px;letter-spacing:-.01em}
+.lockbox .hint{font-size:13px;color:var(--muted)}
+.lockbox input{margin-top:12px;font-size:18px;text-align:center;letter-spacing:3px;height:48px}
+.lockbox .btns{margin-top:14px;flex-direction:column}
+.lockbox .btns .btn{flex:none;width:100%}
+.lockbox input::placeholder{letter-spacing:0}
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--card3);color:var(--text);padding:12px 18px;border-radius:14px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:92vw;border:1px solid var(--border-2);box-shadow:var(--shadow);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.err{border-color:var(--red);color:var(--red)}#toast.ok{border-color:var(--green)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <div class="brand">
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 16.5l5.5-5.5 4 4L20 7.5"/><path d="M14.5 7.5H20V13"/></svg></div>
+    <div class="title"><b>STV Traders</b><small>AI Digit Scanner</small></div>
+  </div>
+  <div class="hd-actions">
+    <button type="button" class="ibtn" id="btnTheme" title="Switch light / dark" aria-label="Switch light or dark theme">
+      <svg class="ic ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    <button type="button" class="ibtn lockbtn" id="btnLock" title="Lock: clears the token from this page and disconnects"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Lock</span></button>
+  </div>
+</div></header>
+
+<div id="lockScreen" class="lock hidden" role="dialog" aria-modal="true">
+  <div class="lockbox">
+    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 16.5l5.5-5.5 4 4L20 7.5"/><path d="M14.5 7.5H20V13"/></svg></div>
+    <h2 id="lockTitle">Locked</h2>
+    <p class="hint" id="lockText"></p>
+    <input id="lockPin" type="password" autocomplete="off" placeholder="PIN / password" />
+    <input id="lockPin2" type="password" autocomplete="off" placeholder="Repeat it" class="hidden" />
+    <div class="msg err" id="lockMsg"></div>
+    <div class="btns">
+      <button type="button" class="btn primary" id="lockOk">Unlock</button>
+      <button type="button" class="btn ghost" id="lockAlt">Forget saved token</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="note warn hidden" id="frameWarn"><b>This page is embedded inside another page.</b> For your safety, connecting an account is disabled here — open index.html directly in Chrome (or with Acode ▶ Run).</div>
+
+  <!-- ============ ACCOUNT / STATUS ============ -->
+  <div class="card hero">
+    <div class="hero-l">
+      <div class="lbl">Balance</div>
+      <div class="bal" id="balance">—</div>
+      <span class="pill" id="acctPill">Not logged in</span>
+    </div>
+    <div class="hero-r">
+      <div class="st"><span class="dot disconnected" id="pubDot"></span><span id="pubText">Markets: connecting…</span></div>
+      <div class="st"><span class="dot disconnected" id="acctDot"></span><span id="acctText">Account: not connected</span></div>
+    </div>
+  </div>
+
+  <!-- ============ CONNECTION ============ -->
+  <div class="card" id="connectCard">
+    <div class="card-h" id="connectHead"><span class="ch-t"><svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 20 3m-3 3 3 3m-6 0 2 2"/></svg>Connect your Deriv account</span><span class="chev"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></div>
+    <div class="card-b">
+      <div class="grid2 stack">
+        <div class="f">
+          <label>App ID</label>
+          <input id="appId" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. 9eb6fce9-1a2b-…" />
+          <div class="hint">developers.deriv.com → Register application → type <b>PAT</b> (letters + numbers is correct)</div>
+        </div>
+        <div class="f">
+          <label>Personal Access Token</label>
+          <div class="pw"><input id="token" type="password" autocomplete="off" placeholder="Paste your PAT" /><button type="button" id="btnEye">show</button></div>
+          <div class="hint">Dashboard → API tokens → Create → scope <b>trade</b> only</div>
+        </div>
+      </div>
+      <div class="f hidden" id="acctBox">
+        <label>Trading account</label>
+        <select id="acctSelect"></select>
+        <div class="hint">Start on DEMO. Switching accounts reconnects.</div>
+      </div>
+      <label class="chk"><input type="checkbox" id="rememberTok" checked /><span>Remember the token on this device — encrypted with a PIN you choose (asked once after the first successful connection)</span></label>
+      <div class="btns"><button class="btn primary" id="btnConnect">Connect account</button></div>
+      <div class="btns" style="margin-top:8px">
+        <button class="btn" id="btnDisconnect" disabled>Disconnect</button>
+        <button class="btn ghost" id="btnForget">Forget token</button>
+      </div>
+      <div class="msg" id="connectMsg">Nothing is sent anywhere except to api.derivws.com over TLS. The token is stored only on this device, AES-encrypted with your PIN.</div>
+      <div class="help">
+        <details>
+          <summary>Setup guide (2 minutes)</summary>
+          <div class="note">
+            Deriv launched a new API in 2026. The old numeric <code>app_id</code> (like 1089) and the old API tokens from app.deriv.com <b>no longer work</b> — the alphanumeric App ID is the right one.
+            <ol>
+              <li>Open <a href="https://developers.deriv.com/dashboard" target="_blank" rel="noopener">developers.deriv.com/dashboard</a> and log in with your normal Deriv login.</li>
+              <li><b>Register application</b> → type <b>PAT</b> (not OAuth) → any name → save. Copy the <b>App ID</b>.</li>
+              <li><b>API tokens</b> → <b>Create token</b> → tick scope <b>trade</b> → copy the token immediately (shown once).</li>
+              <li>Paste both above → <b>Connect account</b>. Your accounts appear in the dropdown — pick <b>DEMO</b> to test.</li>
+            </ol>
+            No domain, hosting or payment is needed — this page talks to Deriv directly from your device.
+          </div>
+        </details>
+        <details>
+          <summary>Opening the app &amp; keeping it secure</summary>
+          <div class="note">
+            <b>Opening it</b> — tap <b>▶ Run</b> in Acode (Chrome opens a <code>localhost</code> address that exists only inside your phone), open the file from your Files app with Chrome, or publish it free on GitHub Pages for an https link (see SETUP.md). There is no server of ours — only this page talking to Deriv.
+            <ul>
+              <li><b>Token scope = trade only.</b> Never <i>payments</i> or <i>admin</i>: even a leaked token cannot withdraw or change your account.</li>
+              <li><b>PIN lock.</b> The token is stored encrypted (AES-256-GCM, key from your PIN via PBKDF2). Tap Lock when you put the phone down; it also locks after 10 minutes without touch (never during a session or with open trades).</li>
+              <li><b>Content Security Policy.</b> The page may only talk to <code>api.derivws.com</code> and loads nothing from anywhere else — no libraries, fonts or trackers.</li>
+              <li><b>Phone lost or token seen?</b> developers.deriv.com → API tokens → delete it and create a new one. Review sessions at app.deriv.com → Settings → Security.</li>
+              <li><b>Real money.</b> The app asks for confirmation before the first trade on a REAL account. Stay on DEMO until you are sure.</li>
+            </ul>
+          </div>
+        </details>
+        <details>
+          <summary>Use on another device</summary>
+          <div class="note">
+            Create a <b>transfer code</b>: it carries your token and App ID <b>encrypted with your password</b> (8+ characters). On the other device open the app — the same hosted link, or the same index.html — import it once, and from then on that device asks only for your password.
+            <div class="btns"><button type="button" class="btn" id="btnXfer">Create transfer code / link</button></div>
+            <div id="xferBox" class="hidden">
+              <div class="f"><textarea id="xferOut" readonly rows="3" style="font-size:12px;word-break:break-all"></textarea></div>
+              <div class="btns"><button type="button" class="btn" id="btnXferCopy">Copy</button></div>
+              <div class="hint" id="xferHint"></div>
+            </div>
+            <div class="f"><label>Import a code or link from another device</label><input id="xferIn" placeholder="Paste the transfer code or link here" autocomplete="off" autocapitalize="off" spellcheck="false" /></div>
+            <div class="btns"><button type="button" class="btn" id="btnXferImport">Import</button></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TABS ============ -->
+  <nav class="tabs" aria-label="Sections">
+    <button class="tab active" data-tab="scanner"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><span>AI Scanner</span></button>
+    <button class="tab" data-tab="bulk"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="m3 13 9 5 9-5"/><path d="m3 17.5 9 5 9-5"/></svg><span>Bulk Trader</span></button>
+    <button class="tab" data-tab="trades"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3h14v18l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Trades <span class="pill" id="tradeCount">0</span></span></button>
+    <button class="tab" data-tab="calc"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg><span>Calculator</span></button>
+  </nav>
+
+  <!-- ============ AI SCANNER ============ -->
+  <section class="panel active" id="panel-scanner">
+    <div class="card">
+      <div class="switch">
+        <div class="sw-t"><div class="t">AI Scanner</div><div class="s">Watches every Volatility index live. Trades only after you press Start.</div></div>
+        <label class="sw"><input type="checkbox" id="scannerToggle" /><span></span></label>
+      </div>
+      <div class="card-b hidden" id="scannerBody">
+        <div class="grid3">
+          <div class="f"><label>Stake</label><input id="aiStake" inputmode="decimal" /></div>
+          <div class="f"><label>Bulk trades</label><input id="aiBulk" inputmode="numeric" /></div>
+          <div class="f"><label>Max sessions</label><input id="aiMax" inputmode="numeric" /></div>
+        </div>
+        <div class="plan"><div class="hint" id="aiPlan"></div><div class="hint" id="aiQuote"></div></div>
+        <div class="btns">
+          <button class="btn primary" id="btnAiStart">Start AI Trades</button>
+          <button class="btn danger" id="btnAiStop" disabled>Stop</button>
+        </div>
+        <div class="status" id="aiStatus">Idle — set your amounts, then Start.</div>
+        <div class="chips">
+          <div class="chip"><small>Sessions</small><b id="aiSessions">0/0</b></div>
+          <div class="chip"><small>Placed</small><b id="aiPlaced">0</b></div>
+          <div class="chip"><small>Won/Lost</small><b><span id="aiWon" class="pos">0</span> · <span id="aiLost" class="neg">0</span></b></div>
+          <div class="chip"><small>P/L</small><b id="aiPnl">0.00</b></div>
+        </div>
+        <div class="tblwrap">
+        <div class="legend"><span>Live markets</span><span>▲ streak &gt; <span class="ruleTh">3</span> · ▼ streak &lt; <span class="ruleTu">6</span></span></div>
+        <table class="tbl" id="marketTable">
+          <thead><tr><th>Market</th><th>Last</th><th>Streak</th><th>Top digit</th><th>Signal</th></tr></thead>
+          <tbody id="marketRows"><tr><td colspan="5" style="color:var(--dim)">Loading Volatility indices…</td></tr></tbody>
+        </table>
+        </div>
+        <details>
+          <summary>Advanced settings</summary>
+          <div class="grid3 wide">
+            <div class="f"><label>Trades in a session</label>
+              <select id="aiMode"><option value="parallel">All at once</option><option value="sequential">One after another</option></select></div>
+            <div class="f"><label>Strategy</label>
+              <select id="aiStrategy"><option value="both">Over 3 &amp; Under 6 — whichever comes first</option><option value="over">Over 3 only</option><option value="under">Under 6 only</option></select></div>
+            <div class="f"><label>Duration (ticks)</label><input id="aiDuration" inputmode="numeric" /></div>
+          </div>
+          <div class="grid2">
+            <div class="f"><label>Take profit</label><input id="aiTP" inputmode="decimal" placeholder="off" /></div>
+            <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="off" /></div>
+          </div>
+          <div class="sub">Scanner rules</div>
+          <div class="grid2">
+            <div class="f"><label>Consecutive digits</label><input id="aiConsec" inputmode="numeric" /><div class="hint">streak length, both sides</div></div>
+            <div class="f"><label>Analysis window (ticks)</label>
+              <select id="aiWindow"><option>25</option><option>50</option><option>100</option><option>500</option><option>1000</option></select></div>
+            <div class="f"><label>Over side digit</label><input id="aiThreshold" inputmode="numeric" /><div class="hint">last N digits &gt; it and top digit ≤ it → Over</div></div>
+            <div class="f"><label>Under side digit</label><input id="aiThresholdUnder" inputmode="numeric" /><div class="hint">last N digits &lt; it and top digit ≥ it → Under</div></div>
+          </div>
+          <div class="dpad"></div>
+        </details>
+        <details>
+          <summary>How the scanner decides</summary>
+          <div class="note">
+            <b>Two signals, scanned at the same time.</b> <b>Over <span class="ruleTh">3</span></b>: the latest <span class="ruleConsec">8</span> digits are all &gt; <span class="ruleTh">3</span> and the most frequent digit over the last <span class="ruleWin">1000</span> ticks is 0–<span class="ruleTh">3</span> → trades Digit Over <span class="ruleTh">3</span>.
+            <b>Under <span class="ruleTu">6</span></b>: the latest <span class="ruleConsec">8</span> digits are all &lt; <span class="ruleTu">6</span> and the most frequent digit is <span class="ruleTu">6</span>–9 → trades Digit Under <span class="ruleTu">6</span>. Whichever appears first is executed; if several appear together the strongest (longest streak, then top-digit %) wins.<br><br>
+            <b>Sessions.</b> Each signal starts one session: the best qualifying market gets exactly <i>Bulk trades</i> contracts, sent all at once or one after another (next one after the previous result). The scanner then waits for the next signal and repeats until <i>Max sessions</i> is reached, then stops by itself. A market must break its streak and form a fresh one before the same side is traded on it again. Take profit, stop loss and Stop end everything early.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BULK TRADER ============ -->
+  <section class="panel" id="panel-bulk">
+    <div class="card"><div class="card-b">
+      <div class="grid3 wide">
+        <div class="f"><label>Market</label><select id="bkSymbol"><option value="">Loading…</option></select></div>
+        <div class="f"><label>Contract</label>
+          <select id="bkContract">
+            <option value="DIGITOVER">Digit Over</option><option value="DIGITUNDER">Digit Under</option>
+            <option value="DIGITEVEN">Digit Even</option><option value="DIGITODD">Digit Odd</option>
+            <option value="DIGITMATCH">Digit Match</option><option value="DIGITDIFF">Digit Differ</option>
+          </select></div>
+        <div class="f" id="bkBarrierBox"><label>Barrier / prediction</label><input id="bkBarrier" inputmode="numeric" /></div>
+      </div>
+      <div class="grid3">
+        <div class="f"><label>Stake</label><input id="bkStake" inputmode="decimal" /></div>
+        <div class="f"><label>Ticks</label><input id="bkDuration" inputmode="numeric" /></div>
+        <div class="f"><label>Trades</label><input id="bkCount" inputmode="numeric" /></div>
+      </div>
+      <div class="stripbox">
+        <div class="top"><span>Last 20 digits</span><span id="bkStats">—</span></div>
+        <div class="strip" id="bkStrip"></div>
+      </div>
+      <div class="hint" id="bkQuote" style="margin:8px 2px 0"></div>
+      <button class="btn primary block" id="btnBulkBuy" disabled>Buy now</button>
+      <div class="note warn">All contracts are sent at the same instant on the same market, so with a 1-tick duration they all win or all lose together — one bet of stake × number of trades. Each is a separate real contract on your account.</div>
+    </div></div>
+  </section>
+
+  <!-- ============ TRADES ============ -->
+  <section class="panel" id="panel-trades">
+    <div class="card"><div class="card-b">
+      <div class="chips c3">
+        <div class="chip"><small>Total</small><b id="trTotal">0</b></div>
+        <div class="chip"><small>Won/Lost</small><b><span id="trWon" class="pos">0</span> · <span id="trLost" class="neg">0</span></b></div>
+        <div class="chip"><small>Net P/L</small><b id="trPnl">0.00</b></div>
+      </div>
+      <div class="tblwrap">
+      <div class="legend"><span>Trades this session</span><span></span></div>
+      <table class="tbl">
+        <thead><tr><th>Time</th><th>Market</th><th>Type</th><th>Stake</th><th>Exit</th><th>Result</th><th>P/L</th></tr></thead>
+        <tbody id="tradeRows"><tr><td colspan="7" style="color:var(--dim)">No trades yet.</td></tr></tbody>
+      </table>
+      </div>
+      <div class="btns">
+        <button class="btn" id="btnExportCsv">Download CSV</button>
+        <button class="btn ghost" id="btnClearTrades">Clear list</button>
+      </div>
+      <div class="note">A personal record kept in this page (cleared on reload). Every trade is a real contract on your Deriv account — official records for banks/tax: <b>app.deriv.com → Reports → Trade table / Statement</b>.</div>
+    </div></div>
+  </section>
+
+  <!-- ============ CALCULATOR ============ -->
+  <section class="panel" id="panel-calc">
+    <div class="card"><div class="calc">
+      <div class="calc-disp" aria-live="polite"><small id="calcExpr"></small><b id="calcOut">0</b></div>
+      <div class="keys" id="calcKeys">
+        <button type="button" class="key fn" data-k="AC">AC</button><button type="button" class="key fn" data-k="⌫">⌫</button><button type="button" class="key fn" data-k="%">%</button><button type="button" class="key op" data-k="÷">÷</button>
+        <button type="button" class="key" data-k="7">7</button><button type="button" class="key" data-k="8">8</button><button type="button" class="key" data-k="9">9</button><button type="button" class="key op" data-k="×">×</button>
+        <button type="button" class="key" data-k="4">4</button><button type="button" class="key" data-k="5">5</button><button type="button" class="key" data-k="6">6</button><button type="button" class="key op" data-k="−">−</button>
+        <button type="button" class="key" data-k="1">1</button><button type="button" class="key" data-k="2">2</button><button type="button" class="key" data-k="3">3</button><button type="button" class="key op" data-k="+">+</button>
+        <button type="button" class="key fn" data-k="±">±</button><button type="button" class="key" data-k="0">0</button><button type="button" class="key" data-k=".">.</button><button type="button" class="key eq" data-k="=">=</button>
+      </div>
+      <div class="btns"><button type="button" class="btn ghost" id="btnCalcStake">Use result as stake</button></div>
+      <div class="hint" style="text-align:center">Basic calculator — works with the keyboard too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
+    </div></div>
+  </section>
+
+  <!-- ============ LOG ============ -->
+  <div class="card collapsed" id="logCard">
+    <div class="card-h" id="logHead"><span class="ch-t"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg>Activity log</span><span class="chev"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></div>
+    <div class="card-b" style="padding:0"><div class="logbox" id="logBox"></div></div>
+  </div>
+
+  <div class="foot">STV Traders — unofficial third-party client using Deriv's public API.<br>Trading digits is high-risk — start on DEMO.</div>
+</div>
+<div id="toast"></div>
+
+<script>
+(() => {
+'use strict';
+/* =============================== config ================================ */
+const REST_BASE = window.DBT_REST_BASE || 'https://api.derivws.com';
+const PUBLIC_WS = window.DBT_PUBLIC_WS || 'wss://api.derivws.com/trading/v1/options/ws/public';
+const HISTORY_COUNT = 1000, MAX_KEEP = 1000;
+
+/* =============================== helpers =============================== */
+const $ = id => document.getElementById(id);
+const fmt = (n, d = 2) => (Number(n) || 0).toFixed(d);
+const tstr = (ms) => new Date(ms || Date.now()).toLocaleTimeString([], { hour12: false });
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('dbt_' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('dbt_' + k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem('dbt_' + k); } catch (e) {} }
+};
+function log(msg, cls = '') {
+  const box = $('logBox'); const line = document.createElement('div');
+  line.className = 'logline ' + cls; line.textContent = `[${tstr()}] ${msg}`;
+  box.prepend(line); while (box.children.length > 250) box.lastChild.remove();
+}
+function toast(msg, cls = '') {
+  const t = $('toast'); t.textContent = msg; t.className = 'show ' + cls;
+  clearTimeout(toast._t); toast._t = setTimeout(() => (t.className = ''), 3800);
+}
+const needsBarrier = t => t !== 'DIGITEVEN' && t !== 'DIGITODD';
+function contractLabel(t, b) {
+  return ({ DIGITOVER: 'Over ' + b, DIGITUNDER: 'Under ' + b, DIGITEVEN: 'Even', DIGITODD: 'Odd', DIGITMATCH: 'Match ' + b, DIGITDIFF: 'Differ ' + b })[t] || t;
+}
+function lastDigit(quote, pipDec) { const s = Number(quote).toFixed(pipDec); return +s[s.length - 1]; }
+function pipDecimals(pip) { const p = Number(pip); if (!p) return 2; return p >= 1 ? Math.round(p) : Math.max(0, Math.round(-Math.log10(p))); }
+function validateTrade(o) {
+  if (!(o.stake > 0)) return 'Stake must be greater than 0';
+  if (!(o.duration >= 1 && o.duration <= 10)) return 'Duration must be 1–10 ticks for digit contracts';
+  if (needsBarrier(o.type)) {
+    const b = o.barrier;
+    if (!Number.isInteger(b)) return 'Barrier must be a digit 0–9';
+    if (o.type === 'DIGITOVER' && (b < 0 || b > 8)) return 'Over barrier must be 0–8';
+    if (o.type === 'DIGITUNDER' && (b < 1 || b > 9)) return 'Under barrier must be 1–9';
+    if (b < 0 || b > 9) return 'Prediction must be 0–9';
+  }
+  return null;
+}
+
+/* ====================== generic Deriv WebSocket client ================= */
+class DerivWS {
+  constructor(name) { this.name = name; this.ws = null; this.reqId = 0; this.pending = new Map(); this.subs = new Map(); this.gen = 0; this.onClose = () => {}; this.onMessage = () => {}; this.pingTimer = null; }
+  get isOpen() { return !!this.ws && this.ws.readyState === 1; }
+  connect(url) {
+    this.close();
+    const gen = ++this.gen;
+    return new Promise((resolve, reject) => {
+      let ws;
+      try { ws = new WebSocket(url); } catch (e) { reject(e); return; }
+      this.ws = ws; let opened = false;
+      const timer = setTimeout(() => { if (!opened) { try { ws.close(); } catch (e) {} reject(new Error('Connection timed out — check your internet')); } }, 20000);
+      ws.onopen = () => { opened = true; clearTimeout(timer); this.startPing(); resolve(); };
+      ws.onerror = () => {};
+      ws.onclose = (ev) => {
+        clearTimeout(timer); if (gen !== this.gen) return;
+        this.stopPing(); const err = { code: 'Disconnected', message: 'Connection closed' };
+        this.pending.forEach(p => p.rej(err)); this.pending.clear(); this.subs.clear(); this.ws = null;
+        if (!opened) reject(new Error('Deriv closed the connection' + (ev && ev.code ? ` (code ${ev.code})` : '') + ' — no internet, or the session expired'));
+        this.onClose(opened);
+      };
+      ws.onmessage = (ev) => { if (gen !== this.gen) return; let m; try { m = JSON.parse(ev.data); } catch (e) { return; } this.handle(m); };
+    });
+  }
+  handle(msg) {
+    const id = msg.req_id;
+    if (this.pending.has(id)) {
+      const p = this.pending.get(id); this.pending.delete(id);
+      if (msg.error) { this.subs.delete(id); p.rej(msg.error); this.onMessage(msg); return; }
+      p.res(msg);
+    }
+    const cb = this.subs.get(id);
+    if (cb) { if (msg.error) this.subs.delete(id); cb(msg); }
+    this.onMessage(msg);
+  }
+  send(req, onUpdate) {
+    return new Promise((res, rej) => {
+      if (!this.isOpen) { rej({ code: 'NotConnected', message: this.name + ' not connected' }); return; }
+      const id = ++this.reqId; req.req_id = id;
+      this.pending.set(id, { res, rej }); if (onUpdate) this.subs.set(id, onUpdate);
+      this.ws.send(JSON.stringify(req));
+    });
+  }
+  unsubscribe(reqId, subId) { this.subs.delete(reqId); if (subId && this.isOpen) this.send({ forget: subId }).catch(() => {}); }
+  startPing() { this.stopPing(); this.pingTimer = setInterval(() => { if (this.isOpen) this.send({ ping: 1 }).catch(() => {}); }, 30000); }
+  stopPing() { clearInterval(this.pingTimer); this.pingTimer = null; }
+  close() {
+    this.stopPing(); this.gen++;
+    if (this.ws) { const ws = this.ws; this.ws = null; try { ws.onclose = null; ws.onmessage = null; ws.onerror = null; ws.close(); } catch (e) {} }
+    this.pending.forEach(p => p.rej({ code: 'Disconnected', message: 'Disconnected' })); this.pending.clear(); this.subs.clear();
+  }
+}
+
+/* ================================ state ================================ */
+const pub = new DerivWS('Market data');      // public endpoint: symbols + ticks (no login needed)
+const acct = new DerivWS('Account');         // OTP-authenticated endpoint: balance, buy, contracts
+const state = { markets: new Map(), order: [], pubRetries: 0, pubTimer: null,
+  accounts: [], account: null, acctConnected: false, manualDisconnect: false, acctTimer: null, acctRetries: 0, confirmedReal: false };
+const contracts = new Map();
+let session = null, lastReason = '';
+const cfg = { window: 1000, over: 3, under: 6, consec: 8, strategy: 'both' };
+function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} only` : cfg.strategy === 'under' ? `Under ${cfg.under} only` : `Over ${cfg.over} & Under ${cfg.under}`; }
+
+/* =============================== settings ============================== */
+const SETTINGS_V = 2;
+const DEFAULTS = { appId: '', aiStake: '0.35', aiBulk: '3', aiMax: '2', aiMode: 'parallel', aiStrategy: 'both', aiDuration: '1',
+  aiConsec: '8', aiThreshold: '3', aiThresholdUnder: '6', aiWindow: '1000', aiTP: '', aiSL: '', bkContract: 'DIGITOVER', bkBarrier: '3', bkStake: '0.35', bkDuration: '1', bkCount: '3' };
+function loadSettings() {
+  const saved = store.get('settings', {});
+  if (saved.v !== SETTINGS_V) delete saved.aiMax;   // "Max" used to mean trades, now it means sessions
+  const s = Object.assign({}, DEFAULTS, saved);
+  Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.value = s[k]; });
+  $('rememberTok').checked = store.get('remember', true) !== false;
+  syncCfg();
+}
+function saveSettings() { const s = { v: SETTINGS_V }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
+function syncCfg() {
+  cfg.window = Math.max(10, +$('aiWindow').value || 1000);
+  let t = Math.floor(+$('aiThreshold').value); if (!Number.isFinite(t)) t = 3; cfg.over = Math.min(8, Math.max(0, t));
+  let u = Math.floor(+$('aiThresholdUnder').value); if (!Number.isFinite(u)) u = 6; cfg.under = Math.min(9, Math.max(1, u));
+  cfg.consec = Math.max(1, Math.floor(+$('aiConsec').value) || 8);
+  cfg.strategy = ['both', 'over', 'under'].includes($('aiStrategy').value) ? $('aiStrategy').value : 'both';
+  const so = $('aiStrategy').options; so[0].textContent = `Over ${cfg.over} & Under ${cfg.under} — whichever comes first`; so[1].textContent = `Over ${cfg.over} only`; so[2].textContent = `Under ${cfg.under} only`;
+  document.querySelectorAll('.ruleConsec').forEach(e => e.textContent = cfg.consec);
+  document.querySelectorAll('.ruleTh').forEach(e => e.textContent = cfg.over);
+  document.querySelectorAll('.ruleTu').forEach(e => e.textContent = cfg.under);
+  document.querySelectorAll('.ruleWin').forEach(e => e.textContent = cfg.window);
+  $('bkBarrierBox').classList.toggle('hidden', !needsBarrier($('bkContract').value));
+  updatePlan();
+  state.markets.forEach(m => { recompute(m); renderMarketRow(m); });
+  refreshBest(); updateBulkStrip();
+}
+Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.addEventListener('change', () => { saveSettings(); syncCfg(); }); });
+function updatePlan() {
+  const bulk = Math.floor(+$('aiBulk').value), max = Math.floor(+$('aiMax').value), stake = +$('aiStake').value;
+  const el = $('aiPlan'); if (!(bulk >= 1) || !(max >= 1)) { el.textContent = 'Plan: enter bulk trades (≥1) and max sessions (≥1)'; requestQuote('ai'); return; }
+  el.textContent = `Plan: ${max} session${max > 1 ? 's' : ''} × ${bulk} trade${bulk > 1 ? 's' : ''} = ${bulk * max} trades in total` +
+    (stake > 0 ? ` (${fmt(bulk * max * stake)} staked)` : '') + ` · in each session the ${bulk} trade${bulk > 1 ? 's are' : ' is'} sent ${$('aiMode').value === 'sequential' ? 'one after another' : 'all at once'} · signals: ${strategyLabel()}${cfg.strategy === 'both' ? ', whichever comes first' : ''}.`;
+  requestQuote('ai');
+}
+['aiBulk', 'aiMax', 'aiStake', 'aiMode'].forEach(k => $(k).addEventListener('input', updatePlan));
+
+/* ============================== security =============================== */
+const framed = (() => { try { return window.top !== window.self; } catch (e) { return true; } })();
+const subtle = (window.crypto && window.crypto.subtle) || null;
+const IDLE_LOCK_MS = 10 * 60 * 1000;
+const sec = { pin: null, tokenSaved: null, unlocked: false, lastActivity: Date.now(), mode: null, resolve: null };
+const strToU8 = str => Uint8Array.from(unescape(encodeURIComponent(str)), ch => ch.charCodeAt(0));
+const u8ToStr = u => decodeURIComponent(escape(String.fromCharCode.apply(null, u)));
+const b64e = u => btoa(String.fromCharCode.apply(null, u)), b64d = str => Uint8Array.from(atob(str), ch => ch.charCodeAt(0));
+async function deriveKey(pin, salt) {
+  const base = await subtle.importKey('raw', strToU8(pin), 'PBKDF2', false, ['deriveKey']);
+  return subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 250000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function vaultSave(pin, token) {
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(pin, salt);
+  const ct = new Uint8Array(await subtle.encrypt({ name: 'AES-GCM', iv }, key, strToU8(token)));
+  store.set('vault', { v: 1, kdf: 'PBKDF2-SHA256-250000', cipher: 'AES-256-GCM', salt: b64e(salt), iv: b64e(iv), ct: b64e(ct) });
+}
+async function vaultOpen(pin) {
+  const v = store.get('vault', null); if (!v) throw new Error('No saved token');
+  const key = await deriveKey(pin, b64d(v.salt));
+  return u8ToStr(new Uint8Array(await subtle.decrypt({ name: 'AES-GCM', iv: b64d(v.iv) }, key, b64d(v.ct))));
+}
+function hasVault() { return !!store.get('vault', null); }
+function showLock(mode, opts) {
+  opts = opts || {};
+  return new Promise(resolve => {
+    if (sec.resolve) sec.resolve({ ok: false });
+    sec.mode = mode; sec.resolve = resolve; sec.min = opts.min || 4;
+    $('lockScreen').classList.remove('hidden');
+    $('lockPin').value = ''; $('lockPin2').value = ''; $('lockMsg').textContent = ''; $('lockOk').disabled = false;
+    $('lockPin2').classList.toggle('hidden', mode !== 'set');
+    $('lockTitle').textContent = opts.title || (mode === 'set' ? 'Protect your token with a PIN' : 'Locked');
+    $('lockText').textContent = opts.text || (mode === 'set'
+      ? 'Choose a PIN or password (at least 4 characters — longer is safer; 8+ lets you use it on other devices). Your Deriv token will be stored on this phone encrypted with it; without it this page cannot trade.'
+      : 'Enter your PIN / password to unlock the saved Deriv token and reconnect.');
+    $('lockOk').textContent = mode === 'set' ? 'Save & remember' : 'Unlock';
+    $('lockAlt').textContent = mode === 'set' ? "Don't remember the token" : 'Forget saved token';
+    setTimeout(() => $('lockPin').focus(), 50);
+  });
+}
+function closeLock(result) { $('lockScreen').classList.add('hidden'); const r = sec.resolve; sec.resolve = null; sec.mode = null; if (r) r(result); }
+$('lockOk').addEventListener('click', async () => {
+  const pin = $('lockPin').value;
+  if (sec.mode === 'set') {
+    if (pin.length < (sec.min || 4)) { $('lockMsg').textContent = `Use at least ${sec.min || 4} characters`; return; }
+    if (pin !== $('lockPin2').value) { $('lockMsg').textContent = 'The two entries are different'; $('lockPin2').value = ''; return; }
+    closeLock({ ok: true, pin }); return;
+  }
+  if (!pin) return;
+  $('lockOk').disabled = true; $('lockMsg').textContent = 'Checking…';
+  try { const token = await vaultOpen(pin); closeLock({ ok: true, pin, token }); }
+  catch (e) { $('lockOk').disabled = false; $('lockMsg').textContent = 'Wrong PIN'; $('lockPin').value = ''; $('lockPin').focus(); }
+});
+$('lockAlt').addEventListener('click', () => {
+  if (sec.mode === 'unlock') { if (!window.confirm('Delete the saved token from this phone? You can paste it again later.')) return; store.del('vault'); store.del('accountId'); }
+  closeLock({ ok: false });
+});
+['lockPin', 'lockPin2'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('lockOk').click(); }));
+async function rememberToken(pat) {   // called after a SUCCESSFUL connection only, so a wrong token is never stored
+  if (!$('rememberTok').checked) return;
+  if (!subtle) { setMsg('Connected. This browser context cannot encrypt (no WebCrypto), so the token stays in memory only — paste it again next time.'); return; }
+  if (sec.pin && sec.tokenSaved === pat && hasVault()) return;
+  if (!sec.pin) { const r = await showLock('set'); if (!r.ok) { $('rememberTok').checked = false; store.set('remember', false); return; } sec.pin = r.pin; }
+  try { await vaultSave(sec.pin, pat); sec.tokenSaved = pat; sec.unlocked = true; toast('Token saved on this phone, encrypted with your PIN', 'ok'); log('Token stored encrypted (AES-256-GCM, PBKDF2 key from PIN)'); }
+  catch (e) { toast('Could not encrypt the token: ' + (e.message || e), 'err'); }
+}
+async function unlockFlow() {
+  const r = await showLock('unlock');
+  if (!r.ok) return false;
+  sec.pin = r.pin; sec.tokenSaved = r.token; sec.unlocked = true; sec.lastActivity = Date.now(); $('token').value = r.token;
+  log('Unlocked');
+  if ($('appId').value.trim()) connectAccount(false);
+  return true;
+}
+function lockApp(auto) {
+  if (session && session.active) { if (!auto) toast('Stop the AI session before locking', 'err'); return false; }
+  if (auto && anyOpenContract()) return false;
+  if (state.acctConnected || acct.isOpen) disconnectAccount();
+  $('token').value = ''; sec.pin = null; sec.unlocked = false; state.confirmedReal = false;
+  log(auto ? 'Auto-locked after 10 minutes without activity' : 'Locked');
+  if (hasVault()) unlockFlow(); else toast('Locked — token cleared from this page');
+  return true;
+}
+function anyOpenContract() { let k = false; contracts.forEach(c => { if (c.status === 'open') k = true; }); return k; }
+['touchstart', 'pointerdown', 'keydown', 'click'].forEach(ev => window.addEventListener(ev, () => { sec.lastActivity = Date.now(); }, { passive: true }));
+setInterval(() => { if (sec.unlocked && hasVault() && $('lockScreen').classList.contains('hidden') && Date.now() - sec.lastActivity > IDLE_LOCK_MS) lockApp(true); }, 30000);
+$('btnLock').addEventListener('click', () => lockApp(false));
+const b64url = u => b64e(u).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64url = str => { str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) str += '='; return b64d(str); };
+function transferCode() { const v = store.get('vault', null); return v ? b64url(strToU8(JSON.stringify({ t: 1, vault: v, appId: $('appId').value.trim() }))) : null; }
+function parseTransfer(text) {
+  text = String(text || '').trim(); const m = text.match(/#v=([A-Za-z0-9_-]+)/); if (m) text = m[1];
+  if (!/^[A-Za-z0-9_-]{40,}$/.test(text)) return null;
+  try { const o = JSON.parse(u8ToStr(unb64url(text))); if (o && o.t === 1 && o.vault && o.vault.ct && o.vault.salt && o.vault.iv) return o; } catch (e) {}
+  return null;
+}
+async function importTransfer(o) {
+  if (state.acctConnected || acct.isOpen) disconnectAccount();
+  store.set('vault', o.vault); store.set('remember', true); $('rememberTok').checked = true;
+  if (o.appId) { $('appId').value = o.appId; saveSettings(); }
+  sec.pin = null; sec.unlocked = false; sec.tokenSaved = null; $('token').value = ''; $('xferIn').value = '';
+  log('Transfer code imported — the encrypted token is now on this device'); toast('Imported — enter your password to unlock', 'ok');
+  if (!subtle) { setMsg('Imported, but this browser context cannot decrypt it — open the page over https:// or localhost.', 'err'); return; }
+  await unlockFlow();
+}
+async function createTransfer() {
+  if (!hasVault() || !sec.pin || !sec.tokenSaved) { toast('Connect once with "Remember" ticked and set a PIN first', 'err'); return; }
+  if (sec.pin.length < 8) {
+    const r = await showLock('set', { min: 8, title: 'Choose a stronger password', text: 'To use the app on other devices your password must be at least 8 characters (mix letters and numbers). It replaces the PIN on this device too.' });
+    if (!r.ok) return;
+    sec.pin = r.pin; await vaultSave(sec.pin, sec.tokenSaved); toast('Password updated on this device', 'ok');
+  }
+  const code = transferCode(), https = location.protocol === 'https:';
+  $('xferOut').value = https ? location.origin + location.pathname + '#v=' + code : code;
+  $('xferHint').textContent = https
+    ? 'Open this link on the other device and enter your password — done. The token inside is encrypted; the link is useless without the password. Keep it private anyway.'
+    : 'This page is not on an https:// address, so only a code (not a link) can be made. On the other device open the app (your hosted copy, or the same index.html) → "Use on another device" → paste it → Import. The code is encrypted; useless without your password.';
+  $('xferBox').classList.remove('hidden'); log('Transfer code created (encrypted with your password)');
+}
+$('btnXfer').addEventListener('click', createTransfer);
+$('btnXferCopy').addEventListener('click', async () => {
+  const t = $('xferOut'); t.select();
+  try { await navigator.clipboard.writeText(t.value); toast('Copied', 'ok'); } catch (e) { try { document.execCommand('copy'); toast('Copied', 'ok'); } catch (e2) { toast('Long-press the text to copy it'); } }
+});
+$('btnXferImport').addEventListener('click', () => { const o = parseTransfer($('xferIn').value); if (!o) { toast('That is not a valid transfer code', 'err'); return; } importTransfer(o); });
+async function bootSecurity() {
+  if (framed) $('frameWarn').classList.remove('hidden');
+  const h = location.hash || '';
+  if (/^#v=/.test(h)) {                                  // opened through a transfer link from another device
+    const o = parseTransfer(h);
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    if (o) { await importTransfer(o); return; }
+    toast('This transfer link is damaged or incomplete', 'err');
+  }
+  const legacy = store.get('token', '');            // a plain-text token from an older build: use it once, never keep it in plain text
+  if (legacy) { $('token').value = legacy; store.del('token'); setMsg('Your token is no longer kept in plain text — connect once and set a PIN to save it encrypted.'); }
+  if (!hasVault()) return;
+  if (!subtle) { setMsg('A saved token exists but this browser context cannot decrypt it (open the file directly in Chrome).', 'err'); return; }
+  await unlockFlow();
+}
+
+/* ============================== UI: header ============================= */
+const themeMQ = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)')) || null;
+const systemTheme = () => (themeMQ && themeMQ.matches ? 'light' : 'dark');
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t === 'light' ? '#f6f4ee' : '#0b0d10');
+}
+function currentTheme() { const s = store.get('theme', null); return s === 'light' || s === 'dark' ? s : systemTheme(); }
+applyTheme(currentTheme());
+$('btnTheme').addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  if (t === systemTheme()) store.del('theme'); else store.set('theme', t);   // back on the phone's own setting → follow it again
+  applyTheme(t);
+});
+if (themeMQ && themeMQ.addEventListener) themeMQ.addEventListener('change', () => { if (store.get('theme', null) === null) applyTheme(systemTheme()); });
+function setPubStatus(cls, text) { $('pubDot').className = 'dot ' + cls; $('pubText').textContent = 'Markets: ' + text; }
+function setAcctStatus(cls, text) { $('acctDot').className = 'dot ' + cls; $('acctText').textContent = 'Account: ' + text; }
+function updateAccount() {
+  const a = state.account; const pill = $('acctPill');
+  if (!a) { $('balance').textContent = '—'; pill.className = 'pill'; pill.textContent = 'Not logged in'; return; }
+  $('balance').textContent = `${fmt(a.balance)} ${a.currency}`;
+  pill.className = 'pill ' + (a.is_virtual ? 'demo' : 'real'); pill.textContent = `${a.is_virtual ? 'DEMO' : 'REAL'} · ${a.id}`;
+}
+function setConnectedUI(on) {
+  state.acctConnected = on; $('btnConnect').disabled = on; $('btnDisconnect').disabled = !on; $('btnBulkBuy').disabled = !on;
+  requestQuote('ai'); requestQuote('bk');
+  $('acctSelect').disabled = !!(session && session.active);
+}
+function setMsg(text, cls = '') { $('connectMsg').className = 'msg ' + cls; $('connectMsg').textContent = text; }
+
+/* ======================= market data (public socket) =================== */
+async function connectPublic() {
+  clearTimeout(state.pubTimer);
+  setPubStatus('connecting', 'connecting…');
+  try {
+    await pub.connect(PUBLIC_WS);
+    state.pubRetries = 0; setPubStatus('connected', 'live');
+    await loadMarkets();
+  } catch (e) {
+    const m = (e && e.message) || String(e);
+    setPubStatus('disconnected', 'offline'); log('Market data: ' + m, 'err');
+    $('marketRows').innerHTML = `<tr><td colspan="5" style="color:var(--red)">Cannot reach Deriv market data — ${m}. Retrying…</td></tr>`;
+    schedulePublicRetry();
+  }
+}
+function schedulePublicRetry() {
+  clearTimeout(state.pubTimer);
+  const delay = Math.min(30000, 2000 * Math.pow(2, Math.min(4, state.pubRetries++)));
+  state.pubTimer = setTimeout(connectPublic, delay);
+}
+pub.onClose = (wasOpen) => { if (!wasOpen) return; setPubStatus('connecting', 'reconnecting…'); state.markets.forEach(m => { m.subId = null; }); log('Market data connection lost — reconnecting', 'err'); schedulePublicRetry(); };
+
+async function loadMarkets() {
+  const r = await pub.send({ active_symbols: 'brief' });
+  const list = r.active_symbols || [];
+  const vols = list.filter(s => s.market === 'synthetic_index' && /^Volatility/i.test(s.underlying_symbol_name || '') && s.exchange_is_open && !s.is_trading_suspended);
+  const num = s => parseInt((s.underlying_symbol_name.match(/(\d+)/) || [0, 0])[1], 10);
+  vols.sort((a, b) => (/\(1s\)/.test(a.underlying_symbol_name) - /\(1s\)/.test(b.underlying_symbol_name)) || (num(a) - num(b)));
+  const prevSel = $('bkSymbol').value;
+  state.markets.clear(); state.order = [];
+  vols.forEach(s => {
+    state.markets.set(s.underlying_symbol, { symbol: s.underlying_symbol, name: s.underlying_symbol_name, pipDec: pipDecimals(s.pip_size), digits: [], times: [], streak: 0, streakUnder: 0, last: null, topDigits: [], topPct: 0, pct: [], topOver: false, topUnder: false, over: null, under: null, sigs: [], qualifies: false, wasOver: false, wasUnder: false, signalKey: null, score: 0, subId: null, reqId: null });
+    state.order.push(s.underlying_symbol);
+  });
+  log(`Loaded ${vols.length} Volatility indices from Deriv`, 'ok');
+  const sel = $('bkSymbol'); sel.innerHTML = '';
+  state.order.forEach(sym => { const o = document.createElement('option'); o.value = sym; o.textContent = state.markets.get(sym).name; sel.appendChild(o); });
+  if (state.markets.has(prevSel)) sel.value = prevSel;
+  buildMarketRows(); requestQuote('ai'); requestQuote('bk');
+  state.order.forEach((sym, i) => setTimeout(() => subscribeTicks(state.markets.get(sym)), i * 80));
+}
+function subscribeTicks(m) {
+  if (!pub.isOpen) return;
+  const req = { ticks_history: m.symbol, count: HISTORY_COUNT, end: 'latest', style: 'ticks', subscribe: 1 };
+  pub.send(req, (msg) => {
+    if (msg.error) { log(`${m.name}: ${msg.error.message}`, 'err'); return; }
+    if (msg.msg_type === 'history') {
+      m.reqId = req.req_id; m.subId = msg.subscription && msg.subscription.id;
+      if (msg.pip_size != null) m.pipDec = pipDecimals(msg.pip_size);
+      m.digits = msg.history.prices.map(p => lastDigit(p, m.pipDec)).slice(-MAX_KEEP); m.times = msg.history.times.slice(-MAX_KEEP);
+      recompute(m); renderMarketRow(m); refreshBest(); updateBulkStrip(m);
+    } else if (msg.msg_type === 'tick' && msg.tick) {
+      const t = msg.tick; if (t.pip_size != null) m.pipDec = pipDecimals(t.pip_size);
+      m.digits.push(lastDigit(t.quote, m.pipDec)); m.times.push(t.epoch);
+      while (m.digits.length > MAX_KEEP) { m.digits.shift(); m.times.shift(); }
+      recompute(m); renderMarketRow(m); refreshBest(); updateBulkStrip(m); scannerTick();
+    }
+  }).catch(e => log(`${m.name}: ${e.message || 'tick subscription failed'}`, 'err'));
+}
+function recompute(m) {
+  const d = m.digits, n = d.length; if (!n) return;
+  const W = cfg.window, T = cfg.over, U = cfg.under;
+  const start = Math.max(0, n - W), total = n - start;
+  const counts = new Array(10).fill(0); for (let i = start; i < n; i++) counts[d[i]]++;
+  const pct = counts.map(c => c * 100 / total); const maxPct = Math.max.apply(null, pct);
+  const tops = []; pct.forEach((p, i) => { if (p === maxPct) tops.push(i); });
+  let so = 0; for (let i = n - 1; i >= 0 && d[i] > T; i--) so++;      // digits above the Over side
+  let su = 0; for (let i = n - 1; i >= 0 && d[i] < U; i--) su++;      // digits below the Under side
+  const enough = total >= Math.min(W, 25);
+  m.pct = pct; m.topDigits = tops; m.topPct = maxPct; m.streak = so; m.streakUnder = su; m.last = d[n - 1];
+  m.topOver = tops.every(x => x <= T); m.topUnder = tops.every(x => x >= U);
+  const side = (dir, on, streak, topOk, type, barrier) => ({ dir, on, streak, topOk, type, barrier, label: `${type === 'DIGITOVER' ? 'Over' : 'Under'} ${barrier}`,
+    qualifies: on && streak >= cfg.consec && topOk && enough, key: streak > 0 ? `${m.symbol}:${dir}:${m.times[n - streak]}` : null, score: streak * 1000 + maxPct });
+  m.over = side('over', cfg.strategy !== 'under', so, m.topOver, 'DIGITOVER', T);
+  m.under = side('under', cfg.strategy !== 'over', su, m.topUnder, 'DIGITUNDER', U);
+  m.sigs = [m.over, m.under].filter(x => x.qualifies);
+  m.qualifies = m.sigs.length > 0; m.signalKey = m.qualifies ? m.sigs[0].key : null; m.score = m.sigs.reduce((a, x) => Math.max(a, x.score), 0);
+  if (m.over.qualifies && !m.wasOver) log(`SIGNAL ${m.name}: ${so} consecutive digits > ${T}, top digit ${tops.join('/')} (${fmt(maxPct, 1)}%) → Over ${T}`, 'ok');
+  if (m.under.qualifies && !m.wasUnder) log(`SIGNAL ${m.name}: ${su} consecutive digits < ${U}, top digit ${tops.join('/')} (${fmt(maxPct, 1)}%) → Under ${U}`, 'ok');
+  m.wasOver = m.over.qualifies; m.wasUnder = m.under.qualifies;
+}
+
+/* ===================== account (REST + OTP websocket) ================== */
+function creds() { return { appId: $('appId').value.trim(), pat: $('token').value.trim() }; }
+async function rest(method, path) {
+  const { appId, pat } = creds(); let r;
+  try { r = await fetch(REST_BASE + path, { method, headers: { 'Authorization': 'Bearer ' + pat, 'Deriv-App-ID': appId } }); }
+  catch (e) { throw new Error('Could not reach api.derivws.com — check your internet connection'); }
+  const text = await r.text(); let body = null; try { body = JSON.parse(text); } catch (e) {}
+  if (!r.ok) {
+    let msg = (body && body.errors && body.errors[0] && body.errors[0].message) || (body && body.message) || text.trim() || ('HTTP ' + r.status);
+    if (r.status === 401) msg = `Deriv rejected the credentials (${msg}). Check: App ID is from a PAT-type app on developers.deriv.com, and the token is a PAT with the "trade" scope.`;
+    if (r.status === 403) msg = `Access denied (${msg}). The PAT probably lacks the "trade" scope — create a new one.`;
+    if (r.status === 429) msg = 'Rate limited by Deriv — wait a moment and try again.';
+    const err = new Error(msg); err.status = r.status; throw err;
+  }
+  return body;
+}
+async function connectAccount(isRetry) {
+  const { appId, pat } = creds();
+  if (!appId) { toast('Paste your App ID first', 'err'); $('appId').focus(); return; }
+  if (!pat) { toast('Paste your PAT token first', 'err'); $('token').focus(); return; }
+  if (/^\d{1,6}$/.test(appId)) { toast('That is an old numeric app_id — the new API needs the alphanumeric App ID from developers.deriv.com', 'err'); setMsg('Old numeric app_id detected. Open the setup guide below.', 'err'); return; }
+  if (framed) { toast('Connecting is disabled while this page is embedded in another page — open it directly in Chrome', 'err'); return; }
+  saveSettings();
+  state.manualDisconnect = false; clearTimeout(state.acctTimer);
+  $('btnConnect').disabled = true;
+  setAcctStatus('connecting', isRetry ? 'reconnecting…' : 'connecting…'); setMsg('Fetching your accounts from Deriv…');
+  try {
+    const r = await rest('GET', '/trading/v1/options/accounts');
+    const all = (r && r.data) || [];
+    state.accounts = all.filter(a => a.status !== 'inactive');
+    if (!state.accounts.length) throw new Error('No Options trading account found on this login. Log in once at app.deriv.com (a demo account is created automatically), then try again.');
+    renderAccountSelect();
+    const wanted = store.get('accountId', null);
+    const pick = state.accounts.find(a => a.account_id === wanted) || state.accounts.find(a => a.account_type === 'demo') || state.accounts[0];
+    $('acctSelect').value = pick.account_id;
+    await openAccountSocket(pick.account_id);
+    rememberToken(pat);
+  } catch (e) {
+    const m = (e && e.message) || String(e);
+    setAcctStatus('disconnected', 'not connected'); setConnectedUI(false); setMsg(m, 'err'); log('Account connection failed: ' + m, 'err'); toast(m, 'err');
+  }
+}
+function renderAccountSelect() {
+  const sel = $('acctSelect'); sel.innerHTML = '';
+  state.accounts.forEach(a => { const o = document.createElement('option'); o.value = a.account_id; o.textContent = `${a.account_type === 'demo' ? 'DEMO' : 'REAL'} · ${a.account_id} · ${fmt(a.balance)} ${a.currency}`; sel.appendChild(o); });
+  $('acctBox').classList.remove('hidden');
+}
+async function openAccountSocket(accountId) {
+  const a = state.accounts.find(x => x.account_id === accountId); if (!a) throw new Error('Account not found');
+  setAcctStatus('connecting', 'opening session…'); setMsg(`Opening a trading session for ${accountId}…`);
+  const otp = await rest('POST', `/trading/v1/options/accounts/${encodeURIComponent(accountId)}/otp`);
+  const url = otp && otp.data && otp.data.url; if (!url) throw new Error('Deriv did not return a WebSocket URL');
+  await acct.connect(url);
+  state.account = { id: accountId, currency: a.currency, balance: +a.balance, is_virtual: a.account_type === 'demo' };
+  store.set('accountId', accountId); state.acctRetries = 0;
+  updateAccount(); setAcctStatus('connected', (state.account.is_virtual ? 'DEMO ' : 'REAL ') + accountId); setConnectedUI(true);
+  setMsg(`Connected to ${state.account.is_virtual ? 'DEMO' : 'REAL'} account ${accountId}`, 'ok');
+  log(`Account session open: ${accountId} (${a.account_type}) · ${a.currency}`, 'ok');
+  $('connectCard').classList.add('collapsed');
+  acct.send({ balance: 1, subscribe: 1 }, (msg) => { if (msg.balance && state.account) { state.account.balance = +msg.balance.balance; if (msg.balance.currency) state.account.currency = msg.balance.currency; updateAccount(); } })
+    .catch(e => log('Balance stream: ' + (e.message || e.code), 'err'));
+  contracts.forEach(c => { if (c.status === 'open') watchContract(c, true); });
+}
+function disconnectAccount() {
+  state.manualDisconnect = true; clearTimeout(state.acctTimer);
+  if (session && session.active) endSession('Disconnected by user');
+  acct.close(); onAcctDown(); setMsg('Disconnected.'); log('Account disconnected');
+}
+function onAcctDown() { setAcctStatus('disconnected', 'not connected'); setConnectedUI(false); }
+acct.onClose = (wasOpen) => {
+  if (!wasOpen) return;
+  onAcctDown();
+  if (session && session.active) endSession('Connection lost — AI trading paused for safety');
+  if (!state.manualDisconnect) {
+    const delay = Math.min(30000, 2000 * Math.pow(2, Math.min(4, state.acctRetries++)));
+    log(`Account session closed. Reconnecting in ${Math.round(delay / 1000)}s…`, 'err'); setAcctStatus('connecting', 'reconnecting…');
+    state.acctTimer = setTimeout(async () => {
+      try { await openAccountSocket(state.account.id); } catch (e) { const m = e.message || String(e); log('Reconnect failed: ' + m, 'err'); setMsg(m, 'err'); setAcctStatus('disconnected', 'not connected'); if (e.status === 401 || e.status === 403) return; acct.onClose(true); }
+    }, delay);
+  }
+};
+acct.onMessage = (msg) => { if (msg.msg_type === 'proposal_open_contract' && msg.proposal_open_contract) onPOC(msg.proposal_open_contract); };
+
+/* ============================== contracts ============================== */
+function buyContract(m, o, source, sessionId, done) {
+  const params = { amount: +o.stake, basis: 'stake', contract_type: o.type, currency: state.account.currency, duration: +o.duration, duration_unit: 't', underlying_symbol: m.symbol };
+  if (needsBarrier(o.type)) params.barrier = String(o.barrier);
+  const req = { buy: '1', price: +o.stake, subscribe: 1, parameters: params };
+  acct.send(req).then((msg) => {
+    const b = msg.buy;
+    const c = { id: b.contract_id, txId: b.transaction_id, account: state.account ? state.account.id : '', reqId: req.req_id, subIds: msg.subscription ? [msg.subscription.id] : [], symbol: m.symbol, name: m.name, pipDec: m.pipDec, type: o.type,
+      barrier: needsBarrier(o.type) ? o.barrier : null, stake: +b.buy_price, payout: +b.payout, status: 'open', profit: 0, time: Date.now(), source, sessionId, exitSpot: null, pocSeen: false, checks: 0 };
+    contracts.set(c.id, c); renderTradeRow(c); updateTotals();
+    if (b.balance_after != null && state.account) { state.account.balance = +b.balance_after; updateAccount(); }
+    log(`Bought ${contractLabel(o.type, o.barrier)} on ${m.name} · stake ${fmt(b.buy_price)} · payout ${fmt(b.payout)}`);
+    scheduleCheck(c, 6000);
+    if (done) done(null, c);
+  }).catch(err => { if (done) done(err); });
+}
+function watchContract(c, subscribe) {
+  if (!acct.isOpen) return;
+  const req = { proposal_open_contract: 1, contract_id: c.id }; if (subscribe) req.subscribe = 1;
+  acct.send(req).then(msg => { if (msg.subscription) c.subIds.push(msg.subscription.id); }).catch(e => log(`Contract ${c.id} check: ${e.message || e.code}`, 'err'));
+}
+function scheduleCheck(c, delay) {   // safety net: never leave a contract "open" forever if the stream stalls
+  clearTimeout(c.timer);
+  c.timer = setTimeout(() => {
+    if (c.status !== 'open') return;
+    c.checks++;
+    if (c.checks === 1 && !c.pocSeen) watchContract(c, true); else watchContract(c, false);
+    if (c.checks < 15) scheduleCheck(c, 10000);
+    else { c.status = 'unknown'; renderTradeRow(c); updateTotals(); log(`Contract ${c.id} on ${c.name}: no result received — check it in the Deriv app`, 'err'); if (session && c.sessionId === session.id) updateSessionUI(); scannerTick(); }
+  }, delay);
+}
+function onPOC(p) {
+  if (!p || !p.contract_id) return;
+  const c = contracts.get(p.contract_id); if (!c) return;
+  c.pocSeen = true;
+  if (p.entry_spot != null) c.entrySpot = p.entry_spot;
+  if (p.exit_spot != null) c.exitSpot = p.exit_spot;
+  if (p.current_spot != null) c.currentSpot = p.current_spot;
+  const finished = p.is_sold === 1 || p.is_sold === true || ['won', 'lost', 'sold'].includes(p.status);
+  if (finished && (c.status === 'open' || c.status === 'unknown')) {
+    clearTimeout(c.timer);
+    c.profit = Number(p.profit); if (!isFinite(c.profit)) c.profit = (Number(p.sell_price) || 0) - c.stake;
+    c.status = p.status === 'won' || p.status === 'lost' ? p.status : (c.profit >= 0 ? 'won' : 'lost');
+    c.subIds.forEach(id => acct.unsubscribe(null, id)); c.subIds = [];
+    renderTradeRow(c); settle(c); return;
+  }
+  renderTradeRow(c);
+}
+function exitDigit(c) { const v = c.exitSpot != null ? c.exitSpot : c.currentSpot; if (v == null || v === '') return ''; const s = Number(v).toFixed(c.pipDec); return s.slice(-1); }
+function settle(c) {
+  updateTotals();
+  const line = `${c.status.toUpperCase()} ${c.name} ${contractLabel(c.type, c.barrier)} · exit digit ${exitDigit(c) || '?'} · ${c.profit >= 0 ? '+' : ''}${fmt(c.profit)}`;
+  log(line, c.status === 'won' ? 'ok' : 'err');
+  if (c.source === 'ai' && session && c.sessionId === session.id) {
+    session.settled++; if (c.status === 'won') session.won++; else session.lost++; session.pnl += c.profit;
+    updateSessionUI();
+    if (session.active) {
+      if (session.tp > 0 && session.pnl >= session.tp) endSession(`Take profit reached (+${fmt(session.pnl)})`);
+      else if (session.sl > 0 && session.pnl <= -session.sl) endSession(`Stop loss hit (${fmt(session.pnl)})`);
+      else scannerTick();   // sequential: next trade of the session / session finished bookkeeping
+    }
+  }
+}
+
+/* ============================ payout preview =========================== */
+const quotes = { ai: { seq: 0, timer: null, last: null }, bk: { seq: 0, timer: null, last: null } };
+function requestQuote(which) { const q = quotes[which]; clearTimeout(q.timer); q.timer = setTimeout(() => runQuote(which), 350); }
+function runQuote(which) {   // asks Deriv for the real payout of the configured stake — also reveals the maximum stake your account allows
+  const q = quotes[which], el = $(which === 'ai' ? 'aiQuote' : 'bkQuote'); if (!el) return;
+  let stake, count, type, barrier, duration, symbol;
+  if (which === 'ai') { stake = +$('aiStake').value; count = Math.floor(+$('aiBulk').value); duration = Math.floor(+$('aiDuration').value); type = cfg.strategy === 'under' ? 'DIGITUNDER' : 'DIGITOVER'; barrier = cfg.strategy === 'under' ? cfg.under : cfg.over; symbol = state.order[0]; }
+  else { stake = +$('bkStake').value; count = Math.floor(+$('bkCount').value); duration = Math.floor(+$('bkDuration').value); type = $('bkContract').value; barrier = Math.floor(+$('bkBarrier').value); symbol = $('bkSymbol').value || state.order[0]; }
+  const ws = acct.isOpen ? acct : (pub.isOpen ? pub : null);
+  if (!ws || !symbol || !(stake > 0) || !(count >= 1) || !(duration >= 1 && duration <= 10) || (needsBarrier(type) && !Number.isInteger(barrier))) { el.textContent = ''; q.last = null; return; }
+  const seq = ++q.seq, viaAcct = ws === acct;
+  const req = { proposal: 1, amount: stake, basis: 'stake', contract_type: type, currency: (state.account && state.account.currency) || 'USD', duration, duration_unit: 't', underlying_symbol: symbol };
+  if (needsBarrier(type)) req.barrier = String(barrier);
+  ws.send(req).then(msg => {
+    if (seq !== q.seq) return;
+    const payout = +msg.proposal.payout, ask = +msg.proposal.ask_price || stake, profit = payout - ask;
+    q.last = { stake, ok: true, viaAcct };
+    el.className = 'hint good';
+    el.textContent = `${contractLabel(type, barrier)} pays ${(payout / ask).toFixed(2)}× → each winning trade +${fmt(profit)} · ${count} trade${count > 1 ? 's' : ''}: all win +${fmt(profit * count)} / all lose −${fmt(ask * count)}${viaAcct ? '' : ' (log in to see your account\'s own limits)'}`;
+  }).catch(e => {
+    if (seq !== q.seq) return;
+    if (!e || e.code === 'NotConnected' || e.code === 'Disconnected') { el.textContent = ''; return; }
+    q.last = { stake, ok: false, viaAcct, message: e.message || e.code };
+    el.className = 'hint bad';
+    el.textContent = `⚠ Deriv ${viaAcct ? 'will reject' : 'may reject'} this stake: ${e.message || e.code}`;
+  });
+}
+function quoteBlocks(which, stake) { const l = quotes[which].last; return l && !l.ok && l.viaAcct && l.stake === stake ? l.message : null; }
+['bkStake', 'bkCount', 'bkDuration', 'bkBarrier'].forEach(k => $(k).addEventListener('input', () => requestQuote('bk')));
+['bkContract', 'bkSymbol'].forEach(k => $(k).addEventListener('change', () => requestQuote('bk')));
+
+/* ============================ AI scanner session ======================= */
+function bestQualifying(excludeTraded) {   // strongest untraded signal across all markets and both sides → { m, s }
+  let best = null;
+  state.markets.forEach(m => m.sigs.forEach(x => { if ((!excludeTraded || !session.tradedSignals.has(x.key)) && (!best || x.score > best.s.score)) best = { m, s: x }; }));
+  return best;
+}
+function sessionOpen() { let k = 0; contracts.forEach(c => { if (session && c.sessionId === session.id && c.status === 'open') k++; }); return k; }
+function scannerTick() {
+  if (!session || !session.active) return;
+  if (session.inFlight > 0) return;
+  const open = sessionOpen();
+  if (session.batch) {                                   // a session is running
+    const b = session.batch;
+    if (open > 0) return;                                // wait for the previous result(s)
+    if (b.remaining > 0) {                               // one after another: next trade of this session
+      const m = state.markets.get(b.symbol); b.remaining--; placeTrades(m, 1); return;
+    }
+    session.batch = null; session.sessionsDone++;        // all trades of the session are settled
+    log(`Session ${b.no}/${session.maxSessions} finished on ${b.name} · ${b.placed} trades · P/L so far ${session.pnl >= 0 ? '+' : ''}${fmt(session.pnl)}`, 'ok');
+    if (session.sessionsDone >= session.maxSessions) { endSession(`All ${session.maxSessions} session${session.maxSessions > 1 ? 's' : ''} completed (${session.placed} trades, P/L ${session.pnl >= 0 ? '+' : ''}${fmt(session.pnl)})`); return; }
+    toast(`Session ${b.no}/${session.maxSessions} done — waiting for the next signal`);
+  }
+  if (session.sessionsStarted >= session.maxSessions) return;
+  const best = bestQualifying(true); if (!best) { updateSessionUI(); return; }
+  const bm = best.m, bs = best.s;
+  session.sessionsStarted++;
+  session.tradedSignals.add(bs.key);
+  session.batch = { no: session.sessionsStarted, symbol: bm.symbol, name: bm.name, signalKey: bs.key, dir: bs.dir, type: bs.type, barrier: bs.barrier, label: bs.label, placed: 0, remaining: session.mode === 'sequential' ? session.bulk - 1 : 0 };
+  log(`Session ${session.batch.no}/${session.maxSessions} · ${bm.name} · ${bs.label} signal: ${session.bulk} × ${bs.label} ${session.mode === 'sequential' ? '(one after another)' : '(all at once)'}`, 'ok');
+  placeTrades(bm, session.mode === 'sequential' ? 1 : session.bulk);
+}
+function placeTrades(m, n) {
+  if (!state.acctConnected) { endSession('Account not connected'); return; }
+  const b = session.batch; if (!b) return;
+  for (let i = 0; i < n; i++) {
+    session.placed++; session.inFlight++; b.placed++;
+    buyContract(m, { type: b.type, barrier: b.barrier, stake: session.stake, duration: session.duration }, 'ai', session.id, (err) => {
+      session.inFlight--;
+      if (err) { session.placed--; b.placed--; log(`Buy failed on ${m.name}: ${err.message || err.code}`, 'err'); toast(err.message || 'Buy failed', 'err'); if (session.active) endSession('Stopped after a buy error'); }
+      updateSessionUI();
+      if (!err && session.inFlight === 0) scannerTick();   // sequential: a contract that was already settled while in flight
+    });
+  }
+  updateSessionUI();
+}
+function confirmReal() {
+  if (!state.account || state.account.is_virtual || state.confirmedReal) return true;
+  const ok = window.confirm(`You are on a REAL account (${state.account.id}). Trades will use real money. Continue?`);
+  if (ok) state.confirmedReal = true; return !!ok;
+}
+function startAI() {
+  if (!state.acctConnected || !state.account) { toast('Connect your account first (top card)', 'err'); $('connectCard').classList.remove('collapsed'); return; }
+  if (session && session.active) return;
+  if (!state.markets.size) { toast('Market data not loaded yet', 'err'); return; }
+  const o = { stake: +$('aiStake').value, duration: Math.floor(+$('aiDuration').value) };
+  const bulk = Math.floor(+$('aiBulk').value), max = Math.floor(+$('aiMax').value);
+  let err = cfg.strategy !== 'under' ? validateTrade(Object.assign({ type: 'DIGITOVER', barrier: cfg.over }, o)) : null;
+  if (!err && cfg.strategy !== 'over') err = validateTrade(Object.assign({ type: 'DIGITUNDER', barrier: cfg.under }, o));
+  if (err) { toast(err, 'err'); return; }
+  const qb = quoteBlocks('ai', o.stake); if (qb) { toast('Stake not accepted by Deriv: ' + qb, 'err'); return; }
+  if (!(bulk >= 1)) { toast('Bulk trades must be at least 1', 'err'); return; }
+  if (!(max >= 1)) { toast('Max sessions must be at least 1', 'err'); return; }
+  if (!confirmReal()) return;
+  session = { id: Date.now(), active: true, mode: $('aiMode').value, stake: o.stake, bulk, maxSessions: max, strategy: cfg.strategy, duration: o.duration,
+    tp: +$('aiTP').value || 0, sl: +$('aiSL').value || 0, placed: 0, settled: 0, won: 0, lost: 0, pnl: 0, sessionsStarted: 0, sessionsDone: 0, batch: null, tradedSignals: new Set(), inFlight: 0 };
+  lastReason = ''; $('acctSelect').disabled = true;
+  log(`AI trading started · ${strategyLabel()}${cfg.strategy === 'both' ? ' (whichever comes first)' : ''} · stake ${o.stake} · ${max} session${max > 1 ? 's' : ''} × ${bulk} trade${bulk > 1 ? 's' : ''} (${bulk * max} total) · ${session.mode === 'sequential' ? 'one after another' : 'all at once'}`, 'ok');
+  toast('AI scanner armed — waiting for a signal', 'ok'); updateSessionUI(); scannerTick();
+}
+function endSession(reason) {
+  if (!session) return; session.active = false; lastReason = reason; $('acctSelect').disabled = false;
+  log(`AI trading stopped: ${reason} · placed ${session.placed} · won ${session.won} · lost ${session.lost} · P/L ${fmt(session.pnl)}`);
+  toast(reason); updateSessionUI();
+}
+function updateSessionUI() {
+  const s = session, el = $('aiStatus');
+  $('btnAiStart').disabled = !!(s && s.active); $('btnAiStop').disabled = !(s && s.active);
+  if (s) { $('aiPlaced').textContent = s.placed; $('aiWon').textContent = s.won; $('aiLost').textContent = s.lost; $('aiSessions').textContent = `${s.sessionsDone}/${s.maxSessions}`;
+    const p = $('aiPnl'); p.textContent = (s.pnl >= 0 ? '+' : '') + fmt(s.pnl); p.className = s.pnl > 0 ? 'pos' : s.pnl < 0 ? 'neg' : ''; }
+  if (!s || !s.active) { el.className = 'status'; el.textContent = lastReason ? `Stopped — ${lastReason}` : (state.acctConnected ? 'Idle — set your amounts, then Start.' : 'Watching markets. Connect your account to trade.'); return; }
+  el.className = 'status live';
+  const open = sessionOpen(), b = s.batch;
+  if (b) el.textContent = `Session ${b.no}/${s.maxSessions} — ${b.name} · ${b.label}: ${b.placed}/${s.bulk} placed · ${open} open${b.remaining > 0 ? ` · ${b.remaining} more to send one after another` : ''}`;
+  else el.textContent = `Session ${s.sessionsDone + 1}/${s.maxSessions} — scanning ${state.markets.size} markets for ${strategyLabel()}… (${s.placed} trades so far)`;
+}
+
+/* ============================ UI: market table ========================= */
+function buildMarketRows() {
+  const tb = $('marketRows'); tb.innerHTML = '';
+  if (!state.order.length) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--dim)">No open Volatility indices found.</td></tr>'; return; }
+  state.order.forEach(sym => {
+    const m = state.markets.get(sym); const tr = document.createElement('tr'); tr.dataset.symbol = sym;
+    tr.innerHTML = `<td><div class="mname">${m.name}</div><div class="strip"></div></td><td class="big mlast">·</td><td class="mstreak">·</td><td class="mtop">…</td><td class="mstatus"><span class="badge">loading</span></td>`;
+    tr.addEventListener('click', () => { $('bkSymbol').value = sym; updateBulkStrip(); });
+    tb.appendChild(tr); m.row = tr;
+  });
+}
+function stripHTML(digits, n) { return digits.slice(-n).map(d => `<span class="d ${d <= cfg.over ? 'lo' : d >= cfg.under ? 'hi' : 'mid'}">${d}</span>`).join(''); }
+function sideClass(x) { return !x.on ? 'off' : x.qualifies ? 'hit' : x.topOk ? 'on' : ''; }
+function statusHTML(m) {
+  if (m.sigs.length) return m.sigs.map(x => `<span class="badge ok">SIGNAL ${x.label}</span>`).join(' ');
+  const sides = [m.over, m.under].filter(x => x.on && x.topOk).sort((a, b) => b.streak - a.streak);
+  if (!sides.length) return `<span class="badge">top digit ${m.topDigits.join('/')} ✗</span>`;
+  return `<span class="badge">${sides[0].label} · need ${Math.max(0, cfg.consec - sides[0].streak)} more</span>`;
+}
+function renderMarketRow(m) {
+  const tr = m.row; if (!tr || !m.digits.length) return;
+  tr.querySelector('.strip').innerHTML = stripHTML(m.digits, 10);
+  tr.querySelector('.mlast').textContent = m.last;
+  tr.querySelector('.mstreak').innerHTML = `<span class="sk ${sideClass(m.over)}">▲${m.over.streak}</span><span class="sk ${sideClass(m.under)}">▼${m.under.streak}</span>`;
+  const top = tr.querySelector('.mtop'); top.innerHTML = `<b>${m.topDigits.join('/')}</b> · ${fmt(m.topPct, 1)}% ${m.topOver ? '▲' : m.topUnder ? '▼' : ''}`;
+  top.style.color = (m.topOver && m.over.on) || (m.topUnder && m.under.on) ? 'var(--green)' : '';
+  tr.querySelector('.mstatus').innerHTML = statusHTML(m);
+  tr.classList.toggle('q', m.qualifies);
+}
+function refreshBest() {
+  const best = bestQualifying(false);
+  state.markets.forEach(m => { if (m.row) m.row.classList.toggle('best', !!best && best.m.symbol === m.symbol); });
+}
+function updateBulkStrip(m) {
+  const sym = $('bkSymbol').value; if (m && m.symbol !== sym) return;
+  const mk = state.markets.get(sym);
+  if (!mk || !mk.digits.length) { $('bkStrip').innerHTML = ''; $('bkStats').textContent = '—'; return; }
+  $('bkStrip').innerHTML = stripHTML(mk.digits, 20);
+  $('bkStats').textContent = `▲${mk.streak} ▼${mk.streakUnder} · top ${mk.topDigits.join('/')} (${fmt(mk.topPct, 1)}%)${mk.sigs.map(x => ' · SIGNAL ' + x.label).join('')}`;
+}
+
+/* ============================ UI: trades table ========================= */
+function renderTradeRow(c) {
+  const tb = $('tradeRows'); if (tb.firstElementChild && !tb.firstElementChild.dataset.id) tb.innerHTML = '';
+  let tr = tb.querySelector(`tr[data-id="${c.id}"]`);
+  if (!tr) { tr = document.createElement('tr'); tr.dataset.id = c.id; tb.prepend(tr); while (tb.children.length > 300) tb.lastChild.remove(); }
+  const done = c.status === 'won' || c.status === 'lost';
+  tr.innerHTML = `<td style="white-space:nowrap">${tstr(c.time)}</td><td style="white-space:nowrap">${c.name.replace(' Index', '')}${c.source === 'ai' ? ' <span class="pill">AI</span>' : ''}</td><td>${contractLabel(c.type, c.barrier)}</td><td>${fmt(c.stake)}</td><td>${exitDigit(c)}</td><td><span class="badge ${c.status}">${c.status.toUpperCase()}</span></td><td class="${c.status === 'won' ? 'pos' : c.status === 'lost' ? 'neg' : ''}">${done ? (c.profit >= 0 ? '+' : '') + fmt(c.profit) : '…'}</td>`;
+}
+function updateTotals() {
+  let t = 0, w = 0, l = 0, pnl = 0;
+  contracts.forEach(c => { t++; if (c.status === 'won') { w++; pnl += c.profit; } else if (c.status === 'lost') { l++; pnl += c.profit; } });
+  $('trTotal').textContent = t; $('trWon').textContent = w; $('trLost').textContent = l; $('tradeCount').textContent = t;
+  const p = $('trPnl'); p.textContent = (pnl >= 0 ? '+' : '') + fmt(pnl); p.className = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
+}
+
+/* ============================== bulk trader ============================ */
+function bulkBuy() {
+  if (!state.acctConnected || !state.account) { toast('Connect your account first', 'err'); return; }
+  const m = state.markets.get($('bkSymbol').value); if (!m) { toast('Pick a market', 'err'); return; }
+  const o = { stake: +$('bkStake').value, type: $('bkContract').value, barrier: Math.floor(+$('bkBarrier').value), duration: Math.floor(+$('bkDuration').value) };
+  const count = Math.floor(+$('bkCount').value);
+  const err = validateTrade(o); if (err) { toast(err, 'err'); return; }
+  if (!(count >= 1 && count <= 50)) { toast('Number of trades must be 1–50', 'err'); return; }
+  const qb = quoteBlocks('bk', o.stake); if (qb) { toast('Stake not accepted by Deriv: ' + qb, 'err'); return; }
+  if (!confirmReal()) return;
+  const btn = $('btnBulkBuy'); btn.disabled = true; setTimeout(() => { btn.disabled = !state.acctConnected; }, 1500);
+  log(`Bulk buy: ${count} × ${contractLabel(o.type, o.barrier)} on ${m.name} · stake ${o.stake}`, 'ok');
+  let fails = 0;
+  for (let i = 0; i < count; i++) buyContract(m, o, 'manual', null, (e) => { if (e) { fails++; log(`Buy failed: ${e.message || e.code}`, 'err'); if (fails === 1) toast(e.message || 'Buy failed', 'err'); } });
+}
+
+/* ================================ wiring =============================== */
+$('btnConnect').addEventListener('click', () => connectAccount(false));
+$('btnDisconnect').addEventListener('click', disconnectAccount);
+$('btnForget').addEventListener('click', () => { store.del('token'); store.del('vault'); store.del('accountId'); $('token').value = ''; sec.pin = null; sec.tokenSaved = null; sec.unlocked = false; toast('Token removed from this device'); });
+$('rememberTok').addEventListener('change', () => { store.set('remember', $('rememberTok').checked); if (!$('rememberTok').checked) { store.del('vault'); sec.tokenSaved = null; toast('Token will not be saved on this phone'); } });
+$('btnEye').addEventListener('click', () => { const t = $('token'); t.type = t.type === 'password' ? 'text' : 'password'; $('btnEye').textContent = t.type === 'password' ? 'show' : 'hide'; });
+$('acctSelect').addEventListener('change', async () => {
+  if (session && session.active) { toast('Stop the AI session before switching accounts', 'err'); $('acctSelect').value = state.account.id; return; }
+  const id = $('acctSelect').value; acct.close(); onAcctDown(); state.manualDisconnect = false;
+  try { await openAccountSocket(id); } catch (e) { const m = e.message || String(e); setMsg(m, 'err'); toast(m, 'err'); setAcctStatus('disconnected', 'not connected'); }
+});
+$('connectHead').addEventListener('click', () => $('connectCard').classList.toggle('collapsed'));
+$('logHead').addEventListener('click', () => $('logCard').classList.toggle('collapsed'));
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + b.dataset.tab));
+  if (b.dataset.tab === 'bulk') updateBulkStrip();
+}));
+$('scannerToggle').addEventListener('change', (e) => {
+  $('scannerBody').classList.toggle('hidden', !e.target.checked);
+  if (!e.target.checked && session && session.active) endSession('Scanner switched off');
+  if (e.target.checked) { log('AI scanner activated — set stake, bulk trades per session and max sessions, then Start'); updateSessionUI(); }
+});
+$('btnAiStart').addEventListener('click', startAI);
+$('btnAiStop').addEventListener('click', () => endSession('Stopped by user'));
+$('btnBulkBuy').addEventListener('click', bulkBuy);
+$('bkSymbol').addEventListener('change', () => updateBulkStrip());
+function exportCsv() {
+  if (!contracts.size) { toast('No trades to export yet'); return; }
+  const head = ['time_utc', 'account', 'contract_id', 'transaction_id', 'market', 'symbol', 'contract', 'stake', 'payout', 'entry_spot', 'exit_spot', 'exit_digit', 'result', 'profit', 'placed_by'];
+  const rows = [head];
+  [...contracts.values()].sort((a, b) => a.time - b.time).forEach(c => rows.push([new Date(c.time).toISOString(), c.account || '', c.id, c.txId || '', c.name, c.symbol, contractLabel(c.type, c.barrier), fmt(c.stake), fmt(c.payout),
+    c.entrySpot != null ? c.entrySpot : '', c.exitSpot != null ? c.exitSpot : '', exitDigit(c), c.status, c.status === 'won' || c.status === 'lost' ? fmt(c.profit) : '', c.source === 'ai' ? 'AI scanner' : 'Bulk trader']));
+  const csv = rows.map(r => r.map(v => { v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\ufeff' + csv);
+  a.download = `deriv-trades-${new Date().toISOString().slice(0, 10)}.csv`; document.body.appendChild(a); a.click(); setTimeout(() => a.remove(), 500);
+  toast(`CSV with ${contracts.size} trades saved to Downloads`, 'ok');
+}
+$('btnExportCsv').addEventListener('click', exportCsv);
+$('btnClearTrades').addEventListener('click', () => { contracts.forEach((c, id) => { if (c.status !== 'open') contracts.delete(id); }); $('tradeRows').innerHTML = '<tr><td colspan="7" style="color:var(--dim)">No trades yet.</td></tr>'; contracts.forEach(c => renderTradeRow(c)); updateTotals(); });
+window.addEventListener('beforeunload', (e) => { if (session && session.active) { e.preventDefault(); e.returnValue = ''; } });
+
+/* ============================== calculator ============================= */
+const calc = { acc: null, op: null, cur: '0', fresh: true, expr: '' };
+function calcFmt(n) { if (typeof n !== 'number' || !isFinite(n)) return 'Error'; const s = String(Number(n.toPrecision(12))); return s.replace(/e\+?/, 'e').length > 15 ? Number(n.toPrecision(8)).toString() : s; }
+function calcApply(a, op, b) { return op === '+' ? a + b : op === '−' ? a - b : op === '×' ? a * b : op === '÷' ? (b === 0 ? NaN : a / b) : b; }
+function calcRender() {
+  $('calcExpr').textContent = calc.expr; const out = $('calcOut'); out.textContent = calc.cur;
+  out.style.fontSize = calc.cur.length > 13 ? '24px' : calc.cur.length > 9 ? '32px' : '40px';
+}
+function calcKey(k) {
+  if (calc.cur === 'Error' && k !== 'AC') { if (!/^[0-9.]$/.test(k)) return; calc.cur = '0'; calc.fresh = true; calc.expr = ''; }
+  if (/^[0-9]$/.test(k)) {
+    if (calc.fresh || calc.cur === '0') calc.cur = k; else if (calc.cur.replace(/[-.]/g, '').length < 15) calc.cur += k;
+    calc.fresh = false;
+  } else if (k === '.') {
+    if (calc.fresh) { calc.cur = '0.'; calc.fresh = false; } else if (!calc.cur.includes('.')) calc.cur += '.';
+  } else if (k === '⌫') {
+    if (!calc.fresh) { calc.cur = calc.cur.length > 1 ? calc.cur.slice(0, -1) : '0'; if (calc.cur === '-' || calc.cur === '-0') calc.cur = '0'; }
+  } else if (k === 'AC') {
+    calc.acc = null; calc.op = null; calc.cur = '0'; calc.fresh = true; calc.expr = '';
+  } else if (k === '±') {
+    if (calc.cur !== '0') calc.cur = calc.cur.startsWith('-') ? calc.cur.slice(1) : '-' + calc.cur;
+  } else if (k === '%') {
+    calc.cur = calcFmt(parseFloat(calc.cur) / 100); calc.fresh = true;
+  } else if (k === '+' || k === '−' || k === '×' || k === '÷') {
+    const b = parseFloat(calc.cur);
+    if (calc.op && !calc.fresh) {                         // chained: 2 + 3 × → evaluates 2 + 3 first (left to right)
+      const r = calcApply(calc.acc, calc.op, b); calc.cur = calcFmt(r);
+      if (calc.cur === 'Error') { calc.acc = null; calc.op = null; calc.fresh = true; calc.expr = ''; calcRender(); return; }
+      calc.acc = r;
+    } else if (!calc.op) calc.acc = b;
+    calc.op = k; calc.fresh = true; calc.expr = `${calcFmt(calc.acc)} ${k}`;
+  } else if (k === '=') {
+    if (calc.op) {
+      const b = parseFloat(calc.cur), r = calcApply(calc.acc, calc.op, b);
+      calc.expr = `${calcFmt(calc.acc)} ${calc.op} ${calcFmt(b)} =`; calc.cur = calcFmt(r); calc.acc = isFinite(r) ? r : null; calc.op = null; calc.fresh = true;
+    }
+  }
+  calcRender();
+}
+$('calcKeys').addEventListener('click', e => { const b = e.target.closest('.key'); if (b) calcKey(b.dataset.k); });
+document.addEventListener('keydown', e => {
+  if (!$('panel-calc').classList.contains('active') || e.ctrlKey || e.metaKey || e.altKey) return;
+  const tag = document.activeElement && document.activeElement.tagName; if (/^(INPUT|SELECT|TEXTAREA)$/.test(tag || '')) return;
+  const map = { '+': '+', '-': '−', '*': '×', '/': '÷', 'x': '×', 'Enter': '=', '=': '=', 'Backspace': '⌫', 'Delete': 'AC', 'Escape': 'AC', '%': '%', '.': '.', ',': '.' };
+  const k = /^[0-9]$/.test(e.key) ? e.key : map[e.key]; if (!k) return;
+  e.preventDefault(); calcKey(k);
+});
+$('btnCalcStake').addEventListener('click', () => {
+  const v = parseFloat(calc.cur);
+  if (!(v > 0)) { toast('The result must be a positive number', 'err'); return; }
+  const stake = String(Math.round(v * 100) / 100);
+  ['aiStake', 'bkStake'].forEach(id => { $(id).value = stake; $(id).dispatchEvent(new Event('input', { bubbles: true })); $(id).dispatchEvent(new Event('change', { bubbles: true })); });
+  saveSettings(); toast(`Stake set to ${stake} in Scanner and Bulk Trader`, 'ok');
+});
+calcRender();
+
+loadSettings(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
+log('Ready. Market data connects automatically; add your App ID + PAT to trade.');
+connectPublic();
+window.__dbt = { state, contracts, pub, acct, cfg, get session() { return session; } }; // debugging hook
+})();
+</script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a41a8260ba927936',t:'MTc5MDUxMjExNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

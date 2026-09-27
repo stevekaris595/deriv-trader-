@@ -102,7 +102,6 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 .ch-t .ic{color:var(--gold)}
 .chev{color:var(--dim);display:inline-flex;transition:transform .22s}
 .card.collapsed .chev{transform:rotate(-90deg)}
-.card.collapsed .card-b{display:none}
 .card-b{padding:2px 18px 18px}
 .card > .card-b:first-child{padding-top:16px}
 .row{display:flex;gap:10px;flex-wrap:wrap}
@@ -211,13 +210,14 @@ details > .sub{margin-top:14px}
 #marketTable td:first-child{order:1;flex:1 1 60%;min-width:0}
 #marketTable .mlast{order:2}
 #marketTable tr:after{content:"";order:3;flex-basis:100%;height:0}
-#marketTable .mstreak{order:4}#marketTable .mtop{order:5}#marketTable .mstatus{order:6}
+#marketTable .mstreak{order:4}#marketTable .mstatus{order:5}#marketTable .mtop{order:6;flex:1 1 100%;margin-top:2px}
 #marketTable td[colspan]{order:0}
 #marketTable .mlast{font-size:26px;font-weight:800;line-height:1;min-width:34px;text-align:right;padding-top:2px}
 #marketTable .mstreak,#marketTable .mtop{font-size:12.5px;color:var(--muted);margin-top:6px;white-space:nowrap}
 #marketTable .mstreak .sk{font-size:12.5px;margin-right:6px}
 #marketTable .mtop:before{content:"top ";color:var(--dim)}
-#marketTable .mstatus{flex:1 1 0;min-width:0;margin-top:6px;text-align:right}
+#marketTable .mstatus{flex:0 1 auto;min-width:0;margin:6px 0 0 auto;text-align:right}
+#marketTable .mtop b:last-child{color:var(--text)}
 #marketTable .mstatus .badge{max-width:100%;overflow:hidden;text-overflow:ellipsis;letter-spacing:0;font-size:10px;vertical-align:middle}
 #tradeRows tr{position:relative}
 #tradeRows td:nth-child(1){order:5;color:var(--dim);font-size:12px}
@@ -262,6 +262,66 @@ details > .sub{margin-top:14px}
 .key.fn{color:var(--muted);font-size:17px}
 .key.op{background:var(--gold-bg);color:var(--gold);font-size:24px;border-color:transparent}
 .key.eq{background:linear-gradient(145deg,var(--gold-2),var(--gold-3));color:var(--on-gold);border-color:transparent;box-shadow:0 8px 18px -8px rgba(226,168,60,.65);font-size:26px}
+/* ---------- motion: collapsibles, transitions, keyframes ---------- */
+.cb-wrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s cubic-bezier(.2,.7,.2,1)}
+.cb-wrap>.card-b{overflow:hidden;min-height:0;visibility:visible;transition:visibility 0s}
+.card.collapsed .cb-wrap{grid-template-rows:0fr}
+.card.collapsed .cb-wrap>.card-b{visibility:hidden;transition:visibility 0s .32s}
+#scannerBody{display:grid!important;grid-template-rows:1fr;padding:0;visibility:visible;transition:grid-template-rows .36s cubic-bezier(.2,.7,.2,1),visibility 0s}
+#scannerBody>.inner{overflow:hidden;min-height:0;padding:2px 18px 18px}
+#scannerBody.hidden{grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .36s cubic-bezier(.2,.7,.2,1),visibility 0s .36s}
+.mkt-wrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s cubic-bezier(.2,.7,.2,1)}
+.mkt-wrap>.tblwrap{overflow:hidden;min-height:0;visibility:visible;transition:visibility 0s}
+.mkt-wrap.closed{grid-template-rows:0fr}
+.mkt-wrap.closed>.tblwrap{visibility:hidden;transition:visibility 0s .32s}
+.legend-l{white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.legend-r{display:inline-flex;align-items:center;gap:10px;white-space:nowrap}
+.legend .mkt-rule{text-transform:none;letter-spacing:0;font-weight:500}
+@media (max-width:380px){.legend .mkt-rule{display:none}}
+.linkbtn{border:0;background:var(--card3);color:var(--muted);font:inherit;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:4px 10px;border-radius:999px;transition:background .2s,color .2s,transform .12s}
+.linkbtn:hover{color:var(--text)}
+.linkbtn:active{transform:scale(.95)}
+.card,.btn,.key,.chip,.f input,.f select,.f textarea,.note,.status,.pill,.badge,.plan,.stripbox,.legend,details,.tabs,.ibtn{transition:background-color .3s,border-color .3s,color .3s,box-shadow .3s,transform .12s cubic-bezier(.2,.7,.2,1),filter .2s}
+header{transition:box-shadow .3s,background-color .3s}
+header.scrolled{box-shadow:0 8px 24px -16px rgba(0,0,0,.6)}
+.panel.active{animation:panelIn .32s cubic-bezier(.2,.7,.2,1) both}
+@keyframes panelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tab:active{transform:scale(.94)}
+.tab .ic{transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.tab.active .ic{transform:translateY(-1px) scale(1.08)}
+details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.sw span:before{transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.sw input:active+span:before{box-shadow:0 2px 6px rgba(0,0,0,.3),0 0 0 6px rgba(226,168,60,.18)}
+.btn:not(:disabled):hover{transform:translateY(-1px)}
+.btn.primary:not(:disabled):hover{box-shadow:0 12px 22px -10px rgba(226,168,60,.75)}
+.btn:not(:disabled):active{transform:scale(.97)}
+.key:active{transform:scale(.92)}
+.bump{animation:bump .35s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes bump{0%{transform:scale(1.18)}100%{transform:none}}
+.calc-disp b{display:inline-block;transform-origin:right center}
+.chip b{transform-origin:center}
+.hero .bal{transform-origin:left center}
+#marketTable .mlast{transition:color .3s}
+#marketTable .mlast.pop{animation:pop .4s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{0%{transform:scale(1.35);color:var(--gold)}100%{transform:none}}
+.strip .d:last-child{animation:dIn .3s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes dIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.badge.ok{animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:inset 0 0 0 1px var(--green),0 0 0 0 rgba(60,207,142,.0)}50%{box-shadow:inset 0 0 0 1px var(--green),0 0 0 5px rgba(60,207,142,.16)}}
+.tbl tr{transition:background-color .4s}
+@media (hover:hover){.tbl tr:hover:not(.best){background:var(--card2)}}
+.lock{animation:fadeIn .25s ease-out both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.lockbox{animation:zoomIn .32s cubic-bezier(.2,.8,.2,1) both}
+@keyframes zoomIn{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+.lockbox.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
+#toast{transition:opacity .25s,transform .4s cubic-bezier(.2,.9,.3,1.25)}
+.msg{transition:color .3s}
+.logline{animation:fadeDown .25s both}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.f input:focus-visible,.f select:focus-visible,.lockbox input:focus-visible{outline:none}
 /* ---------- notes / strips / log ---------- */
 .note{font-size:12.5px;color:var(--muted);margin-top:12px;padding:12px 14px;background:var(--card2);border-radius:var(--rs);line-height:1.5}
 .note.warn{border-left:3px solid var(--gold)}
@@ -341,7 +401,7 @@ details > .sub{margin-top:14px}
   <!-- ============ CONNECTION ============ -->
   <div class="card" id="connectCard">
     <div class="card-h" id="connectHead"><span class="ch-t"><svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M10.9 12.1 20 3m-3 3 3 3m-6 0 2 2"/></svg>Connect your Deriv account</span><span class="chev"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></div>
-    <div class="card-b">
+    <div class="cb-wrap"><div class="card-b">
       <div class="grid2 stack">
         <div class="f">
           <label>App ID</label>
@@ -408,7 +468,7 @@ details > .sub{margin-top:14px}
           </div>
         </details>
       </div>
-    </div>
+    </div></div>
   </div>
 
   <!-- ============ TABS ============ -->
@@ -426,7 +486,7 @@ details > .sub{margin-top:14px}
         <div class="sw-t"><div class="t">AI Scanner</div><div class="s">Watches every Volatility index live. Trades only after you press Start.</div></div>
         <label class="sw"><input type="checkbox" id="scannerToggle" /><span></span></label>
       </div>
-      <div class="card-b hidden" id="scannerBody">
+      <div class="card-b hidden" id="scannerBody"><div class="inner">
         <div class="grid3">
           <div class="f"><label>Stake</label><input id="aiStake" inputmode="decimal" /></div>
           <div class="f"><label>Bulk trades</label><input id="aiBulk" inputmode="numeric" /></div>
@@ -444,12 +504,14 @@ details > .sub{margin-top:14px}
           <div class="chip"><small>Won/Lost</small><b><span id="aiWon" class="pos">0</span> · <span id="aiLost" class="neg">0</span></b></div>
           <div class="chip"><small>P/L</small><b id="aiPnl">0.00</b></div>
         </div>
-        <div class="tblwrap">
-        <div class="legend"><span>Live markets</span><span>▲ streak &gt; <span class="ruleTh">3</span> · ▼ streak &lt; <span class="ruleTu">6</span></span></div>
+        <div class="legend"><span class="legend-l">Live markets <span class="pill" id="mktCount" title="markets scanned · current signals">…</span></span><span class="legend-r"><span class="mkt-rule" title="▲ streak of digits above the Over digit · ▼ streak below the Under digit">▲&gt;<span class="ruleTh">3</span> ▼&lt;<span class="ruleTu">6</span></span><button type="button" class="linkbtn" id="btnMarkets" aria-expanded="true">Hide</button></span></div>
+        <div class="mkt-wrap" id="mktWrap">
+        <div class="tblwrap" style="margin-top:0">
         <table class="tbl" id="marketTable">
           <thead><tr><th>Market</th><th>Last</th><th>Streak</th><th>Top digit</th><th>Signal</th></tr></thead>
           <tbody id="marketRows"><tr><td colspan="5" style="color:var(--dim)">Loading Volatility indices…</td></tr></tbody>
         </table>
+        </div>
         </div>
         <details>
           <summary>Advanced settings</summary>
@@ -460,6 +522,9 @@ details > .sub{margin-top:14px}
               <select id="aiStrategy"><option value="both">Over 3 &amp; Under 6 — whichever comes first</option><option value="over">Over 3 only</option><option value="under">Under 6 only</option></select></div>
             <div class="f"><label>Duration (ticks)</label><input id="aiDuration" inputmode="numeric" /></div>
           </div>
+          <div class="f"><label>When several markets qualify, prioritise</label>
+            <select id="aiPriority"><option value="gap">Biggest gap between the top digit and the 2nd digit</option><option value="streak">Longest streak</option></select>
+            <div class="hint">Gap = top digit % minus the runner-up digit % (any digit 0–9). Ties are broken by streak length, then top-digit %.</div></div>
           <div class="grid2">
             <div class="f"><label>Take profit</label><input id="aiTP" inputmode="decimal" placeholder="off" /></div>
             <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="off" /></div>
@@ -478,11 +543,11 @@ details > .sub{margin-top:14px}
           <summary>How the scanner decides</summary>
           <div class="note">
             <b>Two signals, scanned at the same time.</b> <b>Over <span class="ruleTh">3</span></b>: the latest <span class="ruleConsec">8</span> digits are all &gt; <span class="ruleTh">3</span> and the most frequent digit over the last <span class="ruleWin">1000</span> ticks is 0–<span class="ruleTh">3</span> → trades Digit Over <span class="ruleTh">3</span>.
-            <b>Under <span class="ruleTu">6</span></b>: the latest <span class="ruleConsec">8</span> digits are all &lt; <span class="ruleTu">6</span> and the most frequent digit is <span class="ruleTu">6</span>–9 → trades Digit Under <span class="ruleTu">6</span>. Whichever appears first is executed; if several appear together the strongest (longest streak, then top-digit %) wins.<br><br>
+            <b>Under <span class="ruleTu">6</span></b>: the latest <span class="ruleConsec">8</span> digits are all &lt; <span class="ruleTu">6</span> and the most frequent digit is <span class="ruleTu">6</span>–9 → trades Digit Under <span class="ruleTu">6</span>. Whichever appears first is executed. If several markets qualify at the same time, the one whose top digit leads its runner-up digit by the <b>biggest gap</b> wins — e.g. top digit 2 at 12.2% and 2nd digit 5 at 10.9% is a gap of 1.3 points; a market with a gap of 2.0 is preferred. The runner-up can be any digit 0–9. Equal gaps are broken by the longer streak, then the higher top-digit %. (Advanced settings can switch this to "longest streak first".)<br><br>
             <b>Sessions.</b> Each signal starts one session: the best qualifying market gets exactly <i>Bulk trades</i> contracts, sent all at once or one after another (next one after the previous result). The scanner then waits for the next signal and repeats until <i>Max sessions</i> is reached, then stops by itself. A market must break its streak and form a fresh one before the same side is traded on it again. Take profit, stop loss and Stop end everything early.
           </div>
         </details>
-      </div>
+      </div></div>
     </div>
   </section>
 
@@ -556,7 +621,7 @@ details > .sub{margin-top:14px}
   <!-- ============ LOG ============ -->
   <div class="card collapsed" id="logCard">
     <div class="card-h" id="logHead"><span class="ch-t"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg>Activity log</span><span class="chev"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></div>
-    <div class="card-b" style="padding:0"><div class="logbox" id="logBox"></div></div>
+    <div class="cb-wrap"><div class="card-b" style="padding:0"><div class="logbox" id="logBox"></div></div></div>
   </div>
 
   <div class="foot">STV Traders — unofficial third-party client using Deriv's public API.<br>Trading digits is high-risk — start on DEMO.</div>
@@ -668,12 +733,12 @@ const state = { markets: new Map(), order: [], pubRetries: 0, pubTimer: null,
   accounts: [], account: null, acctConnected: false, manualDisconnect: false, acctTimer: null, acctRetries: 0, confirmedReal: false };
 const contracts = new Map();
 let session = null, lastReason = '';
-const cfg = { window: 1000, over: 3, under: 6, consec: 8, strategy: 'both' };
+const cfg = { window: 1000, over: 3, under: 6, consec: 8, strategy: 'both', priority: 'gap' };
 function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} only` : cfg.strategy === 'under' ? `Under ${cfg.under} only` : `Over ${cfg.over} & Under ${cfg.under}`; }
 
 /* =============================== settings ============================== */
 const SETTINGS_V = 2;
-const DEFAULTS = { appId: '', aiStake: '0.35', aiBulk: '3', aiMax: '2', aiMode: 'parallel', aiStrategy: 'both', aiDuration: '1',
+const DEFAULTS = { appId: '', aiStake: '0.35', aiBulk: '3', aiMax: '2', aiMode: 'parallel', aiStrategy: 'both', aiPriority: 'gap', aiDuration: '1',
   aiConsec: '8', aiThreshold: '3', aiThresholdUnder: '6', aiWindow: '1000', aiTP: '', aiSL: '', bkContract: 'DIGITOVER', bkBarrier: '3', bkStake: '0.35', bkDuration: '1', bkCount: '3' };
 function loadSettings() {
   const saved = store.get('settings', {});
@@ -690,6 +755,7 @@ function syncCfg() {
   let u = Math.floor(+$('aiThresholdUnder').value); if (!Number.isFinite(u)) u = 6; cfg.under = Math.min(9, Math.max(1, u));
   cfg.consec = Math.max(1, Math.floor(+$('aiConsec').value) || 8);
   cfg.strategy = ['both', 'over', 'under'].includes($('aiStrategy').value) ? $('aiStrategy').value : 'both';
+  cfg.priority = $('aiPriority').value === 'streak' ? 'streak' : 'gap';
   const so = $('aiStrategy').options; so[0].textContent = `Over ${cfg.over} & Under ${cfg.under} — whichever comes first`; so[1].textContent = `Over ${cfg.over} only`; so[2].textContent = `Under ${cfg.under} only`;
   document.querySelectorAll('.ruleConsec').forEach(e => e.textContent = cfg.consec);
   document.querySelectorAll('.ruleTh').forEach(e => e.textContent = cfg.over);
@@ -762,7 +828,7 @@ $('lockOk').addEventListener('click', async () => {
   if (!pin) return;
   $('lockOk').disabled = true; $('lockMsg').textContent = 'Checking…';
   try { const token = await vaultOpen(pin); closeLock({ ok: true, pin, token }); }
-  catch (e) { $('lockOk').disabled = false; $('lockMsg').textContent = 'Wrong PIN'; $('lockPin').value = ''; $('lockPin').focus(); }
+  catch (e) { $('lockOk').disabled = false; $('lockMsg').textContent = 'Wrong PIN'; $('lockPin').value = ''; $('lockPin').focus(); const box = document.querySelector('.lockbox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); }
 });
 $('lockAlt').addEventListener('click', () => {
   if (sec.mode === 'unlock') { if (!window.confirm('Delete the saved token from this phone? You can paste it again later.')) return; store.del('vault'); store.del('accountId'); }
@@ -948,19 +1014,25 @@ function recompute(m) {
   const counts = new Array(10).fill(0); for (let i = start; i < n; i++) counts[d[i]]++;
   const pct = counts.map(c => c * 100 / total); const maxPct = Math.max.apply(null, pct);
   const tops = []; pct.forEach((p, i) => { if (p === maxPct) tops.push(i); });
+  // runner-up: the highest percentage among the OTHER digits (any digit 0–9). A tie at the top means the lead is 0.
+  let secondPct = -1; pct.forEach((p, i) => { if (i !== tops[0] && p > secondPct) secondPct = p; }); if (secondPct < 0) secondPct = 0;
+  const seconds = []; pct.forEach((p, i) => { if (i !== tops[0] && p === secondPct) seconds.push(i); });
+  const gap = Math.max(0, maxPct - secondPct);                       // percentage points between 1st and 2nd digit
+  const gapScore = cfg.priority === 'streak' ? 0 : Math.round(gap * 100) * 1e5;
   let so = 0; for (let i = n - 1; i >= 0 && d[i] > T; i--) so++;      // digits above the Over side
   let su = 0; for (let i = n - 1; i >= 0 && d[i] < U; i--) su++;      // digits below the Under side
   const enough = total >= Math.min(W, 25);
-  m.pct = pct; m.topDigits = tops; m.topPct = maxPct; m.streak = so; m.streakUnder = su; m.last = d[n - 1];
+  m.pct = pct; m.topDigits = tops; m.topPct = maxPct; m.secondDigits = seconds; m.secondPct = secondPct; m.gap = gap; m.streak = so; m.streakUnder = su; m.last = d[n - 1];
   m.topOver = tops.every(x => x <= T); m.topUnder = tops.every(x => x >= U);
   const side = (dir, on, streak, topOk, type, barrier) => ({ dir, on, streak, topOk, type, barrier, label: `${type === 'DIGITOVER' ? 'Over' : 'Under'} ${barrier}`,
-    qualifies: on && streak >= cfg.consec && topOk && enough, key: streak > 0 ? `${m.symbol}:${dir}:${m.times[n - streak]}` : null, score: streak * 1000 + maxPct });
+    qualifies: on && streak >= cfg.consec && topOk && enough, key: streak > 0 ? `${m.symbol}:${dir}:${m.times[n - streak]}` : null, score: gapScore + streak * 1000 + maxPct });
   m.over = side('over', cfg.strategy !== 'under', so, m.topOver, 'DIGITOVER', T);
   m.under = side('under', cfg.strategy !== 'over', su, m.topUnder, 'DIGITUNDER', U);
   m.sigs = [m.over, m.under].filter(x => x.qualifies);
   m.qualifies = m.sigs.length > 0; m.signalKey = m.qualifies ? m.sigs[0].key : null; m.score = m.sigs.reduce((a, x) => Math.max(a, x.score), 0);
-  if (m.over.qualifies && !m.wasOver) log(`SIGNAL ${m.name}: ${so} consecutive digits > ${T}, top digit ${tops.join('/')} (${fmt(maxPct, 1)}%) → Over ${T}`, 'ok');
-  if (m.under.qualifies && !m.wasUnder) log(`SIGNAL ${m.name}: ${su} consecutive digits < ${U}, top digit ${tops.join('/')} (${fmt(maxPct, 1)}%) → Under ${U}`, 'ok');
+  const gapTxt = `gap ${fmt(gap, 1)} pts to 2nd digit ${seconds.join('/')} (${fmt(secondPct, 1)}%)`;
+  if (m.over.qualifies && !m.wasOver) log(`SIGNAL ${m.name}: ${so} consecutive digits > ${T}, top digit ${tops.join('/')} (${fmt(maxPct, 1)}%), ${gapTxt} → Over ${T}`, 'ok');
+  if (m.under.qualifies && !m.wasUnder) log(`SIGNAL ${m.name}: ${su} consecutive digits < ${U}, top digit ${tops.join('/')} (${fmt(maxPct, 1)}%), ${gapTxt} → Under ${U}`, 'ok');
   m.wasOver = m.over.qualifies; m.wasUnder = m.under.qualifies;
 }
 
@@ -1170,7 +1242,7 @@ function scannerTick() {
   session.sessionsStarted++;
   session.tradedSignals.add(bs.key);
   session.batch = { no: session.sessionsStarted, symbol: bm.symbol, name: bm.name, signalKey: bs.key, dir: bs.dir, type: bs.type, barrier: bs.barrier, label: bs.label, placed: 0, remaining: session.mode === 'sequential' ? session.bulk - 1 : 0 };
-  log(`Session ${session.batch.no}/${session.maxSessions} · ${bm.name} · ${bs.label} signal: ${session.bulk} × ${bs.label} ${session.mode === 'sequential' ? '(one after another)' : '(all at once)'}`, 'ok');
+  log(`Session ${session.batch.no}/${session.maxSessions} · ${bm.name} · ${bs.label} signal: ${session.bulk} × ${bs.label} ${session.mode === 'sequential' ? '(one after another)' : '(all at once)'} · chosen for ${cfg.priority === 'streak' ? `streak ${bs.streak}` : `gap ${fmt(bm.gap, 1)} pts (top ${bm.topDigits.join('/')} ${fmt(bm.topPct, 1)}% vs 2nd ${bm.secondDigits.join('/')} ${fmt(bm.secondPct, 1)}%)`}`, 'ok');
   placeTrades(bm, session.mode === 'sequential' ? 1 : session.bulk);
 }
 function placeTrades(m, n) {
@@ -1250,23 +1322,31 @@ function statusHTML(m) {
 function renderMarketRow(m) {
   const tr = m.row; if (!tr || !m.digits.length) return;
   tr.querySelector('.strip').innerHTML = stripHTML(m.digits, 10);
-  tr.querySelector('.mlast').textContent = m.last;
+  const lastEl = tr.querySelector('.mlast'); lastEl.textContent = m.last;
+  const tk = m.times[m.times.length - 1]; if (m.renderedTick !== tk) { m.renderedTick = tk; lastEl.classList.remove('pop'); void lastEl.offsetWidth; lastEl.classList.add('pop'); }
   tr.querySelector('.mstreak').innerHTML = `<span class="sk ${sideClass(m.over)}">▲${m.over.streak}</span><span class="sk ${sideClass(m.under)}">▼${m.under.streak}</span>`;
-  const top = tr.querySelector('.mtop'); top.innerHTML = `<b>${m.topDigits.join('/')}</b> · ${fmt(m.topPct, 1)}% ${m.topOver ? '▲' : m.topUnder ? '▼' : ''}`;
+  const top = tr.querySelector('.mtop'); top.innerHTML = `<b>${m.topDigits.join('/')}</b> · ${fmt(m.topPct, 1)}% ${m.topOver ? '▲' : m.topUnder ? '▼' : ''} · 2nd ${m.secondDigits.join('/')} · ${fmt(m.secondPct, 1)}% · gap <b>${fmt(m.gap, 1)}</b>`;
   top.style.color = (m.topOver && m.over.on) || (m.topUnder && m.under.on) ? 'var(--green)' : '';
   tr.querySelector('.mstatus').innerHTML = statusHTML(m);
   tr.classList.toggle('q', m.qualifies);
 }
 function refreshBest() {
   const best = bestQualifying(false);
-  state.markets.forEach(m => { if (m.row) m.row.classList.toggle('best', !!best && best.m.symbol === m.symbol); });
+  let q = 0; state.markets.forEach(m => { if (m.row) m.row.classList.toggle('best', !!best && best.m.symbol === m.symbol); if (m.qualifies) q++; });
+  $('mktCount').textContent = `${state.markets.size}${q ? ` · ${q} signal${q > 1 ? 's' : ''}` : ''}`;
 }
+function setMarketsShown(on, save) {
+  $('mktWrap').classList.toggle('closed', !on); $('btnMarkets').textContent = on ? 'Hide' : 'Show'; $('btnMarkets').setAttribute('aria-expanded', on ? 'true' : 'false');
+  if (save) store.set('showMarkets', !!on);
+}
+$('btnMarkets').addEventListener('click', () => setMarketsShown($('mktWrap').classList.contains('closed'), true));
+setMarketsShown(store.get('showMarkets', true) !== false, false);
 function updateBulkStrip(m) {
   const sym = $('bkSymbol').value; if (m && m.symbol !== sym) return;
   const mk = state.markets.get(sym);
   if (!mk || !mk.digits.length) { $('bkStrip').innerHTML = ''; $('bkStats').textContent = '—'; return; }
   $('bkStrip').innerHTML = stripHTML(mk.digits, 20);
-  $('bkStats').textContent = `▲${mk.streak} ▼${mk.streakUnder} · top ${mk.topDigits.join('/')} (${fmt(mk.topPct, 1)}%)${mk.sigs.map(x => ' · SIGNAL ' + x.label).join('')}`;
+  $('bkStats').textContent = `▲${mk.streak} ▼${mk.streakUnder} · top ${mk.topDigits.join('/')} (${fmt(mk.topPct, 1)}%) · 2nd ${mk.secondDigits.join('/')} (${fmt(mk.secondPct, 1)}%) · gap ${fmt(mk.gap, 1)}${mk.sigs.map(x => ' · SIGNAL ' + x.label).join('')}`;
 }
 
 /* ============================ UI: trades table ========================= */
@@ -1375,6 +1455,7 @@ function calcKey(k) {
     calc.op = k; calc.fresh = true; calc.expr = `${calcFmt(calc.acc)} ${k}`;
   } else if (k === '=') {
     if (calc.op) {
+      const o = $('calcOut'); o.classList.remove('bump'); void o.offsetWidth; o.classList.add('bump');
       const b = parseFloat(calc.cur), r = calcApply(calc.acc, calc.op, b);
       calc.expr = `${calcFmt(calc.acc)} ${calc.op} ${calcFmt(b)} =`; calc.cur = calcFmt(r); calc.acc = isFinite(r) ? r : null; calc.op = null; calc.fresh = true;
     }
@@ -1398,11 +1479,19 @@ $('btnCalcStake').addEventListener('click', () => {
 });
 calcRender();
 
+/* ============================== motion helpers ========================== */
+window.addEventListener('scroll', () => document.querySelector('header').classList.toggle('scrolled', window.scrollY > 4), { passive: true });
+if (window.MutationObserver) {
+  const bump = el => { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); };
+  const obs = new MutationObserver(ms => { const done = new Set(); ms.forEach(mu => { const el = (mu.target.nodeType === 3 ? mu.target.parentElement : mu.target).closest('.chip b, .hero .bal'); if (el && !done.has(el)) { done.add(el); bump(el); } }); });
+  document.querySelectorAll('.chip b, .hero .bal').forEach(el => obs.observe(el, { childList: true, characterData: true, subtree: true }));
+}
+
 loadSettings(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
 log('Ready. Market data connects automatically; add your App ID + PAT to trade.');
 connectPublic();
 window.__dbt = { state, contracts, pub, acct, cfg, get session() { return session; } }; // debugging hook
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a41a8260ba927936',t:'MTc5MDUxMjExNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

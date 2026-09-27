@@ -300,11 +300,6 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .bump{animation:bump .35s cubic-bezier(.2,.9,.3,1.3)}
 @keyframes bump{0%{transform:scale(1.18)}100%{transform:none}}
 .calc-disp b{display:inline-block;transform-origin:right center}
-.chip b{transform-origin:center}
-.hero .bal{transform-origin:left center}
-#marketTable .mlast{transition:color .3s}
-#marketTable .mlast.pop{animation:pop .4s cubic-bezier(.2,.9,.3,1.3)}
-@keyframes pop{0%{transform:scale(1.35);color:var(--gold)}100%{transform:none}}
 .strip .d:last-child{animation:dIn .3s cubic-bezier(.2,.9,.3,1.3) both}
 @keyframes dIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 .badge.ok{animation:glow 1.6s ease-in-out infinite}
@@ -1322,8 +1317,7 @@ function statusHTML(m) {
 function renderMarketRow(m) {
   const tr = m.row; if (!tr || !m.digits.length) return;
   tr.querySelector('.strip').innerHTML = stripHTML(m.digits, 10);
-  const lastEl = tr.querySelector('.mlast'); lastEl.textContent = m.last;
-  const tk = m.times[m.times.length - 1]; if (m.renderedTick !== tk) { m.renderedTick = tk; lastEl.classList.remove('pop'); void lastEl.offsetWidth; lastEl.classList.add('pop'); }
+  tr.querySelector('.mlast').textContent = m.last;
   tr.querySelector('.mstreak').innerHTML = `<span class="sk ${sideClass(m.over)}">▲${m.over.streak}</span><span class="sk ${sideClass(m.under)}">▼${m.under.streak}</span>`;
   const top = tr.querySelector('.mtop'); top.innerHTML = `<b>${m.topDigits.join('/')}</b> · ${fmt(m.topPct, 1)}% ${m.topOver ? '▲' : m.topUnder ? '▼' : ''} · 2nd ${m.secondDigits.join('/')} · ${fmt(m.secondPct, 1)}% · gap <b>${fmt(m.gap, 1)}</b>`;
   top.style.color = (m.topOver && m.over.on) || (m.topUnder && m.under.on) ? 'var(--green)' : '';
@@ -1481,11 +1475,6 @@ calcRender();
 
 /* ============================== motion helpers ========================== */
 window.addEventListener('scroll', () => document.querySelector('header').classList.toggle('scrolled', window.scrollY > 4), { passive: true });
-if (window.MutationObserver) {
-  const bump = el => { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); };
-  const obs = new MutationObserver(ms => { const done = new Set(); ms.forEach(mu => { const el = (mu.target.nodeType === 3 ? mu.target.parentElement : mu.target).closest('.chip b, .hero .bal'); if (el && !done.has(el)) { done.add(el); bump(el); } }); });
-  document.querySelectorAll('.chip b, .hero .bal').forEach(el => obs.observe(el, { childList: true, characterData: true, subtree: true }));
-}
 
 loadSettings(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
 log('Ready. Market data connects automatically; add your App ID + PAT to trade.');

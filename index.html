@@ -340,16 +340,27 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .lockbox input::placeholder{letter-spacing:0}
 .lock.privacy,.lock.privacy-set{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}
 .lock.privacy .lockbox{box-shadow:0 24px 80px rgba(0,0,0,.28)}
-.lock .logo.lg{position:relative;isolation:isolate;overflow:hidden;transition:background-color .16s linear,box-shadow .16s linear,color .16s linear}
+.lock .logo.lg{position:relative;isolation:isolate;overflow:hidden;--logo-cycle-duration:60s;--logo-color-transition-duration:2s;transition:background-color .16s linear,box-shadow .16s linear,color .16s linear}
 .lock .logo.lg::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;background:#f2545f;box-shadow:0 8px 22px -6px rgba(242,84,95,.8);opacity:0;transition:opacity .1s linear;pointer-events:none}
 .lock .logo.lg svg{position:relative;z-index:1;overflow:visible;transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
 .lock .logo.lg svg .lock-ring-diagonal-a,.lock .logo.lg svg .lock-ring{transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
-.lock .logo.lg svg .ring-depth{stroke:rgba(0,0,0,.68);stroke-width:4;opacity:.9}
-.lock .logo.lg svg .ring-body{stroke:currentColor;stroke-width:2.6}
-.lock .logo.lg svg .ring-glint{stroke:rgba(255,255,255,.88);stroke-width:.8;stroke-dasharray:9 38;stroke-dashoffset:1;opacity:.9}
-.lock.logo-cycle .logo.lg{background-image:none;background-color:#f0b943;color:#131a22;animation:privacyLogoColor 60s linear infinite;will-change:background-color,box-shadow}
-.lock.logo-cycle .logo.lg svg .lock-ring-diagonal-a{animation:privacyRingDiagonalA 5s linear infinite;will-change:transform}
-.lock.logo-cycle .logo.lg svg .lock-ring{animation:privacyRingDiagonalB 5s linear infinite;will-change:transform}
+
+.lock .logo.lg svg .lock-ring-diagonal-a,.lock .logo.lg svg .lock-ring,.lock .logo.lg svg .ring-extrusion{transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
+.lock .logo.lg svg .ring-extrusion{opacity:0}
+.lock .logo.lg svg .ring-flat{fill:none;stroke:currentColor;stroke-width:2.6;opacity:1}
+.lock .logo.lg svg .ring-layer{fill:none;transform-box:fill-box;transform-origin:center}
+.lock .logo.lg svg .ring-back{stroke:#05080c;stroke-width:4.5;transform:translateZ(-1.8px)}
+.lock .logo.lg svg .ring-wall-dark{stroke:#1d2935;stroke-width:4.35;transform:translateZ(-1.1px)}
+.lock .logo.lg svg .ring-wall-mid{stroke:#586777;stroke-width:4.1;transform:translateZ(-.4px)}
+.lock .logo.lg svg .ring-wall-light{stroke:#b7c2cd;stroke-width:3.8;transform:translateZ(.3px)}
+.lock .logo.lg svg .ring-wall-edge{stroke:#eef3f8;stroke-width:3.5;transform:translateZ(.9px)}
+.lock .logo.lg svg .ring-metal-face{stroke:url(#lockRingMetal);stroke-width:3.1;transform:translateZ(1.5px)}
+.lock .logo.lg svg .ring-metal-glint{stroke:rgba(255,255,255,.96);stroke-width:.65;stroke-dasharray:7 40;stroke-dashoffset:1;transform:translateZ(1.7px)}
+.lock.logo-cycle .logo.lg{background-image:none;background-color:#f0b943;color:#131a22;animation:privacyLogoColor var(--logo-cycle-duration) linear infinite;will-change:background-color,box-shadow}
+.lock.logo-cycle .logo.lg svg .lock-ring-diagonal-a{animation:privacyRingDiagonalA var(--logo-cycle-duration) linear infinite;will-change:transform}
+.lock.logo-cycle .logo.lg svg .lock-ring{animation:privacyRingDiagonalB var(--logo-cycle-duration) linear infinite;will-change:transform}
+.lock.logo-cycle .logo.lg svg .ring-extrusion{animation:privacyRingExtrusion var(--logo-cycle-duration) linear infinite}
+.lock.logo-cycle .logo.lg svg .ring-flat{animation:privacyRingFlatFace var(--logo-cycle-duration) linear infinite}
 @keyframes privacyLogoColor{
   0%,5%{background-color:#f0b943;box-shadow:0 8px 22px -6px rgba(226,168,60,.66)}
   5%{animation-timing-function:cubic-bezier(.45,0,.55,1)}
@@ -377,21 +388,254 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   96.667%{animation-timing-function:cubic-bezier(.45,0,.55,1)}
   100%{background-color:#f0b943;box-shadow:0 8px 22px -6px rgba(226,168,60,.66)}
 }
-/* Four centered 3D turns alternate along the two diagonals during the two-second color fade. */
+/* The ring animations share the color-cycle timeline; every color transition contains five alternating eased turns. */
 @keyframes privacyRingDiagonalA{
-  0%,60%{transform:perspective(90px) rotate3d(1,-1,0,0deg)}
-  60%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  70%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  80%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  90%{transform:perspective(90px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(90px) rotate3d(1,-1,0,720deg)}
+  5%{transform:perspective(48px) rotate3d(1,-1,0,0deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  5.667%{transform:perspective(48px) rotate3d(1,-1,0,360deg)}
+  6.333%{transform:perspective(48px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  7%{transform:perspective(48px) rotate3d(1,-1,0,720deg)}
+  7.666%{transform:perspective(48px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  8.333%{transform:perspective(48px) rotate3d(1,-1,0,1080deg)}
+  13.333%{transform:perspective(48px) rotate3d(1,-1,0,1080deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  14%{transform:perspective(48px) rotate3d(1,-1,0,1440deg)}
+  14.667%{transform:perspective(48px) rotate3d(1,-1,0,1440deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  15.333%{transform:perspective(48px) rotate3d(1,-1,0,1800deg)}
+  16%{transform:perspective(48px) rotate3d(1,-1,0,1800deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  16.667%{transform:perspective(48px) rotate3d(1,-1,0,2160deg)}
+  21.667%{transform:perspective(48px) rotate3d(1,-1,0,2160deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  22.334%{transform:perspective(48px) rotate3d(1,-1,0,2520deg)}
+  23%{transform:perspective(48px) rotate3d(1,-1,0,2520deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  23.667%{transform:perspective(48px) rotate3d(1,-1,0,2880deg)}
+  24.333%{transform:perspective(48px) rotate3d(1,-1,0,2880deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  25%{transform:perspective(48px) rotate3d(1,-1,0,3240deg)}
+  30%{transform:perspective(48px) rotate3d(1,-1,0,3240deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  30.667%{transform:perspective(48px) rotate3d(1,-1,0,3600deg)}
+  31.333%{transform:perspective(48px) rotate3d(1,-1,0,3600deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  32%{transform:perspective(48px) rotate3d(1,-1,0,3960deg)}
+  32.666%{transform:perspective(48px) rotate3d(1,-1,0,3960deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  33.333%{transform:perspective(48px) rotate3d(1,-1,0,4320deg)}
+  38.333%{transform:perspective(48px) rotate3d(1,-1,0,4320deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  39%{transform:perspective(48px) rotate3d(1,-1,0,4680deg)}
+  39.667%{transform:perspective(48px) rotate3d(1,-1,0,4680deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  40.333%{transform:perspective(48px) rotate3d(1,-1,0,5040deg)}
+  41%{transform:perspective(48px) rotate3d(1,-1,0,5040deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  41.667%{transform:perspective(48px) rotate3d(1,-1,0,5400deg)}
+  46.667%{transform:perspective(48px) rotate3d(1,-1,0,5400deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  47.334%{transform:perspective(48px) rotate3d(1,-1,0,5760deg)}
+  48%{transform:perspective(48px) rotate3d(1,-1,0,5760deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  48.667%{transform:perspective(48px) rotate3d(1,-1,0,6120deg)}
+  49.333%{transform:perspective(48px) rotate3d(1,-1,0,6120deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  50%{transform:perspective(48px) rotate3d(1,-1,0,6480deg)}
+  55%{transform:perspective(48px) rotate3d(1,-1,0,6480deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  55.667%{transform:perspective(48px) rotate3d(1,-1,0,6840deg)}
+  56.333%{transform:perspective(48px) rotate3d(1,-1,0,6840deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  57%{transform:perspective(48px) rotate3d(1,-1,0,7200deg)}
+  57.666%{transform:perspective(48px) rotate3d(1,-1,0,7200deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  58.333%{transform:perspective(48px) rotate3d(1,-1,0,7560deg)}
+  63.333%{transform:perspective(48px) rotate3d(1,-1,0,7560deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  64%{transform:perspective(48px) rotate3d(1,-1,0,7920deg)}
+  64.667%{transform:perspective(48px) rotate3d(1,-1,0,7920deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  65.333%{transform:perspective(48px) rotate3d(1,-1,0,8280deg)}
+  66%{transform:perspective(48px) rotate3d(1,-1,0,8280deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  66.667%{transform:perspective(48px) rotate3d(1,-1,0,8640deg)}
+  71.667%{transform:perspective(48px) rotate3d(1,-1,0,8640deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  72.334%{transform:perspective(48px) rotate3d(1,-1,0,9000deg)}
+  73%{transform:perspective(48px) rotate3d(1,-1,0,9000deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  73.667%{transform:perspective(48px) rotate3d(1,-1,0,9360deg)}
+  74.333%{transform:perspective(48px) rotate3d(1,-1,0,9360deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  75%{transform:perspective(48px) rotate3d(1,-1,0,9720deg)}
+  80%{transform:perspective(48px) rotate3d(1,-1,0,9720deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  80.667%{transform:perspective(48px) rotate3d(1,-1,0,10080deg)}
+  81.333%{transform:perspective(48px) rotate3d(1,-1,0,10080deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  82%{transform:perspective(48px) rotate3d(1,-1,0,10440deg)}
+  82.666%{transform:perspective(48px) rotate3d(1,-1,0,10440deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  83.333%{transform:perspective(48px) rotate3d(1,-1,0,10800deg)}
+  88.333%{transform:perspective(48px) rotate3d(1,-1,0,10800deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  89%{transform:perspective(48px) rotate3d(1,-1,0,11160deg)}
+  89.667%{transform:perspective(48px) rotate3d(1,-1,0,11160deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  90.333%{transform:perspective(48px) rotate3d(1,-1,0,11520deg)}
+  91%{transform:perspective(48px) rotate3d(1,-1,0,11520deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  91.667%{transform:perspective(48px) rotate3d(1,-1,0,11880deg)}
+  96.667%{transform:perspective(48px) rotate3d(1,-1,0,11880deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  97.334%{transform:perspective(48px) rotate3d(1,-1,0,12240deg)}
+  98%{transform:perspective(48px) rotate3d(1,-1,0,12240deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  98.667%{transform:perspective(48px) rotate3d(1,-1,0,12600deg)}
+  99.333%{transform:perspective(48px) rotate3d(1,-1,0,12600deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  100%{transform:perspective(48px) rotate3d(1,-1,0,12960deg)}
 }
 @keyframes privacyRingDiagonalB{
-  0%,70%{transform:perspective(90px) rotate3d(1,1,0,0deg)}
-  70%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  80%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  90%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(90px) rotate3d(1,1,0,720deg)}
+  5%{transform:perspective(48px) rotate3d(1,1,0,0deg)}
+  5.667%{transform:perspective(48px) rotate3d(1,1,0,0deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  6.333%{transform:perspective(48px) rotate3d(1,1,0,360deg)}
+  7%{transform:perspective(48px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  7.666%{transform:perspective(48px) rotate3d(1,1,0,720deg)}
+  8.333%{transform:perspective(48px) rotate3d(1,1,0,720deg)}
+  13.333%{transform:perspective(48px) rotate3d(1,1,0,720deg)}
+  14%{transform:perspective(48px) rotate3d(1,1,0,720deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  14.667%{transform:perspective(48px) rotate3d(1,1,0,1080deg)}
+  15.333%{transform:perspective(48px) rotate3d(1,1,0,1080deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  16%{transform:perspective(48px) rotate3d(1,1,0,1440deg)}
+  16.667%{transform:perspective(48px) rotate3d(1,1,0,1440deg)}
+  21.667%{transform:perspective(48px) rotate3d(1,1,0,1440deg)}
+  22.334%{transform:perspective(48px) rotate3d(1,1,0,1440deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  23%{transform:perspective(48px) rotate3d(1,1,0,1800deg)}
+  23.667%{transform:perspective(48px) rotate3d(1,1,0,1800deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  24.333%{transform:perspective(48px) rotate3d(1,1,0,2160deg)}
+  25%{transform:perspective(48px) rotate3d(1,1,0,2160deg)}
+  30%{transform:perspective(48px) rotate3d(1,1,0,2160deg)}
+  30.667%{transform:perspective(48px) rotate3d(1,1,0,2160deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  31.333%{transform:perspective(48px) rotate3d(1,1,0,2520deg)}
+  32%{transform:perspective(48px) rotate3d(1,1,0,2520deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  32.666%{transform:perspective(48px) rotate3d(1,1,0,2880deg)}
+  33.333%{transform:perspective(48px) rotate3d(1,1,0,2880deg)}
+  38.333%{transform:perspective(48px) rotate3d(1,1,0,2880deg)}
+  39%{transform:perspective(48px) rotate3d(1,1,0,2880deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  39.667%{transform:perspective(48px) rotate3d(1,1,0,3240deg)}
+  40.333%{transform:perspective(48px) rotate3d(1,1,0,3240deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  41%{transform:perspective(48px) rotate3d(1,1,0,3600deg)}
+  41.667%{transform:perspective(48px) rotate3d(1,1,0,3600deg)}
+  46.667%{transform:perspective(48px) rotate3d(1,1,0,3600deg)}
+  47.334%{transform:perspective(48px) rotate3d(1,1,0,3600deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  48%{transform:perspective(48px) rotate3d(1,1,0,3960deg)}
+  48.667%{transform:perspective(48px) rotate3d(1,1,0,3960deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  49.333%{transform:perspective(48px) rotate3d(1,1,0,4320deg)}
+  50%{transform:perspective(48px) rotate3d(1,1,0,4320deg)}
+  55%{transform:perspective(48px) rotate3d(1,1,0,4320deg)}
+  55.667%{transform:perspective(48px) rotate3d(1,1,0,4320deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  56.333%{transform:perspective(48px) rotate3d(1,1,0,4680deg)}
+  57%{transform:perspective(48px) rotate3d(1,1,0,4680deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  57.666%{transform:perspective(48px) rotate3d(1,1,0,5040deg)}
+  58.333%{transform:perspective(48px) rotate3d(1,1,0,5040deg)}
+  63.333%{transform:perspective(48px) rotate3d(1,1,0,5040deg)}
+  64%{transform:perspective(48px) rotate3d(1,1,0,5040deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  64.667%{transform:perspective(48px) rotate3d(1,1,0,5400deg)}
+  65.333%{transform:perspective(48px) rotate3d(1,1,0,5400deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  66%{transform:perspective(48px) rotate3d(1,1,0,5760deg)}
+  66.667%{transform:perspective(48px) rotate3d(1,1,0,5760deg)}
+  71.667%{transform:perspective(48px) rotate3d(1,1,0,5760deg)}
+  72.334%{transform:perspective(48px) rotate3d(1,1,0,5760deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  73%{transform:perspective(48px) rotate3d(1,1,0,6120deg)}
+  73.667%{transform:perspective(48px) rotate3d(1,1,0,6120deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  74.333%{transform:perspective(48px) rotate3d(1,1,0,6480deg)}
+  75%{transform:perspective(48px) rotate3d(1,1,0,6480deg)}
+  80%{transform:perspective(48px) rotate3d(1,1,0,6480deg)}
+  80.667%{transform:perspective(48px) rotate3d(1,1,0,6480deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  81.333%{transform:perspective(48px) rotate3d(1,1,0,6840deg)}
+  82%{transform:perspective(48px) rotate3d(1,1,0,6840deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  82.666%{transform:perspective(48px) rotate3d(1,1,0,7200deg)}
+  83.333%{transform:perspective(48px) rotate3d(1,1,0,7200deg)}
+  88.333%{transform:perspective(48px) rotate3d(1,1,0,7200deg)}
+  89%{transform:perspective(48px) rotate3d(1,1,0,7200deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  89.667%{transform:perspective(48px) rotate3d(1,1,0,7560deg)}
+  90.333%{transform:perspective(48px) rotate3d(1,1,0,7560deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  91%{transform:perspective(48px) rotate3d(1,1,0,7920deg)}
+  91.667%{transform:perspective(48px) rotate3d(1,1,0,7920deg)}
+  96.667%{transform:perspective(48px) rotate3d(1,1,0,7920deg)}
+  97.334%{transform:perspective(48px) rotate3d(1,1,0,7920deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  98%{transform:perspective(48px) rotate3d(1,1,0,8280deg)}
+  98.667%{transform:perspective(48px) rotate3d(1,1,0,8280deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  99.333%{transform:perspective(48px) rotate3d(1,1,0,8640deg)}
+  100%{transform:perspective(48px) rotate3d(1,1,0,8640deg)}
+}
+@keyframes privacyRingExtrusion{
+  5%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  5.333%{opacity:1}
+  8%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  8.333%{opacity:0}
+  13.333%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  13.666%{opacity:1}
+  16.334%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  16.667%{opacity:0}
+  21.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  22%{opacity:1}
+  24.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  25%{opacity:0}
+  30%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  30.333%{opacity:1}
+  33%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  33.333%{opacity:0}
+  38.333%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  38.666%{opacity:1}
+  41.334%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  41.667%{opacity:0}
+  46.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  47%{opacity:1}
+  49.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  50%{opacity:0}
+  55%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  55.333%{opacity:1}
+  58%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  58.333%{opacity:0}
+  63.333%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  63.666%{opacity:1}
+  66.334%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  66.667%{opacity:0}
+  71.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  72%{opacity:1}
+  74.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  75%{opacity:0}
+  80%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  80.333%{opacity:1}
+  83%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  83.333%{opacity:0}
+  88.333%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  88.666%{opacity:1}
+  91.334%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  91.667%{opacity:0}
+  96.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  97%{opacity:1}
+  99.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  100%{opacity:0}
+}
+@keyframes privacyRingFlatFace{
+  5%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  5.333%{opacity:0}
+  8%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  8.333%{opacity:1}
+  13.333%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  13.666%{opacity:0}
+  16.334%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  16.667%{opacity:1}
+  21.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  22%{opacity:0}
+  24.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  25%{opacity:1}
+  30%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  30.333%{opacity:0}
+  33%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  33.333%{opacity:1}
+  38.333%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  38.666%{opacity:0}
+  41.334%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  41.667%{opacity:1}
+  46.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  47%{opacity:0}
+  49.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  50%{opacity:1}
+  55%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  55.333%{opacity:0}
+  58%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  58.333%{opacity:1}
+  63.333%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  63.666%{opacity:0}
+  66.334%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  66.667%{opacity:1}
+  71.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  72%{opacity:0}
+  74.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  75%{opacity:1}
+  80%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  80.333%{opacity:0}
+  83%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  83.333%{opacity:1}
+  88.333%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  88.666%{opacity:0}
+  91.334%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  91.667%{opacity:1}
+  96.667%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  97%{opacity:0}
+  99.667%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  100%{opacity:1}
 }
 .lock.logo-error .logo.lg{box-shadow:0 8px 24px -3px rgba(242,84,95,.9)!important}
 .lock.logo-error .logo.lg::before{opacity:1}
@@ -408,21 +652,37 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   95%{transform:translateX(1px);animation-timing-function:cubic-bezier(.42,0,.58,1)}
   100%{transform:translateX(0)}
 }
-.lock.unlock-success .logo.lg svg .lock-ring-diagonal-a{animation:unlockRingDiagonalA 2s linear both}
-.lock.unlock-success .logo.lg svg .lock-ring{animation:unlockRingDiagonalB 2s linear both}
+.lock.unlock-success .logo.lg svg .lock-ring-diagonal-a{animation:unlockRingDiagonalA var(--logo-color-transition-duration) linear both}
+.lock.unlock-success .logo.lg svg .lock-ring{animation:unlockRingDiagonalB var(--logo-color-transition-duration) linear both}
+.lock.unlock-success .logo.lg svg .ring-extrusion{animation:unlockRingExtrusion var(--logo-color-transition-duration) linear both}
+.lock.unlock-success .logo.lg svg .ring-flat{animation:unlockRingFlatFace var(--logo-color-transition-duration) linear both}
 @keyframes unlockRingDiagonalA{
-  0%{transform:perspective(90px) rotate3d(1,-1,0,0deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  25%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  50%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  75%{transform:perspective(90px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(90px) rotate3d(1,-1,0,720deg)}
+  0%{transform:perspective(48px) rotate3d(1,-1,0,0deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  20%{transform:perspective(48px) rotate3d(1,-1,0,360deg)}
+  40%{transform:perspective(48px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  60%{transform:perspective(48px) rotate3d(1,-1,0,720deg)}
+  80%{transform:perspective(48px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  100%{transform:perspective(48px) rotate3d(1,-1,0,1080deg)}
 }
 @keyframes unlockRingDiagonalB{
-  0%,25%{transform:perspective(90px) rotate3d(1,1,0,0deg)}
-  25%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  50%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  75%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(90px) rotate3d(1,1,0,720deg)}
+  0%,20%{transform:perspective(48px) rotate3d(1,1,0,0deg)}
+  20%{animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  40%{transform:perspective(48px) rotate3d(1,1,0,360deg)}
+  60%{transform:perspective(48px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  80%{transform:perspective(48px) rotate3d(1,1,0,720deg)}
+  100%{transform:perspective(48px) rotate3d(1,1,0,720deg)}
+}
+@keyframes unlockRingExtrusion{
+  0%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  10%{opacity:1}
+  90%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  100%{opacity:0}
+}
+@keyframes unlockRingFlatFace{
+  0%{opacity:1;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  10%{opacity:0}
+  90%{opacity:0;animation-timing-function:cubic-bezier(.42,0,.58,1)}
+  100%{opacity:1}
 }
 .auto-check{align-items:flex-start;line-height:1.45}
 .auto-check input{margin-top:4px;flex:none}
@@ -492,7 +752,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 
 <div id="lockScreen" class="lock hidden" role="dialog" aria-modal="true">
   <div class="lockbox">
-    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="lock-ring-diagonal-a"><g class="lock-ring"><circle class="ring-depth" cx="12" cy="12" r="7.5" transform="translate(0 .55)"/><circle class="ring-body" cx="12" cy="12" r="7.5"/><circle class="ring-glint" cx="12" cy="12" r="7.5" transform="rotate(-42 12 12)"/></g></g></svg></div>
+    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><defs><linearGradient id="lockRingMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef3f8"/><stop offset=".22" stop-color="#97a4b1"/><stop offset=".47" stop-color="#1a2631"/><stop offset=".68" stop-color="#dce4eb"/><stop offset="1" stop-color="#596878"/></linearGradient></defs><g class="lock-ring-diagonal-a"><g class="lock-ring"><g class="ring-extrusion"><circle class="ring-layer ring-back" cx="12" cy="12" r="7.5"/><circle class="ring-layer ring-wall-dark" cx="12" cy="12" r="7.5"/><circle class="ring-layer ring-wall-mid" cx="12" cy="12" r="7.5"/><circle class="ring-layer ring-wall-light" cx="12" cy="12" r="7.5"/><circle class="ring-layer ring-wall-edge" cx="12" cy="12" r="7.5"/><circle class="ring-layer ring-metal-face" cx="12" cy="12" r="7.5"/><circle class="ring-layer ring-metal-glint" cx="12" cy="12" r="7.5"/></g><circle class="ring-flat" cx="12" cy="12" r="7.5"/></g></g></svg></div>
     <h2 id="lockTitle">Locked</h2>
     <p class="hint" id="lockText"></p>
     <input id="lockPin" type="password" autocomplete="off" placeholder="PIN / password" />

@@ -310,8 +310,6 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .lockbox{animation:zoomIn .32s cubic-bezier(.2,.8,.2,1) both}
 @keyframes zoomIn{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
-.lockbox.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both}
-@keyframes shake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
 #toast{transition:opacity .25s,transform .4s cubic-bezier(.2,.9,.3,1.25)}
 .msg{transition:color .3s}
 .logline{animation:fadeDown .25s both}
@@ -342,7 +340,12 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .lockbox input::placeholder{letter-spacing:0}
 .lock.privacy,.lock.privacy-set{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}
 .lock.privacy .lockbox{box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.lock .logo.lg{position:relative;isolation:isolate;overflow:hidden;transition:background-color .16s linear,box-shadow .16s linear,color .16s linear}
+.lock .logo.lg::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;background:#f2545f;box-shadow:0 8px 22px -6px rgba(242,84,95,.8);opacity:0;transition:opacity .1s linear;pointer-events:none}
+.lock .logo.lg svg{position:relative;z-index:1;overflow:visible;transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
+.lock .logo.lg svg .lock-ring{transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
 .lock.logo-cycle .logo.lg{background-image:none;background-color:#f0b943;color:#131a22;animation:privacyLogoColor 30s linear infinite;will-change:background-color,box-shadow}
+.lock.logo-cycle .logo.lg svg .lock-ring{animation:privacyRingTumble 30s linear infinite;will-change:transform}
 @keyframes privacyLogoColor{
   0%,13.333%{background-color:#f0b943;box-shadow:0 8px 22px -6px rgba(226,168,60,.66)}
   16.667%,30%{background-color:#2dd4bf;box-shadow:0 8px 22px -6px rgba(45,212,191,.62)}
@@ -351,6 +354,29 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   66.667%,80%{background-color:#22d3ee;box-shadow:0 8px 22px -6px rgba(34,211,238,.62)}
   83.333%,96.667%{background-color:#4ade80;box-shadow:0 8px 22px -6px rgba(74,222,128,.62)}
   100%{background-color:#f0b943;box-shadow:0 8px 22px -6px rgba(226,168,60,.66)}
+}
+/* The two lock animations share a 30-second clock: four 3D tumbles per five-second color. */
+@keyframes privacyRingTumble{
+  0%{transform:perspective(120px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+  16.667%{transform:perspective(120px) rotateX(1440deg) rotateY(1440deg) rotateZ(1440deg)}
+  33.333%{transform:perspective(120px) rotateX(2880deg) rotateY(2880deg) rotateZ(2880deg)}
+  50%{transform:perspective(120px) rotateX(4320deg) rotateY(4320deg) rotateZ(4320deg)}
+  66.667%{transform:perspective(120px) rotateX(5760deg) rotateY(5760deg) rotateZ(5760deg)}
+  83.333%{transform:perspective(120px) rotateX(7200deg) rotateY(7200deg) rotateZ(7200deg)}
+  100%{transform:perspective(120px) rotateX(8640deg) rotateY(8640deg) rotateZ(8640deg)}
+}
+.lock.logo-error .logo.lg{box-shadow:0 8px 24px -3px rgba(242,84,95,.9)!important}
+.lock.logo-error .logo.lg::before{opacity:1}
+.lock.logo-error .logo.lg svg{animation:lockRingVibrate .56s cubic-bezier(.2,.75,.3,1) both}
+@keyframes lockRingVibrate{
+  0%,100%{transform:translateX(0)}
+  8%,24%,40%,56%,72%,88%{transform:translateX(-3px)}
+  16%,32%,48%,64%,80%,96%{transform:translateX(3px)}
+}
+.lock.unlock-success .logo.lg svg .lock-ring{animation:unlockRingSuccess 1.6s cubic-bezier(.18,.72,.28,1) both}
+@keyframes unlockRingSuccess{
+  0%{transform:perspective(120px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
+  100%{transform:perspective(120px) rotateX(1440deg) rotateY(1440deg) rotateZ(1440deg)}
 }
 .auto-check{align-items:flex-start;line-height:1.45}
 .auto-check input{margin-top:4px;flex:none}
@@ -369,17 +395,18 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .calc-split-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px}
 .calc-split-head b{font-size:14px;font-weight:750;letter-spacing:-.01em}
 .calc-split-head span{font-size:12px;color:var(--muted);text-align:right}
-.calc-split-grid{align-items:end;gap:10px}
+.calc-split-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.82fr) minmax(0,1fr);align-items:end;gap:8px;margin-top:9px}
+.calc-split-grid .f{margin-top:0;min-width:0}
+.calc-split-grid .f label,.calc-split-label{display:flex;align-items:flex-end;min-height:25px;margin:0 0 6px;font-size:11px;font-weight:650;line-height:1.12;color:var(--muted)}
+.calc-split-grid .f label{white-space:normal}
+.calc-split-grid input{height:44px;min-width:0;padding:0 8px;font-size:clamp(11px,3.5vw,14px);text-overflow:ellipsis}
 .calc-split-grid input[readonly]{background:var(--card2);color:var(--muted);cursor:default}
-.calc-split-result{margin-top:12px;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--rs)}
-.calc-split-label{text-align:center;color:var(--dim);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-.calc-split .plan{min-height:42px;display:flex;align-items:center;justify-content:center;line-height:1.2;overflow-wrap:anywhere;margin-top:5px;padding:0;border:0;background:transparent;text-align:center;font-size:20px;font-weight:800;color:var(--text)}
-.calc-split-hint,.calc-split-formula{margin:8px 2px 0;text-align:center;line-height:1.4}
-.calc-split-formula{font-size:11px}
-.calc-split-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
-.calc-split-actions .btn{width:100%;min-width:0;padding:9px 8px}
-.calc-split-actions .btn.primary{flex:1}
-@media(max-width:380px){.calc-split-head span{max-width:52%}.calc-split-actions{gap:8px}.calc-split-actions .btn{font-size:12px}}
+.calc-split-result{min-width:0}
+.calc-split-label{color:var(--muted);overflow:hidden}
+.calc-split .plan{height:44px;min-height:44px;display:flex;align-items:center;justify-content:center;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;padding:0 6px;border:1px solid var(--border);border-radius:var(--rs);background:var(--card2);text-align:center;font-size:clamp(10px,3.2vw,15px);font-weight:750;color:var(--text);font-variant-numeric:tabular-nums}
+.calc-split-actions{display:flex;margin-top:12px}
+.calc-split-actions .btn{width:100%;min-width:0;padding:10px 12px}
+@media(max-width:380px){.calc-split-head span{max-width:52%}.calc-split-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,.82fr) minmax(0,1fr);gap:6px}.calc-split-grid input{padding:0 6px}}
 @media (min-width:900px){
   .wrap,.hd{max-width:1180px}
   .tbl{display:table;width:100%}.tbl tbody{display:table-row-group}.tbl thead{display:table-header-group}
@@ -421,7 +448,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 
 <div id="lockScreen" class="lock hidden" role="dialog" aria-modal="true">
   <div class="lockbox">
-    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/></svg></div>
+    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="lock-ring"><circle cx="12" cy="12" r="7.5"/></g></svg></div>
     <h2 id="lockTitle">Locked</h2>
     <p class="hint" id="lockText"></p>
     <input id="lockPin" type="password" autocomplete="off" placeholder="PIN / password" />
@@ -690,14 +717,12 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       <div class="hint" style="text-align:center">Basic calculator — works with the keyboard too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
       <div class="calc-split">
         <div class="calc-split-head"><b>Balance stake</b><span>(balance × 0.025) ÷ value</span></div>
-        <div class="grid2 calc-split-grid">
-          <div class="f"><label for="calcBalanceAmount">Balance · automatic</label><input id="calcBalanceAmount" type="text" value="—" placeholder="Connect account" readonly aria-readonly="true" /></div>
-          <div class="f"><label for="calcBalanceDivisor">Value · ÷</label><input id="calcBalanceDivisor" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="Enter a value" /></div>
+        <div class="calc-split-grid">
+          <div class="f"><label for="calcBalanceAmount">Balance · auto</label><input id="calcBalanceAmount" type="text" value="—" placeholder="Connect account" readonly aria-readonly="true" /></div>
+          <div class="f"><label for="calcBalanceDivisor">Value · ÷</label><input id="calcBalanceDivisor" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="Enter value" /></div>
+          <div class="f calc-split-result"><div class="calc-split-label">Calculated stake</div><div class="plan" id="calcBalanceResult" role="status" aria-label="Calculated stake">—</div></div>
         </div>
-        <div class="calc-split-result"><div class="calc-split-label">Calculated stake</div><div class="plan" id="calcBalanceResult">Connect your account and enter a positive value.</div></div>
-        <div class="hint calc-split-hint">Balance auto-fills from your connected account; change only Value.</div>
-        <div class="calc-split-actions"><button type="button" class="btn primary" id="btnCalcBalance25">Calculate</button><button type="button" class="btn" id="btnCalcUseBalance" disabled>Use as stake</button></div>
-        <div class="hint calc-split-formula" id="calcBalanceFormula">Formula: (current account balance × 0.025) ÷ value.</div>
+        <div class="calc-split-actions"><button type="button" class="btn primary" id="btnCalcUseBalance" disabled>Use as stake</button></div>
       </div>
     </div></div>
   </section>
@@ -1145,9 +1170,41 @@ async function ensurePrivacyCredential() {
   try { await privacySave(r.pin); toast('Privacy password saved on this device', 'ok'); return true; }
   catch (e) { toast('Could not save the privacy password: ' + (e.message || e), 'err'); return false; }
 }
+let lockLogoErrorTimer = 0;
+function clearLockLogoFeedback() {
+  if (lockLogoErrorTimer) clearTimeout(lockLogoErrorTimer);
+  lockLogoErrorTimer = 0;
+  $('lockScreen').classList.remove('logo-error', 'unlock-success');
+}
+function flashLockLogoError() {
+  if (lockLogoErrorTimer) clearTimeout(lockLogoErrorTimer);
+  lockLogoErrorTimer = 0;
+  const screen = $('lockScreen'), shake = screen.querySelector('.logo.lg svg');
+  screen.classList.remove('logo-error', 'unlock-success');
+  if (shake) void shake.getBoundingClientRect().width;
+  screen.classList.add('logo-error');
+  lockLogoErrorTimer = setTimeout(() => { screen.classList.remove('logo-error'); lockLogoErrorTimer = 0; }, 2500);
+}
+function playLockUnlockAnimation() {
+  clearLockLogoFeedback();
+  const screen = $('lockScreen'), ring = screen.querySelector('.lock-ring');
+  if (ring) void ring.getBoundingClientRect().width;
+  screen.classList.add('unlock-success');
+  if (!ring || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return Promise.resolve();
+  return new Promise(resolve => {
+    let finished = false, fallback = 0;
+    const finish = () => {
+      if (finished) return; finished = true; clearTimeout(fallback); ring.removeEventListener('animationend', onEnd); resolve();
+    };
+    const onEnd = e => { if (e.target === ring && e.animationName === 'unlockRingSuccess') finish(); };
+    ring.addEventListener('animationend', onEnd);
+    fallback = setTimeout(finish, 1900);
+  });
+}
 function showLock(mode, opts) {
   opts = opts || {};
   return new Promise(resolve => {
+    clearLockLogoFeedback();
     if (sec.resolve) sec.resolve({ ok: false });
     sec.mode = mode; sec.resolve = resolve; sec.min = opts.min || 4;
     const isSet = mode === 'set' || mode === 'privacySet';
@@ -1155,7 +1212,7 @@ function showLock(mode, opts) {
     $('lockScreen').classList.toggle('privacy-set', mode === 'privacySet');
     $('lockScreen').classList.toggle('logo-cycle', mode === 'privacy' || mode === 'unlock');
     $('lockScreen').classList.remove('hidden');
-    $('lockPin').value = ''; $('lockPin2').value = ''; $('lockMsg').textContent = ''; $('lockOk').disabled = false;
+    $('lockPin').value = ''; $('lockPin2').value = ''; $('lockMsg').textContent = ''; $('lockMsg').classList.remove('ok'); $('lockMsg').classList.add('err'); $('lockOk').disabled = false; $('lockAlt').disabled = false; $('lockPin').disabled = false; $('lockPin2').disabled = false;
     $('lockPin2').classList.toggle('hidden', !isSet);
     $('lockAlt').classList.toggle('hidden', mode === 'privacy');
     $('lockTitle').textContent = opts.title || (mode === 'set' ? 'Protect your token with a PIN' : mode === 'privacySet' ? 'Set a privacy password' : mode === 'privacy' ? 'Screen hidden' : 'Locked');
@@ -1172,6 +1229,7 @@ function showLock(mode, opts) {
   });
 }
 function closeLock(result) {
+  clearLockLogoFeedback();
   $('lockScreen').classList.add('hidden'); $('lockScreen').classList.remove('privacy', 'privacy-set', 'logo-cycle');
   const r = sec.resolve; sec.resolve = null; sec.mode = null; if (r) r(result);
 }
@@ -1185,9 +1243,17 @@ $('lockOk').addEventListener('click', async () => {
   if (!pin) return;
   $('lockOk').disabled = true; $('lockMsg').textContent = 'Checking…';
   try {
-    if (sec.mode === 'privacy') { await verifyPrivacyPassword(pin); closeLock({ ok: true }); return; }
-    const token = await vaultOpen(pin); closeLock({ ok: true, pin, token });
-  } catch (e) { $('lockOk').disabled = false; $('lockMsg').textContent = sec.mode === 'privacy' ? 'Wrong password' : 'Wrong PIN'; $('lockPin').value = ''; $('lockPin').focus(); const box = document.querySelector('.lockbox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); }
+    if (sec.mode === 'privacy') {
+      await verifyPrivacyPassword(pin); $('lockMsg').textContent = 'Unlocked…'; $('lockMsg').classList.remove('err'); $('lockMsg').classList.add('ok'); $('lockOk').textContent = 'Unlocked'; $('lockAlt').disabled = true; $('lockPin').disabled = true;
+      await playLockUnlockAnimation(); closeLock({ ok: true }); return;
+    }
+    const token = await vaultOpen(pin);
+    $('lockMsg').textContent = 'Unlocked…'; $('lockMsg').classList.remove('err'); $('lockMsg').classList.add('ok'); $('lockOk').textContent = 'Unlocked'; $('lockAlt').disabled = true; $('lockPin').disabled = true;
+    await playLockUnlockAnimation(); closeLock({ ok: true, pin, token });
+  } catch (e) {
+    $('lockOk').disabled = false; $('lockMsg').classList.remove('ok'); $('lockMsg').classList.add('err'); $('lockMsg').textContent = sec.mode === 'privacy' ? 'Wrong password' : 'Wrong PIN';
+    $('lockPin').value = ''; $('lockPin').focus(); flashLockLogoError();
+  }
 });
 $('lockAlt').addEventListener('click', () => {
   if (sec.mode === 'unlock') { if (!window.confirm('Delete the saved token from this phone? You can paste it again later.')) return; store.del('vault'); store.del('accountId'); }
@@ -1827,16 +1893,15 @@ window.addEventListener('beforeunload', (e) => { if ((session && session.active)
 const calc = { tokens: [], cur: '0', fresh: true, pending: false, open: 0, expr: '' };
 let calcSplitStake = null;
 function updateBalanceCalculator() {
-  const result = $('calcBalanceResult'), formula = $('calcBalanceFormula'), use = $('btnCalcUseBalance'), balanceField = $('calcBalanceAmount');
-  if (!result || !formula || !use || !balanceField) return;
+  const result = $('calcBalanceResult'), use = $('btnCalcUseBalance'), balanceField = $('calcBalanceAmount');
+  if (!result || !use || !balanceField) return;
   const a = state.account, divisor = Number($('calcBalanceDivisor').value);
-  if (!a || !state.acctConnected) { balanceField.value = ''; balanceField.placeholder = 'Connect account'; calcSplitStake = null; result.textContent = 'Connect your account and enter a positive value.'; formula.textContent = 'Formula: (current account balance × 0.025) ÷ value.'; use.disabled = true; return; }
+  if (!a || !state.acctConnected) { balanceField.value = ''; balanceField.placeholder = 'Connect account'; calcSplitStake = null; result.textContent = '—'; use.disabled = true; return; }
   balanceField.value = `${fmt(a.balance)} ${a.currency}`; balanceField.placeholder = '';
-  if (!(divisor > 0) || !Number.isFinite(divisor)) { calcSplitStake = null; result.textContent = 'Enter a positive value.'; formula.textContent = `Formula: (${fmt(a.balance)} ${a.currency} × 0.025) ÷ value.`; use.disabled = true; return; }
+  if (!(divisor > 0) || !Number.isFinite(divisor)) { calcSplitStake = null; result.textContent = 'Enter value'; use.disabled = true; return; }
   const raw = Number(a.balance) * 0.025 / divisor;
   calcSplitStake = Math.floor((raw + 1e-9) * 100) / 100;
   result.textContent = `${fmt(calcSplitStake)} ${a.currency}`;
-  formula.textContent = `Formula: (${fmt(a.balance)} ${a.currency} × 0.025) ÷ ${divisor} = ${fmt(calcSplitStake)} ${a.currency}.`;
   use.disabled = !(calcSplitStake > 0) || autoRun.enabled;
 }
 function calcFmt(n) { if (typeof n !== 'number' || !isFinite(n)) return 'Error'; const s = String(Number(n.toPrecision(12))); return s.replace(/e\+?/, 'e').length > 15 ? Number(n.toPrecision(8)).toString() : s; }
@@ -1993,15 +2058,9 @@ $('btnCalcStake').addEventListener('click', () => {
   saveSettings(); toast(`Stake set to ${stake} in Scanner and Bulk Trader`, 'ok');
 });
 $('calcBalanceDivisor').addEventListener('input', updateBalanceCalculator);
-$('btnCalcBalance25').addEventListener('click', () => {
-  updateBalanceCalculator();
-  if (!state.account) { toast('Connect your account first to use its live balance', 'err'); return; }
-  if (!(Number($('calcBalanceDivisor').value) > 0)) { toast('Enter a positive value to divide by', 'err'); return; }
-  toast('Calculated 2.5% of the current balance ÷ value', 'ok');
-});
 $('btnCalcUseBalance').addEventListener('click', () => {
   updateBalanceCalculator();
-  if (!(calcSplitStake > 0)) { toast('Enter a positive value and calculate first', 'err'); return; }
+  if (!(calcSplitStake > 0)) { toast('Connect your account and enter a positive value first', 'err'); return; }
   if (autoRun.enabled) { toast('Turn hourly auto-run off before changing the AI stake manually', 'err'); return; }
   const stake = fmt(calcSplitStake);
   ['aiStake', 'bkStake'].forEach(id => { $(id).value = stake; $(id).dispatchEvent(new Event('input', { bubbles: true })); $(id).dispatchEvent(new Event('change', { bubbles: true })); });
@@ -2018,5 +2077,5 @@ connectPublic();
 window.__dbt = { state, contracts, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; } }; // debugging hook
 })();
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cfdab5eef3d975',t:'MTc5MjQxMzY1OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

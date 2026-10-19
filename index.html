@@ -257,8 +257,6 @@ details > .sub{margin-top:14px}
 .calc-disp small{color:var(--dim);font-size:13px;min-height:18px;font-variant-numeric:tabular-nums}
 .calc-disp b{font-size:40px;font-weight:800;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.calc-brackets{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.calc-brackets .key{grid-column:span 2;height:44px}
 .key{height:58px;border-radius:14px;border:1px solid var(--border);background:var(--card2);font-size:21px;font-weight:650;color:var(--text);transition:transform .08s,filter .15s;font-variant-numeric:tabular-nums}
 .key:active{transform:scale(.95);filter:brightness(1.12)}
 .key.fn{color:var(--muted);font-size:17px}
@@ -367,10 +365,21 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .auto-plan .hint+.hint{margin-top:7px}
 .auto-warning{margin-top:10px}
 .privacy-hint{margin:8px 2px 0}
-.calc-split{border-top:1px solid var(--border);margin-top:18px;padding-top:8px}
-.calc-split .plan{min-height:44px;display:flex;align-items:center;line-height:1.35;overflow-wrap:anywhere}
+.calc-split{border-top:1px solid var(--border);margin-top:20px;padding-top:16px}
+.calc-split-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px}
+.calc-split-head b{font-size:14px;font-weight:750;letter-spacing:-.01em}
+.calc-split-head span{font-size:12px;color:var(--muted);text-align:right}
+.calc-split-grid{align-items:end;gap:10px}
 .calc-split-grid input[readonly]{background:var(--card2);color:var(--muted);cursor:default}
-.calc-split-result{margin-top:12px}
+.calc-split-result{margin-top:12px;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--rs)}
+.calc-split-label{text-align:center;color:var(--dim);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.calc-split .plan{min-height:42px;display:flex;align-items:center;justify-content:center;line-height:1.2;overflow-wrap:anywhere;margin-top:5px;padding:0;border:0;background:transparent;text-align:center;font-size:20px;font-weight:800;color:var(--text)}
+.calc-split-hint,.calc-split-formula{margin:8px 2px 0;text-align:center;line-height:1.4}
+.calc-split-formula{font-size:11px}
+.calc-split-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.calc-split-actions .btn{width:100%;min-width:0;padding:9px 8px}
+.calc-split-actions .btn.primary{flex:1}
+@media(max-width:380px){.calc-split-head span{max-width:52%}.calc-split-actions{gap:8px}.calc-split-actions .btn{font-size:12px}}
 @media (min-width:900px){
   .wrap,.hd{max-width:1180px}
   .tbl{display:table;width:100%}.tbl tbody{display:table-row-group}.tbl thead{display:table-header-group}
@@ -398,7 +407,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 <body>
 <header><div class="hd">
   <div class="brand">
-    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5"/></svg></div>
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 16.5l5.5-5.5 4 4L20 7.5"/><path d="M14.5 7.5H20V13"/></svg></div>
     <div class="title"><b>STV Traders</b><small>AI Digit Scanner</small></div>
   </div>
   <div class="hd-actions">
@@ -671,8 +680,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
     <div class="card"><div class="calc">
       <div class="calc-disp" aria-live="polite"><small id="calcExpr"></small><b id="calcOut">0</b></div>
       <div class="keys" id="calcKeys">
-        <div class="calc-brackets"><button type="button" class="key fn" data-k="(" aria-label="Open parenthesis">(</button><button type="button" class="key fn" data-k=")" aria-label="Close parenthesis">)</button></div>
-        <button type="button" class="key fn" data-k="AC">AC</button><button type="button" class="key fn" data-k="⌫">⌫</button><button type="button" class="key fn" data-k="%">%</button><button type="button" class="key op" data-k="÷">÷</button>
+        <button type="button" class="key fn" data-k="AC">AC</button><button type="button" class="key fn" data-k="⌫">⌫</button><button type="button" class="key fn calc-paren-key" data-k="()" aria-label="Open or close parentheses">()</button><button type="button" class="key op" data-k="÷">÷</button>
         <button type="button" class="key" data-k="7">7</button><button type="button" class="key" data-k="8">8</button><button type="button" class="key" data-k="9">9</button><button type="button" class="key op" data-k="×">×</button>
         <button type="button" class="key" data-k="4">4</button><button type="button" class="key" data-k="5">5</button><button type="button" class="key" data-k="6">6</button><button type="button" class="key op" data-k="−">−</button>
         <button type="button" class="key" data-k="1">1</button><button type="button" class="key" data-k="2">2</button><button type="button" class="key" data-k="3">3</button><button type="button" class="key op" data-k="+">+</button>
@@ -681,15 +689,15 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       <div class="btns"><button type="button" class="btn ghost" id="btnCalcStake">Use result as stake</button></div>
       <div class="hint" style="text-align:center">Basic calculator — works with the keyboard too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
       <div class="calc-split">
-        <div class="sub">Current account balance × 0.025 ÷ value</div>
+        <div class="calc-split-head"><b>Balance stake</b><span>(balance × 0.025) ÷ value</span></div>
         <div class="grid2 calc-split-grid">
-          <div class="f"><label for="calcBalanceAmount">Current account balance (automatic)</label><input id="calcBalanceAmount" type="text" value="—" placeholder="Connect account" readonly aria-readonly="true" /></div>
-          <div class="f"><label for="calcBalanceDivisor">Value (÷ divisor)</label><input id="calcBalanceDivisor" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="Enter a value" /></div>
+          <div class="f"><label for="calcBalanceAmount">Balance · automatic</label><input id="calcBalanceAmount" type="text" value="—" placeholder="Connect account" readonly aria-readonly="true" /></div>
+          <div class="f"><label for="calcBalanceDivisor">Value · ÷</label><input id="calcBalanceDivisor" type="number" min="0.000001" step="any" inputmode="decimal" placeholder="Enter a value" /></div>
         </div>
-        <div class="f calc-split-result"><label>Formula result</label><div class="plan" id="calcBalanceResult">Connect your account and enter a positive value.</div></div>
-        <div class="hint">The balance is filled from your connected account; only the value after ÷ is editable.</div>
-        <div class="btns"><button type="button" class="btn" id="btnCalcBalance25">Calculate</button><button type="button" class="btn ghost" id="btnCalcUseBalance" disabled>Use this amount as stake</button></div>
-        <div class="hint" id="calcBalanceFormula">Formula: (current account balance × 0.025) ÷ value.</div>
+        <div class="calc-split-result"><div class="calc-split-label">Calculated stake</div><div class="plan" id="calcBalanceResult">Connect your account and enter a positive value.</div></div>
+        <div class="hint calc-split-hint">Balance auto-fills from your connected account; change only Value.</div>
+        <div class="calc-split-actions"><button type="button" class="btn primary" id="btnCalcBalance25">Calculate</button><button type="button" class="btn" id="btnCalcUseBalance" disabled>Use as stake</button></div>
+        <div class="hint calc-split-formula" id="calcBalanceFormula">Formula: (current account balance × 0.025) ÷ value.</div>
       </div>
     </div></div>
   </section>
@@ -1827,8 +1835,8 @@ function updateBalanceCalculator() {
   if (!(divisor > 0) || !Number.isFinite(divisor)) { calcSplitStake = null; result.textContent = 'Enter a positive value.'; formula.textContent = `Formula: (${fmt(a.balance)} ${a.currency} × 0.025) ÷ value.`; use.disabled = true; return; }
   const raw = Number(a.balance) * 0.025 / divisor;
   calcSplitStake = Math.floor((raw + 1e-9) * 100) / 100;
-  result.textContent = `${fmt(a.balance)} × 0.025 ÷ ${divisor} = ${fmt(calcSplitStake)} ${a.currency}`;
-  formula.textContent = `Formula: (${fmt(a.balance)} ${a.currency} × 0.025) ÷ ${divisor}.`;
+  result.textContent = `${fmt(calcSplitStake)} ${a.currency}`;
+  formula.textContent = `Formula: (${fmt(a.balance)} ${a.currency} × 0.025) ÷ ${divisor} = ${fmt(calcSplitStake)} ${a.currency}.`;
   use.disabled = !(calcSplitStake > 0) || autoRun.enabled;
 }
 function calcFmt(n) { if (typeof n !== 'number' || !isFinite(n)) return 'Error'; const s = String(Number(n.toPrecision(12))); return s.replace(/e\+?/, 'e').length > 15 ? Number(n.toPrecision(8)).toString() : s; }
@@ -1872,10 +1880,31 @@ function calcEvalTokens(tokens) {
 function calcStartNewExpression() {
   if (!calc.tokens.length && calc.expr.endsWith('=')) calc.expr = '';
 }
+function calcOpenParen() {
+  if (calc.pending) { calc.tokens.push(calc.cur, '×'); calc.pending = false; }
+  else if (!calc.tokens.length && calc.expr.endsWith('=')) { calc.tokens.push(calc.cur, '×'); calc.expr = ''; }
+  else if (calc.tokens[calc.tokens.length - 1] === ')') calc.tokens.push('×');
+  else if (calc.tokens.length && !calcIsOp(calc.tokens[calc.tokens.length - 1]) && calc.tokens[calc.tokens.length - 1] !== '(') calc.tokens.push('×');
+  calc.tokens.push('('); calc.open++; calc.cur = '0'; calc.fresh = true; calc.pending = false; calc.expr = '';
+}
+function calcCloseParen() {
+  if (calc.open <= 0) return;
+  if (calc.pending) { calc.tokens.push(calc.cur); calc.pending = false; }
+  const last = calc.tokens[calc.tokens.length - 1];
+  if (last !== '(' && !calcIsOp(last) && last != null) {
+    calc.tokens.push(')'); calc.open--; calc.fresh = true;
+    try { calc.cur = calcFmt(calcEvalTokens(calc.tokens)); } catch (e) {}
+  }
+}
+function calcToggleParen() {
+  const last = calc.tokens[calc.tokens.length - 1];
+  const canClose = calc.open > 0 && (calc.pending || last === ')' || (last != null && last !== '(' && !calcIsOp(last)));
+  if (canClose) calcCloseParen(); else calcOpenParen();
+}
 function calcKey(k) {
   if (calc.cur === 'Error' && k !== 'AC') {
     calc.tokens = []; calc.cur = '0'; calc.fresh = true; calc.pending = false; calc.open = 0; calc.expr = '';
-    if (!/^[0-9.]$/.test(k) && k !== '(' && k !== '+' && k !== '−') { calcRender(); return; }
+    if (!/^[0-9.]$/.test(k) && k !== '(' && k !== '()' && k !== '+' && k !== '−') { calcRender(); return; }
   }
   if (/^[0-9]$/.test(k)) {
     if (calc.fresh) {
@@ -1901,32 +1930,12 @@ function calcKey(k) {
     if (calc.pending && calc.cur !== '0') calc.cur = calc.cur.startsWith('-') ? calc.cur.slice(1) : '-' + calc.cur;
     else if (!calc.pending && !calc.tokens.length && calc.expr.endsWith('=') && calc.cur !== '0') calc.cur = calc.cur.startsWith('-') ? calc.cur.slice(1) : '-' + calc.cur;
     else if (calc.tokens.length && (calc.tokens[calc.tokens.length - 1] === '(' || calcIsOp(calc.tokens[calc.tokens.length - 1]))) calc.tokens.push('−');
-  } else if (k === '%') {
-    if (calc.pending) { calc.cur = calcFmt(parseFloat(calc.cur) / 100); calc.fresh = true; }
-    else if (!calc.tokens.length && calc.expr.endsWith('=')) { calc.cur = calcFmt(parseFloat(calc.cur) / 100); calc.expr = ''; calc.pending = true; calc.fresh = true; }
-    else if (calc.tokens[calc.tokens.length - 1] === ')') {
-      let depth = 0, openAt = -1, closeAt = calc.tokens.length - 1;
-      for (let i = closeAt; i >= 0; i--) { if (calc.tokens[i] === ')') depth++; else if (calc.tokens[i] === '(' && --depth === 0) { openAt = i; break; } }
-      if (openAt >= 0) {
-        try { const v = calcEvalTokens(calc.tokens.slice(openAt, closeAt + 1)) / 100; calc.tokens.splice(openAt, closeAt - openAt + 1, calcFmt(v)); calc.cur = calcFmt(v); calc.fresh = true; }
-        catch (e) {}
-      }
-    }
+  } else if (k === '()') {
+    calcToggleParen();
   } else if (k === '(') {
-    if (calc.pending) { calc.tokens.push(calc.cur, '×'); calc.pending = false; }
-    else if (!calc.tokens.length && calc.expr.endsWith('=')) { calc.tokens.push(calc.cur, '×'); calc.expr = ''; }
-    else if (calc.tokens[calc.tokens.length - 1] === ')') calc.tokens.push('×');
-    else if (calc.tokens.length && !calcIsOp(calc.tokens[calc.tokens.length - 1]) && calc.tokens[calc.tokens.length - 1] !== '(') calc.tokens.push('×');
-    calc.tokens.push('('); calc.open++; calc.cur = '0'; calc.fresh = true; calc.pending = false; calc.expr = '';
+    calcOpenParen();
   } else if (k === ')') {
-    if (calc.open > 0) {
-      if (calc.pending) { calc.tokens.push(calc.cur); calc.pending = false; }
-      const last = calc.tokens[calc.tokens.length - 1];
-      if (last !== '(' && !calcIsOp(last) && last != null) {
-        calc.tokens.push(')'); calc.open--; calc.fresh = true;
-        try { calc.cur = calcFmt(calcEvalTokens(calc.tokens)); } catch (e) {}
-      }
-    }
+    calcCloseParen();
   } else if (calcIsOp(k)) {
     if (calc.pending) {
       calc.tokens.push(calc.cur); calc.pending = false; calc.fresh = true; calc.expr = ''; calc.tokens.push(k);
@@ -1971,7 +1980,7 @@ $('calcKeys').addEventListener('click', e => { const b = e.target.closest('.key'
 document.addEventListener('keydown', e => {
   if (!$('panel-calc').classList.contains('active') || e.ctrlKey || e.metaKey || e.altKey) return;
   const tag = document.activeElement && document.activeElement.tagName; if (/^(INPUT|SELECT|TEXTAREA)$/.test(tag || '')) return;
-  const map = { '+': '+', '-': '−', '*': '×', '/': '÷', 'x': '×', 'Enter': '=', '=': '=', 'Backspace': '⌫', 'Delete': 'AC', 'Escape': 'AC', '%': '%', '.': '.', ',': '.', '(': '(', ')': ')' };
+  const map = { '+': '+', '-': '−', '*': '×', '/': '÷', 'x': '×', 'Enter': '=', '=': '=', 'Backspace': '⌫', 'Delete': 'AC', 'Escape': 'AC', '.': '.', ',': '.', '(': '(', ')': ')' };
   const k = /^[0-9]$/.test(e.key) ? e.key : map[e.key]; if (!k) return;
   e.preventDefault(); calcKey(k);
 });
@@ -2009,5 +2018,5 @@ connectPublic();
 window.__dbt = { state, contracts, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; } }; // debugging hook
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4cf58479b7fc9d9',t:'MTc5MjQwODMxNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

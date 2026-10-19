@@ -344,6 +344,9 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .lock .logo.lg::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;background:#f2545f;box-shadow:0 8px 22px -6px rgba(242,84,95,.8);opacity:0;transition:opacity .1s linear;pointer-events:none}
 .lock .logo.lg svg{position:relative;z-index:1;overflow:visible;transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
 .lock .logo.lg svg .lock-ring-diagonal-a,.lock .logo.lg svg .lock-ring{transform-box:fill-box;transform-origin:center;transform-style:preserve-3d}
+.lock .logo.lg svg .ring-depth{stroke:rgba(0,0,0,.68);stroke-width:4;opacity:.9}
+.lock .logo.lg svg .ring-body{stroke:currentColor;stroke-width:2.6}
+.lock .logo.lg svg .ring-glint{stroke:rgba(255,255,255,.88);stroke-width:.8;stroke-dasharray:9 38;stroke-dashoffset:1;opacity:.9}
 .lock.logo-cycle .logo.lg{background-image:none;background-color:#f0b943;color:#131a22;animation:privacyLogoColor 60s linear infinite;will-change:background-color,box-shadow}
 .lock.logo-cycle .logo.lg svg .lock-ring-diagonal-a{animation:privacyRingDiagonalA 5s linear infinite;will-change:transform}
 .lock.logo-cycle .logo.lg svg .lock-ring{animation:privacyRingDiagonalB 5s linear infinite;will-change:transform}
@@ -374,21 +377,25 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   96.667%{animation-timing-function:cubic-bezier(.45,0,.55,1)}
   100%{background-color:#f0b943;box-shadow:0 8px 22px -6px rgba(226,168,60,.66)}
 }
-/* The ring stays centered: first rotate on the bottom-left ↔ top-right axis, then the top-left ↔ bottom-right axis. */
+/* Four centered 3D turns alternate along the two diagonals during the two-second color fade. */
 @keyframes privacyRingDiagonalA{
-  0%,60%{transform:perspective(120px) rotate3d(1,-1,0,0deg)}
+  0%,60%{transform:perspective(90px) rotate3d(1,-1,0,0deg)}
   60%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  80%{transform:perspective(120px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(120px) rotate3d(1,-1,0,720deg)}
+  70%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  80%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  90%{transform:perspective(90px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  100%{transform:perspective(90px) rotate3d(1,-1,0,720deg)}
 }
 @keyframes privacyRingDiagonalB{
-  0%,80%{transform:perspective(120px) rotate3d(1,1,0,0deg)}
-  80%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(120px) rotate3d(1,1,0,720deg)}
+  0%,70%{transform:perspective(90px) rotate3d(1,1,0,0deg)}
+  70%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  80%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  90%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  100%{transform:perspective(90px) rotate3d(1,1,0,720deg)}
 }
 .lock.logo-error .logo.lg{box-shadow:0 8px 24px -3px rgba(242,84,95,.9)!important}
 .lock.logo-error .logo.lg::before{opacity:1}
-.lock.logo-error .logo.lg svg{animation:lockRingVibrate 1.5s linear both}
+.lock.logo-error .logo.lg svg{animation:lockRingVibrate 1s linear both}
 @keyframes lockRingVibrate{
   0%{transform:translateX(0);animation-timing-function:cubic-bezier(.42,0,.58,1)}
   5%{transform:translateX(-2px)}
@@ -401,17 +408,21 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   95%{transform:translateX(1px);animation-timing-function:cubic-bezier(.42,0,.58,1)}
   100%{transform:translateX(0)}
 }
-.lock.unlock-success .logo.lg svg .lock-ring-diagonal-a{animation:unlockRingDiagonalA 2s cubic-bezier(.35,0,.2,1) both}
-.lock.unlock-success .logo.lg svg .lock-ring{animation:unlockRingDiagonalB 2s cubic-bezier(.35,0,.2,1) both}
+.lock.unlock-success .logo.lg svg .lock-ring-diagonal-a{animation:unlockRingDiagonalA 2s linear both}
+.lock.unlock-success .logo.lg svg .lock-ring{animation:unlockRingDiagonalB 2s linear both}
 @keyframes unlockRingDiagonalA{
-  0%{transform:perspective(120px) rotate3d(1,-1,0,0deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  50%{transform:perspective(120px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(120px) rotate3d(1,-1,0,720deg)}
+  0%{transform:perspective(90px) rotate3d(1,-1,0,0deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  25%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  50%{transform:perspective(90px) rotate3d(1,-1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  75%{transform:perspective(90px) rotate3d(1,-1,0,720deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  100%{transform:perspective(90px) rotate3d(1,-1,0,720deg)}
 }
 @keyframes unlockRingDiagonalB{
-  0%,50%{transform:perspective(120px) rotate3d(1,1,0,0deg)}
-  50%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
-  100%{transform:perspective(120px) rotate3d(1,1,0,720deg)}
+  0%,25%{transform:perspective(90px) rotate3d(1,1,0,0deg)}
+  25%{animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  50%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  75%{transform:perspective(90px) rotate3d(1,1,0,360deg);animation-timing-function:cubic-bezier(.35,0,.2,1)}
+  100%{transform:perspective(90px) rotate3d(1,1,0,720deg)}
 }
 .auto-check{align-items:flex-start;line-height:1.45}
 .auto-check input{margin-top:4px;flex:none}
@@ -481,7 +492,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 
 <div id="lockScreen" class="lock hidden" role="dialog" aria-modal="true">
   <div class="lockbox">
-    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="lock-ring-diagonal-a"><g class="lock-ring"><circle cx="12" cy="12" r="7.5"/></g></g></svg></div>
+    <div class="logo lg" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="lock-ring-diagonal-a"><g class="lock-ring"><circle class="ring-depth" cx="12" cy="12" r="7.5" transform="translate(0 .55)"/><circle class="ring-body" cx="12" cy="12" r="7.5"/><circle class="ring-glint" cx="12" cy="12" r="7.5" transform="rotate(-42 12 12)"/></g></g></svg></div>
     <h2 id="lockTitle">Locked</h2>
     <p class="hint" id="lockText"></p>
     <input id="lockPin" type="password" autocomplete="off" placeholder="PIN / password" />
@@ -658,7 +669,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
           </div>
           <div class="dpad"></div>
         </details>
-        <details class="auto-run-settings" id="autoRunSettings" open>
+        <details class="auto-run-settings" id="autoRunSettings">
           <summary>Hourly auto-run schedule</summary>
           <label class="chk auto-check"><input type="checkbox" id="autoRunToggle" /><span><b>Automatically run my strategy on an hourly schedule</b><br><small>Choose when the first cycle starts and when later cycles repeat. Runs never overlap.</small></span></label>
           <div class="grid2 auto-schedule">

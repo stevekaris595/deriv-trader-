@@ -150,7 +150,7 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 .tab.active{background:linear-gradient(145deg,var(--gold-2),var(--gold-3));color:var(--on-gold)}
 .tab .pill{margin-left:2px;padding:0 6px;font-size:10px;line-height:15px}
 .tab.active .pill{background:rgba(0,0,0,.18);border-color:transparent;color:var(--on-gold)}
-.panel{display:none}.panel.active{display:block}
+.panel{display:none}.panel.active{display:block}.panel-stage{position:relative;min-width:0;display:flow-root}
 /* ---------- switch ---------- */
 .switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px}
 .switch .t{font-weight:750;font-size:16px;letter-spacing:-.01em}
@@ -194,6 +194,28 @@ details > .sub{margin-top:14px}
 .status.live{border-color:var(--green);color:var(--text);background:var(--green-bg)}
 .status.live:before{background:var(--green);box-shadow:0 0 0 0 var(--green);animation:pulse 1.6s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,207,142,.55)}100%{box-shadow:0 0 0 9px rgba(60,207,142,0)}}
+/* ---------- persistent trade progress ---------- */
+.progress-graph{margin:14px 0 12px;border-radius:var(--rs);background:var(--card2)}
+.progress-graph>summary{padding:12px 14px;color:var(--text);font-size:13px;font-weight:700}
+.progress-graph-body{padding:0 12px 12px}
+.progress-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.progress-period{display:flex;align-items:center;gap:8px;min-width:0}
+.progress-period label{font-size:12px;color:var(--muted);font-weight:600}
+.progress-period select{height:38px;min-width:112px;appearance:none;-webkit-appearance:none;padding:0 30px 0 11px;border:1px solid var(--border-2);border-radius:10px;background-color:var(--card);background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;color:var(--text);font-size:13px;outline:none}
+.progress-period select:focus{border-color:var(--gold);box-shadow:var(--focus)}
+.progress-clear{font-size:9px;padding:5px 9px}
+.progress-clear:disabled{opacity:.45;cursor:not-allowed}
+.progress-summary{margin:10px 1px 4px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}
+#progressChart{display:block;width:100%;height:auto;min-height:140px;overflow:visible}
+.progress-grid{stroke:var(--border);stroke-width:1}
+.progress-zero{stroke:var(--dim);stroke-width:1;stroke-dasharray:4 4}
+.progress-axis-label{fill:var(--dim);font-size:11px;font-family:inherit}
+.progress-area{fill:var(--gold-bg);stroke:none}
+.progress-line{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.progress-dot{fill:var(--gold);stroke:var(--card);stroke-width:2}
+.progress-empty-label{fill:var(--dim);font-size:13px;font-family:inherit;text-anchor:middle}
+.progress-note{margin:5px 1px 0;line-height:1.45}
+@media(max-width:380px){.progress-graph-body{padding-left:8px;padding-right:8px}.progress-clear{font-size:8px;padding:5px 7px}.progress-period select{min-width:96px}}
 /* ---------- tables ---------- */
 .tblwrap{margin-top:14px}
 .legend{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-weight:650;padding:0 2px 8px;border-bottom:1px solid var(--border)}
@@ -270,6 +292,9 @@ details > .sub{margin-top:14px}
 #scannerBody{display:grid!important;grid-template-rows:1fr;padding:0;visibility:visible;transition:grid-template-rows .36s cubic-bezier(.2,.7,.2,1),visibility 0s}
 #scannerBody>.inner{overflow:hidden;min-height:0;padding:2px 18px 18px}
 #scannerBody.hidden{grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .36s cubic-bezier(.2,.7,.2,1),visibility 0s .36s}
+.scanner-switch .sw-t{cursor:pointer;flex:1;min-width:0;border-radius:8px;outline:none}
+.scanner-switch .sw-t:focus-visible{box-shadow:var(--focus)}
+.scanner-switch .sw{cursor:pointer}
 .mkt-wrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s cubic-bezier(.2,.7,.2,1)}
 .mkt-wrap>.tblwrap{overflow:hidden;min-height:0;visibility:visible;transition:visibility 0s}
 .mkt-wrap.closed{grid-template-rows:0fr}
@@ -281,11 +306,26 @@ details > .sub{margin-top:14px}
 .linkbtn{border:0;background:var(--card3);color:var(--muted);font:inherit;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:4px 10px;border-radius:999px;transition:background .2s,color .2s,transform .12s}
 .linkbtn:hover{color:var(--text)}
 .linkbtn:active{transform:scale(.95)}
+.ai-stake-label{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0;margin-bottom:6px}
+.ai-stake-label label{display:block;min-width:0;margin:0;font-size:12px;color:var(--muted);font-weight:600}
+.ai-stake-auto{flex:none;padding:2px 7px;font-size:9px}
+.ai-stake-auto.active{background:var(--gold-bg);color:var(--gold)}
+.ai-stake-auto:disabled{opacity:.55;cursor:not-allowed}
 .card,.btn,.key,.chip,.f input,.f select,.f textarea,.note,.status,.pill,.badge,.plan,.stripbox,.legend,details,.tabs,.ibtn{transition:background-color .3s,border-color .3s,color .3s,box-shadow .3s,transform .12s cubic-bezier(.2,.7,.2,1),filter .2s}
 header{transition:box-shadow .3s,background-color .3s}
 header.scrolled{box-shadow:0 8px 24px -16px rgba(0,0,0,.6)}
-.panel.active{animation:panelIn .32s cubic-bezier(.2,.7,.2,1) both}
-@keyframes panelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.panel-stage.is-transitioning{overflow:hidden;will-change:height;transition:height .48s cubic-bezier(.22,.61,.36,1)}
+.panel-stage.is-transitioning>.panel.panel-leaving,.panel-stage.is-transitioning>.panel.panel-entering{display:block;position:absolute;inset:0 0 auto;width:100%;margin:0;backface-visibility:hidden;will-change:transform,opacity}
+.panel-stage.is-transitioning>.panel.panel-leaving{z-index:1;pointer-events:none}
+.panel-stage.is-transitioning>.panel.panel-entering{z-index:2;pointer-events:none}
+.panel-stage.is-transitioning>.panel.enter-right{animation:tabEnterFromRight .48s cubic-bezier(.22,.72,.22,1) both}
+.panel-stage.is-transitioning>.panel.enter-left{animation:tabEnterFromLeft .48s cubic-bezier(.22,.72,.22,1) both}
+.panel-stage.is-transitioning>.panel.leave-left{animation:tabLeaveToLeft .40s cubic-bezier(.4,0,.2,1) both}
+.panel-stage.is-transitioning>.panel.leave-right{animation:tabLeaveToRight .40s cubic-bezier(.4,0,.2,1) both}
+@keyframes tabEnterFromRight{0%{opacity:0;transform:translateX(34px)}72%{opacity:1;transform:translateX(-2px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes tabEnterFromLeft{0%{opacity:0;transform:translateX(-34px)}72%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes tabLeaveToLeft{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(-24px)}}
+@keyframes tabLeaveToRight{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(24px)}}
 .tab:active{transform:scale(.94)}
 .tab .ic{transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
 .tab.active .ic{transform:translateY(-1px) scale(1.08)}
@@ -591,23 +631,24 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   </div>
 
   <!-- ============ TABS ============ -->
-  <nav class="tabs" aria-label="Sections">
+  <nav class="tabs" aria-label="Sections — swipe left or right to switch tabs">
     <button class="tab active" data-tab="scanner"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><span>AI Scanner</span></button>
     <button class="tab" data-tab="bulk"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="m3 13 9 5 9-5"/><path d="m3 17.5 9 5 9-5"/></svg><span>Bulk Trader</span></button>
     <button class="tab" data-tab="trades"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3h14v18l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Trades <span class="pill" id="tradeCount">0</span></span></button>
     <button class="tab" data-tab="calc"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg><span>Calculator</span></button>
   </nav>
 
+  <div class="panel-stage" id="panelStage">
   <!-- ============ AI SCANNER ============ -->
   <section class="panel active" id="panel-scanner">
     <div class="card">
-      <div class="switch">
-        <div class="sw-t"><div class="t">AI Scanner</div><div class="s">Watches every Volatility index live. Trades after manual Start or an enabled hourly schedule.</div></div>
-        <label class="sw"><input type="checkbox" id="scannerToggle" /><span></span></label>
+      <div class="switch scanner-switch" id="scannerSwitchArea">
+        <div class="sw-t" id="scannerToggleLabel" role="button" tabindex="0" aria-controls="scannerBody" aria-pressed="false" aria-expanded="false"><div class="t">AI Scanner</div><div class="s">Watches every Volatility index live. Trades after manual Start or an enabled hourly schedule.</div></div>
+        <label class="sw" aria-label="Enable AI Scanner"><input type="checkbox" id="scannerToggle" aria-label="Enable AI Scanner" /><span></span></label>
       </div>
       <div class="card-b hidden" id="scannerBody"><div class="inner">
         <div class="grid3">
-          <div class="f"><label>Stake</label><input id="aiStake" inputmode="decimal" /></div>
+          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true" title="Use the calculated balance-based stake">AUTO</button></div><input id="aiStake" inputmode="decimal" /></div>
           <div class="f"><label>Bulk trades</label><input id="aiBulk" inputmode="numeric" /></div>
           <div class="f"><label>Max sessions</label><input id="aiMax" inputmode="numeric" /></div>
         </div>
@@ -683,7 +724,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
             <div class="hint" id="autoRunStatus">Off — manual Start is unchanged.</div>
             <div class="hint" id="autoRunPlan">Connect a USD trading account to calculate the 2.5% balance plan.</div>
           </div>
-          <div class="note warn auto-warning">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Auto sizing uses 2.5% of the live USD balance, max $6,430 per trade; losses can still occur.</div>
+          <div class="note warn auto-warning">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Auto sizing uses 2.5% of the live USD balance, max $6,430 per trade. If 2.5% is below Deriv's $0.35 minimum, it uses $0.35 per contract; the preview shows the resulting exposure, which can exceed 2.5%. Losses can still occur.</div>
         </details>
         <details>
           <summary>How the scanner decides</summary>
@@ -733,6 +774,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <div class="chip"><small>Won/Lost</small><b><span id="trWon" class="pos">0</span> · <span id="trLost" class="neg">0</span></b></div>
         <div class="chip"><small>Net P/L</small><b id="trPnl">0.00</b></div>
       </div>
+
       <div class="tblwrap">
       <div class="legend"><span>Trades this session</span><span></span></div>
       <table class="tbl">
@@ -744,7 +786,19 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <button class="btn" id="btnExportCsv">Download CSV</button>
         <button class="btn ghost" id="btnClearTrades">Clear list</button>
       </div>
-      <div class="note">A personal record kept in this page (cleared on reload). Every trade is a real contract on your Deriv account — official records for banks/tax: <b>app.deriv.com → Reports → Trade table / Statement</b>.</div>
+      <div class="note">The table is a session-only record, cleared on reload. The progress graph is stored separately on this browser; Clear list does not erase it. Every trade is a real contract on your Deriv account — official records for banks/tax: <b>app.deriv.com → Reports → Trade table / Statement</b>.</div>
+      <details class="progress-graph" id="progressGraphDetails">
+        <summary>Progress graph</summary>
+        <div class="progress-graph-body">
+          <div class="progress-toolbar">
+            <div class="progress-period"><label for="progressRange">Period</label><select id="progressRange"><option value="day">Day</option><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select></div>
+            <button type="button" class="linkbtn progress-clear" id="btnClearProgress">Clear graph history</button>
+          </div>
+          <div class="progress-summary" id="progressSummary" aria-live="polite">Connect an account to view progress.</div>
+          <svg id="progressChart" viewBox="0 0 720 250" role="img" aria-label="Cumulative net profit and loss graph"></svg>
+          <div class="hint progress-note" id="progressNote">Shows settled STV Traders contracts saved on this browser, for the selected account. Older Deriv trades are not imported, and this history does not sync across devices.</div>
+        </div>
+      </details>
     </div></div>
   </section>
 
@@ -772,6 +826,8 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       </div>
     </div></div>
   </section>
+
+  </div>
 
   <!-- ============ LOG ============ -->
   <div class="card collapsed" id="logCard">
@@ -887,7 +943,20 @@ const acct = new DerivWS('Account');         // OTP-authenticated endpoint: bala
 const state = { markets: new Map(), order: [], pubRetries: 0, pubTimer: null,
   accounts: [], account: null, acctConnected: false, manualDisconnect: false, acctTimer: null, acctRetries: 0, confirmedReal: false };
 const contracts = new Map();
+const PROGRESS_HISTORY_LIMIT = 10000;
+const progressHistory = new Map();
+const savedProgressHistory = store.get('progressHistory', []);
+if (Array.isArray(savedProgressHistory)) {
+  savedProgressHistory.slice(-PROGRESS_HISTORY_LIMIT).forEach(row => {
+    if (!row || typeof row !== 'object') return;
+    const account = String(row.account || ''), settledAt = Number(row.settledAt), profit = Number(row.profit);
+    if (!account || !Number.isFinite(settledAt) || !Number.isFinite(profit) || !['won', 'lost'].includes(row.status)) return;
+    const id = String(row.id || `${account}:${settledAt}:${profit}`);
+    progressHistory.set(id, { id, account, currency: String(row.currency || 'USD'), settledAt, profit, status: row.status });
+  });
+}
 let session = null, lastReason = '';
+let aiStakeAuto = true, aiStakeSyncing = false;
 const cfg = { window: 1000, over: 3, under: 6, consec: 8, strategy: 'both', priority: 'gap' };
 function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} only` : cfg.strategy === 'under' ? `Under ${cfg.under} only` : `Over ${cfg.over} & Under ${cfg.under}`; }
 
@@ -898,12 +967,13 @@ const DEFAULTS = { appId: '', aiStake: '0.35', aiBulk: '3', aiMax: '2', aiMode: 
 function loadSettings() {
   const saved = store.get('settings', {});
   if (saved.v !== SETTINGS_V) delete saved.aiMax;   // "Max" used to mean trades, now it means sessions
+  aiStakeAuto = typeof saved.aiStakeAuto === 'boolean' ? saved.aiStakeAuto : (!saved.aiStake || String(saved.aiStake) === DEFAULTS.aiStake);
   const s = Object.assign({}, DEFAULTS, saved);
   Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.value = s[k]; });
   $('rememberTok').checked = store.get('remember', true) !== false;
-  syncCfg();
+  syncCfg(); updateAIStakeAutoUI();
 }
-function saveSettings() { const s = { v: SETTINGS_V }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
+function saveSettings() { const s = { v: SETTINGS_V, aiStakeAuto }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
 function syncCfg() {
   cfg.window = Math.max(10, +$('aiWindow').value || 1000);
   let t = Math.floor(+$('aiThreshold').value); if (!Number.isFinite(t)) t = 3; cfg.over = Math.min(8, Math.max(0, t));
@@ -940,7 +1010,11 @@ function computeAutoPlan(balanceValue, currencyValue) {
   if (currency !== 'USD') return { ok: false, reason: 'The $6,430 cap is USD-based. Auto-run is limited to USD accounts; no currency conversion is guessed.' };
   if (!Number.isFinite(balance) || balance <= 0) return { ok: false, reason: 'Current account balance is unavailable.' };
   const budget = Math.floor((balance * 0.025 + 1e-9) * 100) / 100;
-  if (budget < AUTO_MIN_STAKE_USD) return { ok: false, reason: `2.5% of balance is ${fmt(budget)} USD, below Deriv's ${fmt(AUTO_MIN_STAKE_USD)} minimum stake.` };
+  if (budget < AUTO_MIN_STAKE_USD) {
+    const bulk = 1, sessions = AUTO_MIN_SESSIONS, stake = AUTO_MIN_STAKE_USD;
+    const totalExposure = Math.round(stake * bulk * sessions * 100) / 100;
+    return { ok: true, balance, currency, budget, stake, bulk, sessions, totalExposure, splitAcrossSessions: false, minStakeApplied: true, maxStake: AUTO_MAX_STAKE_USD };
+  }
   const wantedBulk = Math.max(1, Math.ceil((budget - 1e-8) / AUTO_MAX_STAKE_USD));
   let bulk = Math.min(AUTO_MAX_BULK, wantedBulk), sessions = AUTO_MIN_SESSIONS, stake, splitAcrossSessions = false;
   if (wantedBulk <= AUTO_MAX_BULK) {
@@ -954,21 +1028,28 @@ function computeAutoPlan(balanceValue, currencyValue) {
   }
   if (!(stake >= AUTO_MIN_STAKE_USD) || stake > AUTO_MAX_STAKE_USD) return { ok: false, reason: `The computed ${fmt(stake)} USD per-trade stake is outside Deriv's supported range.` };
   const totalExposure = Math.round(stake * bulk * sessions * 100) / 100;
-  return { ok: true, balance, currency, budget, stake, bulk, sessions, totalExposure, splitAcrossSessions, maxStake: AUTO_MAX_STAKE_USD };
+  return { ok: true, balance, currency, budget, stake, bulk, sessions, totalExposure, splitAcrossSessions, minStakeApplied: false, maxStake: AUTO_MAX_STAKE_USD };
 }
 function autoPlanText(p) {
   if (!p.ok) return 'Auto sizing unavailable: ' + p.reason;
+  if (p.minStakeApplied) return `2.5% budget ${fmt(p.budget)} USD per session is below the $0.35 minimum · using $0.35 per contract · ${p.bulk} trade per session × ${p.sessions} sessions · up to ${fmt(p.totalExposure)} USD total stake (above 2.5% because of the minimum).`;
   if (p.splitAcrossSessions) return `2.5% budget ${fmt(p.budget)} USD · ${p.bulk} bulk trades × ${p.sessions} sessions · ${fmt(p.stake)} USD per contract · up to ${fmt(p.totalExposure)} USD staked across this run (large-budget split).`;
   return `2.5% per session = ${fmt(p.budget)} USD · ${p.bulk} bulk trade${p.bulk > 1 ? 's' : ''} × ${p.sessions} sessions · ${fmt(p.stake)} USD per contract · up to ${fmt(p.totalExposure)} USD staked across the run.`;
 }
 function setAutoInputsLocked(on) {
   ['aiStake', 'aiBulk', 'aiMax'].forEach(id => { $(id).readOnly = !!on; $(id).classList.toggle('auto-input', !!on); });
+  if ($('btnAiStakeAuto')) $('btnAiStakeAuto').disabled = !!on || !!(session && session.active);
 }
 function applyAutoPlan(p) {
   if (!p || !p.ok) return;
   const next = { aiStake: fmt(p.stake), aiBulk: String(p.bulk), aiMax: String(p.sessions) };
   let changed = false;
-  Object.keys(next).forEach(id => { if ($(id).value !== next[id]) { $(id).value = next[id]; $(id).dispatchEvent(new Event('input', { bubbles: true })); changed = true; } });
+  Object.keys(next).forEach(id => {
+    if ($(id).value === next[id]) return;
+    if (id === 'aiStake') setAIStakeProgrammatically(next[id], false);
+    else { $(id).value = next[id]; $(id).dispatchEvent(new Event('input', { bubbles: true })); }
+    changed = true;
+  });
   if (!changed) updatePlan();
 }
 function autoRemaining(ms) {
@@ -1054,11 +1135,13 @@ function disableAutoRun(reason, stopActive) {
   releaseScreenWakeLock(); setAutoInputsLocked(false); setAutoRunScheduleLocked(false);
   const restore = autoRun.manualValues; autoRun.manualValues = null;
   if (restore) {
-    $('aiStake').value = restore.stake; $('aiBulk').value = restore.bulk; $('aiMax').value = restore.max;
-    ['aiStake', 'aiBulk', 'aiMax'].forEach(id => $(id).dispatchEvent(new Event('input', { bubbles: true })));
+    setAIStakeProgrammatically(restore.stake, true);
+    $('aiBulk').value = restore.bulk; $('aiMax').value = restore.max;
+    ['aiBulk', 'aiMax'].forEach(id => $(id).dispatchEvent(new Event('input', { bubbles: true })));
   }
   if (stopActive && session && session.active && session.autoRunCycle) { session.autoRunCycle = false; endSession(reason || 'Auto-run disabled'); }
-  refreshAutoPanel(); updateSessionUI();
+  if (aiStakeAuto) syncAIStakeWithBalance();
+  refreshAutoPanel(); updateAIStakeAutoUI(); updateSessionUI();
 }
 async function enableAutoRun() {
   if (autoRun.enabled) return true;
@@ -1069,12 +1152,15 @@ async function enableAutoRun() {
   if (!(await ensurePrivacyCredential())) return false;
   if (!confirmReal()) return false;
   const firstSchedule = firstAutoRunSchedule();
+  const minStakeWarning = plan.minStakeApplied ? `
+
+Minimum-stake warning: the $0.35 per-contract minimum is above 2.5% of this balance. The planned $${fmt(plan.totalExposure)} total exposure can therefore exceed the 2.5% budget.` : '';
   const accepted = window.confirm(`Enable hourly auto-run on the ${state.account.is_virtual ? 'DEMO' : 'REAL'} account?
 
 ${autoScheduleSummary()}
 Strategy: ${strategyLabel()}
 Stake per contract: ${fmt(plan.stake)} USD · bulk ${plan.bulk} · max sessions ${plan.sessions}
-Estimated total stake across a completed run: up to ${fmt(plan.totalExposure)} USD. Any or all contracts can lose.
+Estimated total stake across a completed run: up to ${fmt(plan.totalExposure)} USD. Any or all contracts can lose.${minStakeWarning}
 
 The browser page must remain open and connected. Auto-run cannot guarantee 24/7 operation if the OS suspends or closes the browser.`);
   if (!accepted) return false;
@@ -1236,7 +1322,7 @@ function playLockUnlockAnimation() {
   const screen = $('lockScreen'), ring = screen.querySelector('.lock-ring');
   if (ring) void ring.getBoundingClientRect().width;
   screen.classList.add('unlock-success');
-  if (!ring || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return Promise.resolve();
+  if (!ring || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return Promise.resolve();
   return new Promise(resolve => {
     let finished = false, fallback = 0;
     const finish = () => {
@@ -1417,11 +1503,12 @@ function setPubStatus(cls, text) { $('pubDot').className = 'dot ' + cls; $('pubT
 function setAcctStatus(cls, text) { $('acctDot').className = 'dot ' + cls; $('acctText').textContent = 'Account: ' + text; }
 function updateAccount() {
   const a = state.account; const pill = $('acctPill');
-  if (!a) { $('balance').textContent = '—'; pill.className = 'pill'; pill.textContent = 'Not logged in'; if (typeof updateBalanceCalculator === 'function') updateBalanceCalculator(); if (typeof refreshAutoPanel === 'function') refreshAutoPanel(); return; }
+  if (!a) { $('balance').textContent = '—'; pill.className = 'pill'; pill.textContent = 'Not logged in'; if (typeof updateBalanceCalculator === 'function') updateBalanceCalculator(); if (typeof refreshAutoPanel === 'function') refreshAutoPanel(); if (typeof renderProgressGraph === 'function') renderProgressGraph(); return; }
   $('balance').textContent = `${fmt(a.balance)} ${a.currency}`;
   pill.className = 'pill ' + (a.is_virtual ? 'demo' : 'real'); pill.textContent = `${a.is_virtual ? 'DEMO' : 'REAL'} · ${a.id}`;
   if (typeof updateBalanceCalculator === 'function') updateBalanceCalculator();
   if (typeof refreshAutoPanel === 'function') refreshAutoPanel();
+  if (typeof renderProgressGraph === 'function') renderProgressGraph();
 }
 function setConnectedUI(on) {
   state.acctConnected = on; $('btnConnect').disabled = on; $('btnDisconnect').disabled = !on; $('btnBulkBuy').disabled = !on;
@@ -1429,6 +1516,7 @@ function setConnectedUI(on) {
   $('acctSelect').disabled = !!(session && session.active) || autoRun.enabled;
   if (typeof updateBalanceCalculator === 'function') updateBalanceCalculator();
   if (typeof refreshAutoPanel === 'function') refreshAutoPanel();
+  if (typeof renderProgressGraph === 'function') renderProgressGraph();
 }
 function setMsg(text, cls = '') { $('connectMsg').className = 'msg ' + cls; $('connectMsg').textContent = text; }
 
@@ -1614,7 +1702,7 @@ function buyContract(m, o, source, sessionId, done) {
   const req = { buy: '1', price: +o.stake, subscribe: 1, parameters: params };
   acct.send(req).then((msg) => {
     const b = msg.buy;
-    const c = { id: b.contract_id, txId: b.transaction_id, account: state.account ? state.account.id : '', reqId: req.req_id, subIds: msg.subscription ? [msg.subscription.id] : [], symbol: m.symbol, name: m.name, pipDec: m.pipDec, type: o.type,
+    const c = { id: b.contract_id, txId: b.transaction_id, account: state.account ? state.account.id : '', currency: state.account ? state.account.currency : 'USD', reqId: req.req_id, subIds: msg.subscription ? [msg.subscription.id] : [], symbol: m.symbol, name: m.name, pipDec: m.pipDec, type: o.type,
       barrier: needsBarrier(o.type) ? o.barrier : null, stake: +b.buy_price, payout: +b.payout, status: 'open', profit: 0, time: Date.now(), source, sessionId, exitSpot: null, pocSeen: false, checks: 0 };
     contracts.set(c.id, c); renderTradeRow(c); updateTotals();
     if (b.balance_after != null && state.account) { state.account.balance = +b.balance_after; updateAccount(); }
@@ -1657,6 +1745,7 @@ function onPOC(p) {
 }
 function exitDigit(c) { const v = c.exitSpot != null ? c.exitSpot : c.currentSpot; if (v == null || v === '') return ''; const s = Number(v).toFixed(c.pipDec); return s.slice(-1); }
 function settle(c) {
+  persistSettledTrade(c);
   updateTotals();
   const line = `${c.status.toUpperCase()} ${c.name} ${contractLabel(c.type, c.barrier)} · exit digit ${exitDigit(c) || '?'} · ${c.profit >= 0 ? '+' : ''}${fmt(c.profit)}`;
   log(line, c.status === 'won' ? 'ok' : 'err');
@@ -1782,7 +1871,8 @@ function endSession(reason) {
   if (!session || !session.active) return;
   const finished = session; finished.active = false; lastReason = reason; $('acctSelect').disabled = autoRun.enabled;
   log(`AI trading stopped: ${reason} · placed ${finished.placed} · won ${finished.won} · lost ${finished.lost} · P/L ${fmt(finished.pnl)}`);
-  toast(reason); updateSessionUI();
+  if (!autoRun.enabled && aiStakeAuto) syncAIStakeWithBalance();
+  toast(reason); updateAIStakeAutoUI(); updateSessionUI();
   if (finished.autoRunCycle && autoRun.enabled) {
     autoRun.cycleId = null;
     if (/buy error|connection lost|account not connected|disconnected|scanner switched off/i.test(reason)) {
@@ -1871,6 +1961,147 @@ function updateTotals() {
   const p = $('trPnl'); p.textContent = (pnl >= 0 ? '+' : '') + fmt(pnl); p.className = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
 }
 
+/* ======================== persistent progress graph ==================== */
+const progressPeriods = { day: 'Today', week: 'This week', month: 'This month', year: 'This year' };
+function progressPeriodBounds(period, now = new Date()) {
+  let start;
+  if (period === 'week') {
+    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7)); // Monday, local time
+  } else if (period === 'month') start = new Date(now.getFullYear(), now.getMonth(), 1);
+  else if (period === 'year') start = new Date(now.getFullYear(), 0, 1);
+  else start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let end;
+  if (period === 'week') { end = new Date(start); end.setDate(end.getDate() + 7); }
+  else if (period === 'month') end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
+  else if (period === 'year') end = new Date(start.getFullYear() + 1, 0, 1);
+  else end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
+  return { start: start.getTime(), end: end.getTime() };
+}
+function progressAccountId() {
+  if (state.account && state.account.id) return String(state.account.id);
+  const saved = store.get('accountId', null);
+  if (saved) return String(saved);
+  let latest = null;
+  progressHistory.forEach(row => { if (!latest || row.settledAt > latest.settledAt) latest = row; });
+  return latest ? latest.account : '';
+}
+function progressSvgNode(tag, attrs = {}, text = '') {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  Object.keys(attrs).forEach(key => el.setAttribute(key, String(attrs[key])));
+  if (text !== '') el.textContent = text;
+  return el;
+}
+function progressAxisValue(value, currency) {
+  const sign = value < 0 ? '−' : '';
+  const amount = Math.abs(value).toFixed(2);
+  return currency === 'USD' ? `${sign}$${amount}` : `${sign}${amount}`;
+}
+function progressDelta(value, currency) {
+  const sign = value < 0 ? '−' : '+';
+  return `${sign}${Math.abs(value).toFixed(2)} ${currency}`;
+}
+function progressTickLabel(time, period) {
+  const d = new Date(time);
+  if (period === 'day') return d.toLocaleTimeString([], { hour: '2-digit', hour12: false });
+  if (period === 'week') return d.toLocaleDateString([], { weekday: 'short' });
+  if (period === 'month') return String(d.getDate());
+  return d.toLocaleDateString([], { month: 'short' });
+}
+function persistSettledTrade(c) {
+  if (!c || !c.account || !['won', 'lost'].includes(c.status) || !Number.isFinite(Number(c.profit))) return;
+  const account = String(c.account), id = `${account}:${c.id}`, settledAt = Date.now();
+  progressHistory.delete(id);
+  progressHistory.set(id, { id, account, currency: String(c.currency || (state.account && state.account.currency) || 'USD'), settledAt, profit: Number(c.profit), status: c.status });
+  while (progressHistory.size > PROGRESS_HISTORY_LIMIT) progressHistory.delete(progressHistory.keys().next().value);
+  store.set('progressHistory', [...progressHistory.values()]);
+  renderProgressGraph();
+}
+function renderProgressGraph() {
+  const chart = $('progressChart'), summary = $('progressSummary'), periodSelect = $('progressRange');
+  if (!chart || !summary || !periodSelect) return;
+  const period = progressPeriods[periodSelect.value] ? periodSelect.value : 'day';
+  const periodLabel = progressPeriods[period];
+  const accountId = progressAccountId();
+  const accountRecords = [...progressHistory.values()].filter(row => row.account === accountId);
+  const latestAccountRecord = accountRecords.reduce((latest, row) => !latest || row.settledAt > latest.settledAt ? row : latest, null);
+  const currency = String((state.account && String(state.account.id) === accountId && state.account.currency) || (latestAccountRecord && latestAccountRecord.currency) || 'USD');
+  const now = Date.now(), bounds = progressPeriodBounds(period, new Date(now));
+  const entries = accountRecords.filter(row => row.currency === currency && row.settledAt >= bounds.start && row.settledAt <= now && ['won', 'lost'].includes(row.status))
+    .sort((a, b) => a.settledAt - b.settledAt || a.id.localeCompare(b.id));
+  const clearButton = $('btnClearProgress');
+  if (clearButton) clearButton.disabled = progressHistory.size === 0;
+  let net = 0; entries.forEach(row => { net += row.profit; });
+  if (!accountId) summary.textContent = 'Connect an account to view your recorded progress.';
+  else summary.textContent = `${periodLabel} · ${entries.length} settled ${entries.length === 1 ? 'contract' : 'contracts'} · ${progressDelta(net, currency)} net P/L`;
+
+  chart.replaceChildren();
+  chart.setAttribute('viewBox', '0 0 720 250');
+  chart.setAttribute('aria-label', accountId ? `${periodLabel} cumulative net profit and loss: ${progressDelta(net, currency)} across ${entries.length} settled contracts` : 'Connect an account to view trade progress');
+  chart.appendChild(progressSvgNode('title', {}, 'Cumulative net profit and loss'));
+  chart.appendChild(progressSvgNode('desc', {}, 'Settled STV Traders contracts saved locally, accumulated by settlement time.'));
+  const W = 720, H = 250, left = 80, right = 14, top = 16, bottom = 34;
+  const plotW = W - left - right, plotH = H - top - bottom;
+  const cumulativeValues = [0]; let cumulative = 0;
+  entries.forEach(row => { cumulative += row.profit; cumulativeValues.push(cumulative); });
+  let minY = Math.min(...cumulativeValues), maxY = Math.max(...cumulativeValues);
+  if (minY === maxY) { minY -= 0.5; maxY += 0.5; }
+  else { const pad = Math.max((maxY - minY) * 0.12, 0.05); minY -= pad; maxY += pad; }
+  const xFor = time => left + Math.max(0, Math.min(1, (time - bounds.start) / (bounds.end - bounds.start))) * plotW;
+  const yFor = value => top + (maxY - value) / (maxY - minY) * plotH;
+  for (let i = 0; i <= 4; i++) {
+    const y = top + plotH * i / 4, value = maxY - (maxY - minY) * i / 4;
+    chart.appendChild(progressSvgNode('line', { x1: left, y1: y, x2: W - right, y2: y, class: 'progress-grid' }));
+    chart.appendChild(progressSvgNode('text', { x: left - 8, y: y + 4, 'text-anchor': 'end', class: 'progress-axis-label' }, progressAxisValue(value, currency)));
+  }
+  for (let i = 0; i <= 4; i++) {
+    const x = left + plotW * i / 4, time = bounds.start + (bounds.end - bounds.start) * i / 4;
+    chart.appendChild(progressSvgNode('line', { x1: x, y1: top, x2: x, y2: top + plotH, class: 'progress-grid' }));
+    chart.appendChild(progressSvgNode('text', { x, y: H - 8, 'text-anchor': i === 0 ? 'start' : i === 4 ? 'end' : 'middle', class: 'progress-axis-label' }, progressTickLabel(time, period)));
+  }
+  const zeroY = yFor(0);
+  chart.appendChild(progressSvgNode('line', { x1: left, y1: zeroY, x2: W - right, y2: zeroY, class: 'progress-zero' }));
+  if (entries.length) {
+    const points = [{ time: bounds.start, value: 0 }];
+    cumulative = 0;
+    entries.forEach(row => { cumulative += row.profit; points.push({ time: row.settledAt, value: cumulative }); });
+    const chartNow = Math.max(bounds.start, Math.min(now, bounds.end));
+    if (chartNow > points[points.length - 1].time) points.push({ time: chartNow, value: cumulative });
+    const coords = points.map(point => ({ x: xFor(point.time), y: yFor(point.value), value: point.value }));
+    const path = coords.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(' ');
+    const area = `${path} L${coords[coords.length - 1].x.toFixed(2)},${zeroY.toFixed(2)} L${coords[0].x.toFixed(2)},${zeroY.toFixed(2)} Z`;
+    chart.appendChild(progressSvgNode('path', { d: area, class: 'progress-area' }));
+    chart.appendChild(progressSvgNode('path', { d: path, class: 'progress-line' }));
+    const markerStep = Math.max(1, Math.ceil(entries.length / 70));
+    entries.forEach((row, index) => {
+      if (index % markerStep !== 0 && index !== entries.length - 1) return;
+      const point = coords[index + 1], dot = progressSvgNode('circle', { cx: point.x, cy: point.y, r: 3.5, class: 'progress-dot' });
+      dot.appendChild(progressSvgNode('title', {}, `${new Date(row.settledAt).toLocaleString()} · ${progressDelta(point.value, currency)} cumulative`));
+      chart.appendChild(dot);
+    });
+  } else {
+    chart.appendChild(progressSvgNode('text', { x: left + plotW / 2, y: top + plotH / 2 + 4, class: 'progress-empty-label' }, accountId ? `No settled trades in ${periodLabel.toLowerCase()}` : 'Connect an account to view progress'));
+  }
+}
+function initProgressGraph() {
+  const periodSelect = $('progressRange'), details = $('progressGraphDetails'), clearButton = $('btnClearProgress');
+  const savedPeriod = store.get('progressRange', 'day');
+  if (progressPeriods[savedPeriod]) periodSelect.value = savedPeriod;
+  periodSelect.addEventListener('change', () => {
+    if (!progressPeriods[periodSelect.value]) periodSelect.value = 'day';
+    store.set('progressRange', periodSelect.value);
+    renderProgressGraph();
+  });
+  details.addEventListener('toggle', () => { if (details.open) renderProgressGraph(); });
+  clearButton.addEventListener('click', () => {
+    if (!progressHistory.size) return;
+    if (!window.confirm(`Clear ${progressHistory.size} locally saved settled trade records from the graph? This does not clear Deriv's official history.`)) return;
+    progressHistory.clear(); store.del('progressHistory'); renderProgressGraph();
+    toast('Local progress graph history cleared', 'ok');
+  });
+  renderProgressGraph();
+}
+
 /* ============================== bulk trader ============================ */
 function bulkBuy() {
   if (!state.acctConnected || !state.account) { toast('Connect your account first', 'err'); return; }
@@ -1900,13 +2131,88 @@ $('acctSelect').addEventListener('change', async () => {
 });
 $('connectHead').addEventListener('click', () => $('connectCard').classList.toggle('collapsed'));
 $('logHead').addEventListener('click', () => $('logCard').classList.toggle('collapsed'));
-document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === b));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + b.dataset.tab));
-  if (b.dataset.tab === 'bulk') updateBulkStrip();
-}));
+const TAB_ORDER = ['scanner', 'bulk', 'trades', 'calc'];
+let tabTransitionCleanup = null;
+function activateTab(name) {
+  const button = document.querySelector(`.tab[data-tab="${name}"]`);
+  if (!button) return false;
+  if (tabTransitionCleanup) tabTransitionCleanup();
+  const currentButton = document.querySelector('.tab.active');
+  const currentName = currentButton && currentButton.dataset.tab;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === button));
+  if (currentName === name) { if (name === 'bulk') updateBulkStrip(); return true; }
+  const currentPanel = currentName && $('panel-' + currentName), nextPanel = $('panel-' + name), stage = $('panelStage');
+  if (!currentPanel || !nextPanel || !stage) {
+    document.querySelectorAll('.panel').forEach(panel => panel.classList.toggle('active', panel.id === 'panel-' + name));
+    if (name === 'bulk') updateBulkStrip();
+    return true;
+  }
+  const movingForward = TAB_ORDER.indexOf(name) > TAB_ORDER.indexOf(currentName);
+  const oldHeight = Math.max(currentPanel.getBoundingClientRect().height || 0, currentPanel.scrollHeight || 0, 1);
+  stage.style.height = `${oldHeight}px`;
+  stage.classList.add('is-transitioning');
+  currentPanel.classList.remove('active');
+  currentPanel.classList.add('panel-leaving', movingForward ? 'leave-left' : 'leave-right');
+  nextPanel.classList.add('active', 'panel-entering', movingForward ? 'enter-right' : 'enter-left');
+  if (name === 'bulk') updateBulkStrip();
+  const newHeight = Math.max(nextPanel.getBoundingClientRect().height || 0, nextPanel.scrollHeight || 0, 1);
+  const raf = window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : callback => setTimeout(callback, 16);
+  raf(() => { if (stage.classList.contains('is-transitioning') && nextPanel.classList.contains('panel-entering')) stage.style.height = `${newHeight}px`; });
+  let timer = 0;
+  const expectedAnimation = movingForward ? 'tabEnterFromRight' : 'tabEnterFromLeft';
+  const onEnd = e => { if (e.target === nextPanel && e.animationName === expectedAnimation) finish(); };
+  const finish = () => {
+    clearTimeout(timer); nextPanel.removeEventListener('animationend', onEnd);
+    currentPanel.classList.remove('panel-leaving', 'leave-left', 'leave-right');
+    nextPanel.classList.remove('panel-entering', 'enter-right', 'enter-left');
+    stage.classList.remove('is-transitioning'); stage.style.height = '';
+    if (tabTransitionCleanup === finish) tabTransitionCleanup = null;
+  };
+  tabTransitionCleanup = finish;
+  nextPanel.addEventListener('animationend', onEnd);
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) finish();
+  else timer = setTimeout(finish, 650);
+  return true;
+}
+document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => activateTab(button.dataset.tab)));
+let tabSwipeStart = null;
+function swipeTargetIsInteractive(target) {
+  return !target || typeof target.closest !== 'function' || !!target.closest('button,input,select,textarea,a,label,summary,details,.tabs,[role="button"],.key');
+}
+document.addEventListener('touchstart', e => {
+  if (e.touches.length !== 1 || swipeTargetIsInteractive(e.target) || !$('lockScreen').classList.contains('hidden')) { tabSwipeStart = null; return; }
+  tabSwipeStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  if (!tabSwipeStart || !e.changedTouches || e.changedTouches.length !== 1) { tabSwipeStart = null; return; }
+  const dx = e.changedTouches[0].clientX - tabSwipeStart.x, dy = e.changedTouches[0].clientY - tabSwipeStart.y;
+  tabSwipeStart = null;
+  if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+  const active = document.querySelector('.tab.active');
+  const index = TAB_ORDER.indexOf(active && active.dataset.tab);
+  if (index < 0) return;
+  const next = Math.max(0, Math.min(TAB_ORDER.length - 1, index + (dx < 0 ? 1 : -1)));
+  if (next !== index) activateTab(TAB_ORDER[next]);
+}, { passive: true });
+document.addEventListener('touchcancel', () => { tabSwipeStart = null; }, { passive: true });
+function setScannerEnabled(enabled) {
+  const input = $('scannerToggle');
+  if (input.checked === !!enabled) return;
+  input.checked = !!enabled;
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+$('scannerSwitchArea').addEventListener('click', e => {
+  if (e.target.closest('.sw,button,input,a,select,textarea')) return;
+  setScannerEnabled(!$('scannerToggle').checked);
+});
+$('scannerToggleLabel').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  e.preventDefault(); setScannerEnabled(!$('scannerToggle').checked);
+});
 $('scannerToggle').addEventListener('change', (e) => {
   $('scannerBody').classList.toggle('hidden', !e.target.checked);
+  $('scannerToggleLabel').setAttribute('aria-pressed', String(e.target.checked));
+  $('scannerToggleLabel').setAttribute('aria-expanded', String(e.target.checked));
   if (!e.target.checked) {
     if (autoRun.enabled) disableAutoRun('Auto-run stopped: AI Scanner switched off.', false);
     if (session && session.active) endSession('Scanner switched off');
@@ -1938,16 +2244,64 @@ window.addEventListener('beforeunload', (e) => { if ((session && session.active)
 /* ============================== calculator ============================= */
 const calc = { tokens: [], cur: '0', fresh: true, pending: false, open: 0, expr: '' };
 let calcSplitStake = null;
+function setAIStakeProgrammatically(value, dispatchChange = true) {
+  const input = $('aiStake'); if (!input) return false;
+  const next = typeof value === 'number' ? fmt(value) : String(value);
+  if (input.value === next) return false;
+  aiStakeSyncing = true;
+  try {
+    input.value = next;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    if (dispatchChange) input.dispatchEvent(new Event('change', { bubbles: true }));
+  } finally { aiStakeSyncing = false; }
+  return true;
+}
+function updateAIStakeAutoUI() {
+  const button = $('btnAiStakeAuto');
+  const busy = !!autoRun.enabled || !!(session && session.active);
+  if (!button) return;
+  button.textContent = aiStakeAuto ? 'AUTO' : 'USE AUTO';
+  button.classList.toggle('active', aiStakeAuto);
+  button.setAttribute('aria-pressed', String(aiStakeAuto));
+  button.disabled = busy;
+  button.title = aiStakeAuto ? 'Stake follows the balance calculation until you edit it' : 'Restore the calculated balance-based stake';
+}
+function markAIStakeCustom(e) {
+  if (aiStakeSyncing || autoRun.enabled) return;
+  aiStakeAuto = false;
+  if (e && e.type === 'change') saveSettings();
+  updateAIStakeAutoUI();
+}
+function syncAIStakeWithBalance() {
+  if (!aiStakeAuto || !state.account || !state.acctConnected || calcSplitStake == null || autoRun.enabled || (session && session.active)) {
+    updateAIStakeAutoUI(); return false;
+  }
+  const changed = setAIStakeProgrammatically(calcSplitStake, true);
+  updateAIStakeAutoUI();
+  return changed;
+}
+$('aiStake').addEventListener('input', markAIStakeCustom);
+$('aiStake').addEventListener('change', markAIStakeCustom);
+$('btnAiStakeAuto').addEventListener('click', () => {
+  if (autoRun.enabled || (session && session.active)) { toast('Stop the active AI session or auto-run before changing the stake mode', 'err'); return; }
+  aiStakeAuto = true; saveSettings();
+  if (state.account && state.acctConnected && calcSplitStake != null) setAIStakeProgrammatically(calcSplitStake, true);
+  updateAIStakeAutoUI();
+});
 function updateBalanceCalculator() {
   const result = $('calcBalanceResult'), balanceField = $('calcBalanceAmount');
   if (!result || !balanceField) return;
   const a = state.account, divisor = Number($('calcBalanceDivisor').value);
-  if (!a || !state.acctConnected) { balanceField.value = ''; balanceField.placeholder = 'Connect account'; calcSplitStake = null; result.textContent = '—'; return; }
+  if (!a || !state.acctConnected) { balanceField.value = ''; balanceField.placeholder = 'Connect account'; calcSplitStake = null; result.textContent = '—'; result.removeAttribute('title'); updateAIStakeAutoUI(); return; }
   balanceField.value = `${fmt(a.balance)} ${a.currency}`; balanceField.placeholder = '';
-  if (!(divisor > 0) || !Number.isFinite(divisor)) { calcSplitStake = null; result.textContent = 'Enter value'; return; }
+  if (!(divisor > 0) || !Number.isFinite(divisor)) { calcSplitStake = null; result.textContent = 'Enter value'; result.title = 'Enter a positive Calculator Value.'; updateAIStakeAutoUI(); return; }
   const raw = Number(a.balance) * 0.025 / divisor;
-  calcSplitStake = Math.floor((raw + 1e-9) * 100) / 100;
+  const rounded = Math.floor((raw + 1e-9) * 100) / 100;
+  const minStakeApplied = String(a.currency).toUpperCase() === 'USD' && rounded < AUTO_MIN_STAKE_USD;
+  calcSplitStake = minStakeApplied ? AUTO_MIN_STAKE_USD : rounded;
   result.textContent = `${fmt(calcSplitStake)} ${a.currency}`;
+  result.title = minStakeApplied ? `The calculated amount ${fmt(rounded)} USD is below the $0.35 minimum; using $0.35.` : '';
+  syncAIStakeWithBalance(); updateAIStakeAutoUI();
 }
 function calcFmt(n) { if (typeof n !== 'number' || !isFinite(n)) return 'Error'; const s = String(Number(n.toPrecision(12))); return s.replace(/e\+?/, 'e').length > 15 ? Number(n.toPrecision(8)).toString() : s; }
 function calcApply(a, op, b) { return op === '+' ? a + b : op === '−' ? a - b : op === '×' ? a * b : op === '÷' ? (b === 0 ? NaN : a / b) : NaN; }
@@ -2116,11 +2470,11 @@ calcRender(); updateBalanceCalculator();
 /* ============================== motion helpers ========================== */
 window.addEventListener('scroll', () => document.querySelector('header').classList.toggle('scrolled', window.scrollY > 4), { passive: true });
 
-loadSettings(); initAutomationSettings(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
+loadSettings(); initAutomationSettings(); initProgressGraph(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
 log('Ready. Market data connects automatically; add your App ID + PAT to trade.');
 connectPublic();
-window.__dbt = { state, contracts, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; } }; // debugging hook
+window.__dbt = { state, contracts, progressHistory, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, activateTab, renderProgressGraph, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; }, get aiStakeAuto() { return aiStakeAuto; }, get calculatedStake() { return calcSplitStake; } }; // debugging hook
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4d0e8a59805d077',t:'MTc5MjQyNDcxNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

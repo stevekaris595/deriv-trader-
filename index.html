@@ -84,6 +84,13 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 .hero{position:relative;overflow:hidden;padding:16px 18px;margin:12px 0}
 .hero:before{content:"";position:absolute;inset:0;background:radial-gradient(240px 140px at 100% 0%,var(--gold-bg),transparent 70%);pointer-events:none}
 .hero .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);font-weight:650}
+.balance-heading{display:flex;align-items:center;gap:10px}
+.balance-toggle{display:grid;place-items:center;flex:none;width:30px;height:30px;padding:0;border:1px solid var(--border-2);background:var(--card2);border-radius:50%;color:var(--muted);cursor:pointer}
+.balance-toggle svg{display:block;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.balance-toggle .eye-slash{display:none}
+.balance-toggle[aria-pressed="true"] .eye-slash{display:block}
+.balance-toggle:focus-visible{outline:0;box-shadow:var(--focus)}
+.balance-sensitive.balance-blurred{filter:blur(7px);user-select:none;-webkit-user-select:none}
 .hero .bal{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums;margin:2px 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hero .pill{white-space:nowrap}
 .hero-r{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted);position:relative}
@@ -122,6 +129,13 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 .hint{font-size:12px;color:var(--dim);margin-top:5px;line-height:1.4}
 .hint.bad{color:var(--red)}
 .hint.good{color:var(--muted)}
+.info-trigger{display:inline-grid;place-items:center;flex:none;width:1.25em;height:1.25em;margin:0;padding:0;border:1.8px solid currentColor;border-radius:50%;background:transparent;color:var(--dim);font:inherit;font-weight:900;font-style:italic;line-height:1;text-align:center;vertical-align:middle;cursor:pointer}
+.info-glyph{display:block;font-size:.76em;font-weight:900;font-style:italic;line-height:1;text-align:center;white-space:nowrap;pointer-events:none}
+.info-trigger:focus-visible{outline:0;box-shadow:var(--focus)}
+.info-trigger-block{display:block;margin-top:7px}
+.info-trigger-section{margin-top:8px}
+.info-trigger:hover{background:var(--card2)}
+.feature-explanation{display:inline}
 .pw{position:relative}
 .pw input{padding-right:64px}
 .pw button{position:absolute;right:6px;top:6px;bottom:6px;border:0;background:var(--card3);color:var(--muted);padding:0 10px;border-radius:8px;font-size:12px;font-weight:600}
@@ -193,12 +207,22 @@ details > .sub{margin-top:14px}
 .status:before{content:"";position:absolute;left:14px;top:15px;width:9px;height:9px;border-radius:50%;background:var(--dim)}
 .status.live{border-color:var(--green);color:var(--text);background:var(--green-bg)}
 .status.live:before{background:var(--green);box-shadow:0 0 0 0 var(--green);animation:pulse 1.6s infinite}
+.status.paused{border-color:var(--red);color:var(--text);background:var(--red-bg)}
+.status.paused:before{background:var(--red)}
+.status.recovering{border-color:var(--gold);background:var(--gold-bg);color:var(--text)}
+.status.recovering:before{background:var(--gold)}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(60,207,142,.55)}100%{box-shadow:0 0 0 9px rgba(60,207,142,0)}}
 /* ---------- persistent trade progress ---------- */
 .progress-graph{margin:14px 0 12px;border-radius:var(--rs);background:var(--card2)}
 .progress-graph>summary{padding:12px 14px;color:var(--text);font-size:13px;font-weight:700}
 .progress-graph-body{padding:0 12px 12px}
 .progress-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.progress-nav,.progress-zoom{display:flex;align-items:center;gap:4px;min-height:38px;color:var(--muted)}
+.progress-nav button,.progress-zoom button{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--border-2);border-radius:9px;background:var(--card);color:var(--text);font-size:20px;line-height:1;padding:0}
+.progress-nav button:disabled,.progress-zoom button:disabled{opacity:.4;cursor:not-allowed}
+#progressWindowLabel{max-width:124px;min-width:82px;text-align:center;font-size:11px;color:var(--muted);font-weight:600}
+#progressZoomLabel{min-width:30px;text-align:center;font-size:11px;font-weight:650;color:var(--muted)}
+#progressChart{touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
 .progress-period{display:flex;align-items:center;gap:8px;min-width:0}
 .progress-period label{font-size:12px;color:var(--muted);font-weight:600}
 .progress-period select{height:38px;min-width:112px;appearance:none;-webkit-appearance:none;padding:0 30px 0 11px;border:1px solid var(--border-2);border-radius:10px;background-color:var(--card);background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;color:var(--text);font-size:13px;outline:none}
@@ -215,6 +239,7 @@ details > .sub{margin-top:14px}
 .progress-dot{fill:var(--gold);stroke:var(--card);stroke-width:2}
 .progress-empty-label{fill:var(--dim);font-size:13px;font-family:inherit;text-anchor:middle}
 .progress-note{margin:5px 1px 0;line-height:1.45}
+.progress-note.info-trigger{margin-top:5px}
 @media(max-width:380px){.progress-graph-body{padding-left:8px;padding-right:8px}.progress-clear{font-size:8px;padding:5px 7px}.progress-period select{min-width:96px}}
 /* ---------- tables ---------- */
 .tblwrap{margin-top:14px}
@@ -358,6 +383,18 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 /* ---------- notes / strips / log ---------- */
 .note{font-size:12.5px;color:var(--muted);margin-top:12px;padding:12px 14px;background:var(--card2);border-radius:var(--rs);line-height:1.5}
 .note.warn{border-left:3px solid var(--gold)}
+.info-overlay{position:fixed;inset:0;z-index:1100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.info-overlay.hidden{display:none}
+.info-dialog{width:min(100%,560px);max-height:min(82vh,720px);overflow:auto;background:var(--card);border:1px solid var(--border-2);border-radius:18px;box-shadow:var(--shadow);color:var(--text);transform-origin:center;animation:infoPopIn .4s cubic-bezier(.22,.8,.25,1) both}
+@keyframes infoPopIn{0%{opacity:0;transform:translateY(12px) scale(.94)}70%{opacity:1;transform:translateY(-1px) scale(1.01)}100%{opacity:1;transform:none}}
+.info-dialog-head{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+.info-close{width:34px;height:34px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--muted);font-size:23px;line-height:1}
+.info-dialog-body{padding:14px 16px 18px;font-size:13px;color:var(--muted);line-height:1.55}
+.info-dialog-body .note{margin:0;padding:0;background:transparent}
+.info-dialog-body .note.warn{border-left:0}
+.info-dialog-body :first-child{margin-top:0}
+.info-dialog-body ol,.info-dialog-body ul{padding-left:20px}
+.info-dialog-body a{word-break:break-word}
 .note ol,.note ul{margin:6px 0 0 18px;padding:0}.note li{margin:4px 0}
 .stripbox{margin-top:12px;padding:12px 14px;background:var(--card2);border-radius:var(--rs);border:1px solid var(--border)}
 .stripbox .top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
@@ -547,8 +584,8 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   <!-- ============ ACCOUNT / STATUS ============ -->
   <div class="card hero">
     <div class="hero-l">
-      <div class="lbl">Balance</div>
-      <div class="bal" id="balance">—</div>
+      <div class="balance-heading"><div class="lbl">Balance</div><button type="button" class="balance-toggle" id="btnBalanceBlur" aria-pressed="false" aria-label="Blur account balance" title="Blur account balance"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="M3 3 21 21"/></svg></button></div>
+      <div class="bal balance-sensitive" id="balance">—</div>
       <span class="pill" id="acctPill">Not logged in</span>
     </div>
     <div class="hero-r">
@@ -565,20 +602,20 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <div class="f">
           <label>App ID</label>
           <input id="appId" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. 9eb6fce9-1a2b-…" />
-          <div class="hint">developers.deriv.com → Register application → type <b>PAT</b> (letters + numbers is correct)</div>
+          <div class="hint" data-info-source data-info-title="App ID setup">developers.deriv.com → Register application → type <b>PAT</b> (letters + numbers is correct)</div>
         </div>
         <div class="f">
           <label>Personal Access Token</label>
           <div class="pw"><input id="token" type="password" autocomplete="off" placeholder="Paste your PAT" /><button type="button" id="btnEye">show</button></div>
-          <div class="hint">Dashboard → API tokens → Create → scope <b>trade</b> only</div>
+          <div class="hint" data-info-source data-info-title="Token setup">Dashboard → API tokens → Create → scope <b>trade</b> only</div>
         </div>
       </div>
       <div class="f hidden" id="acctBox">
         <label>Trading account</label>
         <select id="acctSelect"></select>
-        <div class="hint">Start on DEMO. Switching accounts reconnects.</div>
+        <div class="hint" data-info-source data-info-title="Trading account selection">Start on DEMO. Switching accounts reconnects.</div>
       </div>
-      <label class="chk"><input type="checkbox" id="rememberTok" checked /><span>Remember the token on this device — encrypted with a PIN you choose (asked once after the first successful connection)</span></label>
+      <label class="chk"><input type="checkbox" id="rememberTok" checked /><span>Remember the token on this device <span class="feature-explanation" data-info-source data-info-title="Encrypted token storage">It is encrypted with a PIN you choose (asked once after the first successful connection).</span></span></label>
       <div class="btns"><button class="btn primary" id="btnConnect">Connect account</button></div>
       <div class="btns" style="margin-top:8px">
         <button class="btn" id="btnDisconnect" disabled>Disconnect</button>
@@ -586,7 +623,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       </div>
       <div class="msg" id="connectMsg">Nothing is sent anywhere except to api.derivws.com over TLS. The token is stored only on this device, AES-encrypted with your PIN.</div>
       <div class="help">
-        <details>
+        <details data-info-block data-info-title="Setup guide (2 minutes)">
           <summary>Setup guide (2 minutes)</summary>
           <div class="note">
             Deriv launched a new API in 2026. The old numeric <code>app_id</code> (like 1089) and the old API tokens from app.deriv.com <b>no longer work</b> — the alphanumeric App ID is the right one.
@@ -599,7 +636,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
             No domain, hosting or payment is needed — this page talks to Deriv directly from your device.
           </div>
         </details>
-        <details>
+        <details data-info-block data-info-title="Opening the app and keeping it secure">
           <summary>Opening the app &amp; keeping it secure</summary>
           <div class="note">
             <b>Opening it</b> — tap <b>▶ Run</b> in Acode (Chrome opens a <code>localhost</code> address that exists only inside your phone), open the file from your Files app with Chrome, or publish it free on GitHub Pages for an https link (see SETUP.md). There is no server of ours — only this page talking to Deriv.
@@ -615,7 +652,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <details>
           <summary>Use on another device</summary>
           <div class="note">
-            Create a <b>transfer code</b>: it carries your token and App ID <b>encrypted with your password</b> (8+ characters). On the other device open the app — the same hosted link, or the same index.html — import it once, and from then on that device asks only for your password.
+            <div class="hint" data-info-source data-info-title="Use on another device">Create a <b>transfer code</b>: it carries your token and App ID <b>encrypted with your password</b> (8+ characters). On the other device open the app — the same hosted link, or the same index.html — import it once, and from then on that device asks only for your password.</div>
             <div class="btns"><button type="button" class="btn" id="btnXfer">Create transfer code / link</button></div>
             <div id="xferBox" class="hidden">
               <div class="f"><textarea id="xferOut" readonly rows="3" style="font-size:12px;word-break:break-all"></textarea></div>
@@ -648,7 +685,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       </div>
       <div class="card-b hidden" id="scannerBody"><div class="inner">
         <div class="grid3">
-          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true" title="Use the calculated balance-based stake">AUTO</button></div><input id="aiStake" inputmode="decimal" /></div>
+          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true">AUTO</button><button type="button" class="info-trigger" id="aiStakeInfo" data-info-title="Automatic stake" data-info-html="The stake follows the balance-based calculation until you edit it. Tap AUTO to restore automatic updates." aria-label="Show automatic stake explanation"><span class="info-glyph">𝒊</span></button></div><input id="aiStake" inputmode="decimal" /></div>
           <div class="f"><label>Bulk trades</label><input id="aiBulk" inputmode="numeric" /></div>
           <div class="f"><label>Max sessions</label><input id="aiMax" inputmode="numeric" /></div>
         </div>
@@ -658,13 +695,14 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
           <button class="btn danger" id="btnAiStop" disabled>Stop</button>
         </div>
         <div class="status" id="aiStatus">Idle — set your amounts, then Start.</div>
+        <div class="btns"><button type="button" class="btn hidden" id="btnAiRetryRecovery">Retry recovery</button></div>
         <div class="chips">
           <div class="chip"><small>Sessions</small><b id="aiSessions">0/0</b></div>
           <div class="chip"><small>Placed</small><b id="aiPlaced">0</b></div>
           <div class="chip"><small>Won/Lost</small><b><span id="aiWon" class="pos">0</span> · <span id="aiLost" class="neg">0</span></b></div>
           <div class="chip"><small>P/L</small><b id="aiPnl">0.00</b></div>
         </div>
-        <div class="legend"><span class="legend-l">Live markets <span class="pill" id="mktCount" title="markets scanned · current signals">…</span></span><span class="legend-r"><span class="mkt-rule" title="▲ streak of digits above the Over digit · ▼ streak below the Under digit">▲&gt;<span class="ruleTh">3</span> ▼&lt;<span class="ruleTu">6</span></span><button type="button" class="linkbtn" id="btnMarkets" aria-expanded="true">Hide</button></span></div>
+        <div class="legend"><span class="legend-l">Live markets <span class="pill" id="mktCount">…</span></span><span class="legend-r"><span class="mkt-rule">▲&gt;<span class="ruleTh">3</span> ▼&lt;<span class="ruleTu">6</span></span><button type="button" class="info-trigger" id="marketLegendInfo" data-info-title="Market legend" data-info-html="▲ shows the current streak of digits above the Over threshold. ▼ shows the current streak of digits below the Under threshold." aria-label="Show market legend explanation"><span class="info-glyph">𝒊</span></button><button type="button" class="linkbtn" id="btnMarkets" aria-expanded="true">Hide</button></span></div>
         <div class="mkt-wrap" id="mktWrap">
         <div class="tblwrap" style="margin-top:0">
         <table class="tbl" id="marketTable">
@@ -684,31 +722,31 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
           </div>
           <div class="f"><label>When several markets qualify, prioritise</label>
             <select id="aiPriority"><option value="gap">Biggest gap between the top digit and the 2nd digit</option><option value="streak">Longest streak</option></select>
-            <div class="hint">Gap = top digit % minus the runner-up digit % (any digit 0–9). Ties are broken by streak length, then top-digit %.</div></div>
+            <div class="hint" data-info-source data-info-title="Market priority">Gap = top digit % minus the runner-up digit % (any digit 0–9). Ties are broken by streak length, then top-digit %.</div></div>
           <div class="sub">Privacy / idle screen</div>
-          <label class="chk auto-check"><input type="checkbox" id="privacyAutoToggle" /><span><b>Hide the screen automatically when idle</b><br><small>After the selected time, an opaque password screen hides the app. The scanner and any active trades continue behind it.</small></span></label>
+          <label class="chk auto-check"><input type="checkbox" id="privacyAutoToggle" /><span><b>Hide the screen automatically when idle</b><br><small data-info-source data-info-title="Automatic privacy screen">After the selected time, an opaque password screen hides the app. The scanner and any active trades continue behind it.</small></span></label>
           <div class="grid2">
             <div class="f"><label>Hide after inactivity</label><select id="privacyTimeout"><option value="1">1 minute</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="0">Manual only</option></select></div>
             <div class="f"><label>Privacy status</label><div class="hint" id="privacyStatus">Manual Hide is available in the header. A password is required.</div></div>
           </div>
-          <div class="hint privacy-hint">The privacy screen prevents casual viewing only; it does not encrypt the running page or protect it from device-level access. Use a strong screen lock and keep the device secure.</div>
+          <div class="hint privacy-hint" data-info-source data-info-title="Privacy screen limits">The privacy screen prevents casual viewing only; it does not encrypt the running page or protect it from device-level access. Use a strong screen lock and keep the device secure.</div>
           <div class="grid2">
             <div class="f"><label>Take profit</label><input id="aiTP" inputmode="decimal" placeholder="off" /></div>
             <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="off" /></div>
           </div>
           <div class="sub">Scanner rules</div>
           <div class="grid2">
-            <div class="f"><label>Consecutive digits</label><input id="aiConsec" inputmode="numeric" /><div class="hint">streak length, both sides</div></div>
+            <div class="f"><label>Consecutive digits</label><input id="aiConsec" inputmode="numeric" /><div class="hint" data-info-source data-info-title="Consecutive digits">This sets the required consecutive digit streak length for both signal sides.</div></div>
             <div class="f"><label>Analysis window (ticks)</label>
               <select id="aiWindow"><option>25</option><option>50</option><option>100</option><option>500</option><option>1000</option></select></div>
-            <div class="f"><label>Over side digit</label><input id="aiThreshold" inputmode="numeric" /><div class="hint">last N digits &gt; it and top digit ≤ it → Over</div></div>
-            <div class="f"><label>Under side digit</label><input id="aiThresholdUnder" inputmode="numeric" /><div class="hint">last N digits &lt; it and top digit ≥ it → Under</div></div>
+            <div class="f"><label>Over side digit</label><input id="aiThreshold" inputmode="numeric" /><div class="hint" data-info-source data-info-title="Over signal rule">The latest N digits must be greater than this digit, while the top digit in the analysis window must be at or below it.</div></div>
+            <div class="f"><label>Under side digit</label><input id="aiThresholdUnder" inputmode="numeric" /><div class="hint" data-info-source data-info-title="Under signal rule">The latest N digits must be less than this digit, while the top digit in the analysis window must be at or above it.</div></div>
           </div>
           <div class="dpad"></div>
         </details>
         <details class="auto-run-settings" id="autoRunSettings">
           <summary>Hourly auto-run schedule</summary>
-          <label class="chk auto-check"><input type="checkbox" id="autoRunToggle" /><span><b>Automatically run my strategy on an hourly schedule</b><br><small>Choose when the first cycle starts and when later cycles repeat. Runs never overlap.</small></span></label>
+          <label class="chk auto-check"><input type="checkbox" id="autoRunToggle" /><span><b>Automatically run my strategy on an hourly schedule</b><br><small data-info-source data-info-title="Hourly auto-run">Choose when the first cycle starts and when later cycles repeat. Runs never overlap.</small></span></label>
           <div class="auto-schedule" aria-label="Cycle timing">
             <div class="auto-schedule-field">
               <label class="auto-schedule-label" for="autoRunStart"><span class="auto-schedule-step">01</span><span class="auto-schedule-copy"><b>First cycle</b><small>When should it start?</small></span></label>
@@ -719,21 +757,14 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
               <select id="autoRunRepeat"><option value="clock-hour">At the next local clock-hour</option><option value="after-finish">60 minutes after each cycle finishes</option></select>
             </div>
           </div>
-          <div class="hint auto-schedule-hint" id="autoRunScheduleHint">First cycle: immediately. Repeat: at the next local clock-hour after each cycle finishes.</div>
+          <button type="button" class="info-trigger info-trigger-block auto-schedule-hint" id="autoRunScheduleHint" data-info-title="Hourly schedule timing" data-info-html="First cycle: immediately. Repeat: at the next local clock-hour after each cycle finishes." aria-label="Show hourly schedule timing explanation"><span class="info-glyph">𝒊</span></button>
           <div class="plan auto-plan" id="autoRunPanel">
             <div class="hint" id="autoRunStatus">Off — manual Start is unchanged.</div>
             <div class="hint" id="autoRunPlan">Connect a USD trading account to calculate the 2.5% balance plan.</div>
           </div>
-          <div class="note warn auto-warning">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Auto sizing uses 2.5% of the live USD balance, max $6,430 per trade. If 2.5% is below Deriv's $0.35 minimum, it uses $0.35 per contract; the preview shows the resulting exposure, which can exceed 2.5%. Losses can still occur.</div>
+          <div class="note warn auto-warning" data-info-source data-info-title="Auto-run limits and risk">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Auto sizing uses 2.5% of the live USD balance, max $6,430 per trade. If 2.5% is below Deriv's $0.35 minimum, it uses $0.35 per contract; the preview shows the resulting exposure, which can exceed 2.5%. Losses can still occur.
         </details>
-        <details>
-          <summary>How the scanner decides</summary>
-          <div class="note">
-            <b>Two signals, scanned at the same time.</b> <b>Over <span class="ruleTh">3</span></b>: the latest <span class="ruleConsec">8</span> digits are all &gt; <span class="ruleTh">3</span> and the most frequent digit over the last <span class="ruleWin">1000</span> ticks is 0–<span class="ruleTh">3</span> → trades Digit Over <span class="ruleTh">3</span>.
-            <b>Under <span class="ruleTu">6</span></b>: the latest <span class="ruleConsec">8</span> digits are all &lt; <span class="ruleTu">6</span> and the most frequent digit is <span class="ruleTu">6</span>–9 → trades Digit Under <span class="ruleTu">6</span>. Whichever appears first is executed. If several markets qualify at the same time, the one whose top digit leads its runner-up digit by the <b>biggest gap</b> wins — e.g. top digit 2 at 12.2% and 2nd digit 5 at 10.9% is a gap of 1.3 points; a market with a gap of 2.0 is preferred. The runner-up can be any digit 0–9. Equal gaps are broken by the longer streak, then the higher top-digit %. (Advanced settings can switch this to "longest streak first".)<br><br>
-            <b>Sessions.</b> Each signal starts one session: the best qualifying market gets exactly <i>Bulk trades</i> contracts, sent all at once or one after another (next one after the previous result). The scanner then waits for the next signal and repeats until <i>Max sessions</i> is reached, then stops by itself. A market must break its streak and form a fresh one before the same side is traded on it again. Take profit, stop loss and Stop end everything early.
-          </div>
-        </details>
+        <button type="button" class="info-trigger info-trigger-block scanner-rules-info" id="scannerRulesInfo" data-info-title="How the scanner decides" aria-label="Show scanner rules explanation"><span class="info-glyph">𝒊</span></button>
       </div></div>
     </div>
   </section>
@@ -761,8 +792,8 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <div class="strip" id="bkStrip"></div>
       </div>
       <div class="hint" id="bkQuote" style="margin:8px 2px 0"></div>
-      <button class="btn primary block" id="btnBulkBuy" disabled>Buy now</button>
-      <div class="note warn">All contracts are sent at the same instant on the same market, so with a 1-tick duration they all win or all lose together — one bet of stake × number of trades. Each is a separate real contract on your account.</div>
+      <button class="btn primary block" id="btnBulkBuy" disabled>Buy now</button><div class="status hidden" id="bulkStatus" aria-live="polite"></div><div class="btns"><button type="button" class="btn danger hidden" id="btnBulkStop">Stop batch</button><button type="button" class="btn hidden" id="btnBulkRetry">Retry recovery</button></div>
+      <div class="note warn" data-info-source data-info-title="Bulk Trader batch behavior">All contracts are sent at the same instant on the same market, so with a 1-tick duration they all win or all lose together — one bet of stake × number of trades. Each is a separate real contract on your account.</div>
     </div></div>
   </section>
 
@@ -786,17 +817,19 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <button class="btn" id="btnExportCsv">Download CSV</button>
         <button class="btn ghost" id="btnClearTrades">Clear list</button>
       </div>
-      <div class="note">The table is a session-only record, cleared on reload. The progress graph is stored separately on this browser; Clear list does not erase it. Every trade is a real contract on your Deriv account — official records for banks/tax: <b>app.deriv.com → Reports → Trade table / Statement</b>.</div>
+      <div class="note" data-info-source data-info-title="Trade table and official records">The table is a session-only record, cleared on reload. The progress graph is stored separately on this browser; Clear list does not erase it. Every trade is a real contract on your Deriv account — official records for banks/tax: <b>app.deriv.com → Reports → Trade table / Statement</b>.</div>
       <details class="progress-graph" id="progressGraphDetails">
         <summary>Progress graph</summary>
         <div class="progress-graph-body">
           <div class="progress-toolbar">
             <div class="progress-period"><label for="progressRange">Period</label><select id="progressRange"><option value="day">Day</option><option value="week">Week</option><option value="month">Month</option><option value="year">Year</option></select></div>
+            <div class="progress-nav" aria-label="Navigate graph periods"><button type="button" id="progressPrevious" aria-label="Show older graph period">‹</button><span id="progressWindowLabel">Current period</span><button type="button" id="progressNext" aria-label="Show newer graph period" disabled>›</button></div>
+            <div class="progress-zoom" aria-label="Graph zoom"><button type="button" id="progressZoomOut" aria-label="Zoom out">−</button><span id="progressZoomLabel">1×</span><button type="button" id="progressZoomIn" aria-label="Zoom in">+</button></div>
             <button type="button" class="linkbtn progress-clear" id="btnClearProgress">Clear graph history</button>
           </div>
           <div class="progress-summary" id="progressSummary" aria-live="polite">Connect an account to view progress.</div>
           <svg id="progressChart" viewBox="0 0 720 250" role="img" aria-label="Cumulative net profit and loss graph"></svg>
-          <div class="hint progress-note" id="progressNote">Shows settled STV Traders contracts saved on this browser, for the selected account. Older Deriv trades are not imported, and this history does not sync across devices.</div>
+          <div class="hint progress-note" id="progressNote" data-info-source data-info-title="Graph history storage">All settled STV Traders contracts are saved locally per account and currency; STV Traders does not automatically prune graph records. This device history does not sync across devices, and clearing browser/site data can erase it. Swipe right for older periods and left to move forward; use the zoom controls or pinch to zoom.</div>
         </div>
       </details>
     </div></div>
@@ -814,9 +847,9 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         <button type="button" class="key fn" data-k="±">±</button><button type="button" class="key" data-k="0">0</button><button type="button" class="key" data-k=".">.</button><button type="button" class="key eq" data-k="=">=</button>
       </div>
       <div class="btns"><button type="button" class="btn ghost" id="btnCalcStake">Use result as stake</button></div>
-      <div class="hint" style="text-align:center">Basic calculator — works with the keyboard too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
+      <div class="hint" style="text-align:center" data-info-source data-info-title="Basic calculator">Basic calculator — works with the keyboard too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
       <div class="calc-split">
-        <div class="calc-split-head"><b>Balance stake</b><span>(balance × 0.025) ÷ value</span></div>
+        <div class="calc-split-head"><b>Balance stake</b><button type="button" class="info-trigger" id="balanceStakeInfo" data-info-title="Balance stake calculation" data-info-html="Calculated stake = current connected balance × 2.5% ÷ Value. Value defaults to 1; change it to divide the stake. The current balance is read-only." aria-label="Show balance stake calculation"><span class="info-glyph">𝒊</span></button></div>
         <div class="calc-split-grid">
           <div class="f"><label for="calcBalanceAmount">Balance · auto</label><input id="calcBalanceAmount" type="text" value="—" placeholder="Connect account" readonly aria-readonly="true" /></div>
           <div class="f"><label for="calcBalanceDivisor">Value · ÷</label><input id="calcBalanceDivisor" type="number" min="0.000001" step="any" inputmode="decimal" value="1" placeholder="Enter value" /></div>
@@ -837,6 +870,12 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 
   <div class="foot">STV Traders — unofficial third-party client using Deriv's public API.<br>Trading digits is high-risk — start on DEMO.</div>
 </div>
+<div class="info-overlay hidden" id="infoOverlay" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+  <div class="info-dialog" role="document">
+    <div class="info-dialog-head"><b id="infoTitle">Feature information</b><button type="button" class="info-close" id="infoClose" aria-label="Close explanation">×</button></div>
+    <div class="info-dialog-body" id="infoBody"></div>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -846,6 +885,9 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 const REST_BASE = window.DBT_REST_BASE || 'https://api.derivws.com';
 const PUBLIC_WS = window.DBT_PUBLIC_WS || 'wss://api.derivws.com/trading/v1/options/ws/public';
 const HISTORY_COUNT = 1000, MAX_KEEP = 1000;
+const TRADE_REQUEST_TIMEOUT_MS = Number(window.DBT_TRADE_REQUEST_TIMEOUT_MS) || 15000;
+const UNCERTAIN_BUY_RECHECK_MS = Number(window.DBT_RECONCILE_RETRY_MS) || 5000;
+const MAX_UNCERTAIN_BUY_CHECKS = 3;
 
 /* =============================== helpers =============================== */
 const $ = id => document.getElementById(id);
@@ -856,6 +898,66 @@ const store = {
   set(k, v) { try { localStorage.setItem('dbt_' + k, JSON.stringify(v)); } catch (e) {} },
   del(k) { try { localStorage.removeItem('dbt_' + k); } catch (e) {} }
 };
+let balanceBlurred = store.get('balanceBlurred', false) === true;
+function applyBalanceBlur() {
+  ['balance', 'calcBalanceAmount', 'acctSelect'].forEach(id => {
+    const el = $(id); if (!el) return;
+    el.classList.add('balance-sensitive'); el.classList.toggle('balance-blurred', balanceBlurred);
+  });
+  const button = $('btnBalanceBlur');
+  if (button) { const label = balanceBlurred ? 'Show account balance' : 'Blur account balance'; button.setAttribute('aria-pressed', String(balanceBlurred)); button.setAttribute('aria-label', label); button.title = label; }
+}
+function initBalanceBlur() {
+  balanceBlurred = store.get('balanceBlurred', false) === true;
+  $('btnBalanceBlur').addEventListener('click', () => { balanceBlurred = !balanceBlurred; store.set('balanceBlurred', balanceBlurred); applyBalanceBlur(); });
+  applyBalanceBlur();
+}
+function setFeatureInfoHtml(id, html) {
+  const button = $(id);
+  if (button && button.classList.contains('info-trigger')) button.dataset.infoHtml = String(html || '');
+}
+function infoTrigger(title, html, source, asBlock) {
+  const button = document.createElement('button'); button.type = 'button'; button.className = 'info-trigger'; const glyph = document.createElement('span'); glyph.className = 'info-glyph'; glyph.textContent = '𝒊'; button.append(glyph);
+  button.dataset.infoTitle = title || 'Feature information'; button.dataset.infoHtml = html || '';
+  button.setAttribute('aria-label', 'Show ' + (title || 'feature information') + ' explanation');
+  if (source) {
+    const computed = window.getComputedStyle ? window.getComputedStyle(source) : null;
+    if (computed) {
+      button.style.fontSize = computed.fontSize; button.style.fontWeight = '900'; button.style.fontStyle = 'italic'; button.style.lineHeight = computed.lineHeight;
+      button.style.margin = computed.margin;
+      asBlock = !(computed.display === 'inline' || computed.display === 'inline-block' || computed.display === 'inline-flex');
+    }
+    if (source.classList && source.classList.contains('progress-note')) button.classList.add('progress-note');
+  }
+  if (asBlock) button.classList.add('info-trigger-block');
+  return button;
+}
+function initFeatureInfo() {
+  document.querySelectorAll('[data-info-source]').forEach(source => {
+    const html = `<div class="${source.className || ''}">${source.innerHTML}</div>`;
+    source.replaceWith(infoTrigger(source.dataset.infoTitle, html, source, false));
+  });
+  document.querySelectorAll('details[data-info-block]').forEach(source => {
+    const title = source.dataset.infoTitle || (source.querySelector('summary') && source.querySelector('summary').textContent) || 'Feature information';
+    const html = [...source.children].filter(child => child.tagName !== 'SUMMARY').map(child => child.outerHTML).join('');
+    const button = infoTrigger(title, html, null, true); button.classList.add('info-trigger-section');
+    source.replaceWith(button);
+  });
+  const overlay = $('infoOverlay'), title = $('infoTitle'), body = $('infoBody'), close = $('infoClose');
+  let lastTrigger = null;
+  const closeInfo = () => { overlay.classList.add('hidden'); body.replaceChildren(); if (lastTrigger && lastTrigger.isConnected) lastTrigger.focus(); lastTrigger = null; };
+  document.addEventListener('click', event => {
+    const trigger = event.target.closest && event.target.closest('.info-trigger');
+    if (trigger) {
+      lastTrigger = trigger; title.textContent = trigger.dataset.infoTitle || 'Feature information'; body.innerHTML = trigger.dataset.infoHtml || '';
+      overlay.classList.remove('hidden'); close.focus(); return;
+    }
+    if (event.target === overlay || event.target === close) closeInfo();
+  });
+  close.addEventListener('click', closeInfo);
+  overlay.addEventListener('click', event => { if (event.target === overlay) closeInfo(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !overlay.classList.contains('hidden')) closeInfo(); });
+}
 function log(msg, cls = '') {
   const box = $('logBox'); const line = document.createElement('div');
   line.className = 'logline ' + cls; line.textContent = `[${tstr()}] ${msg}`;
@@ -901,7 +1003,7 @@ class DerivWS {
       ws.onclose = (ev) => {
         clearTimeout(timer); if (gen !== this.gen) return;
         this.stopPing(); const err = { code: 'Disconnected', message: 'Connection closed' };
-        this.pending.forEach(p => p.rej(err)); this.pending.clear(); this.subs.clear(); this.ws = null;
+        this.pending.forEach(p => { clearTimeout(p.timer); p.rej(Object.assign({}, err, { wasSent: true })); }); this.pending.clear(); this.subs.clear(); this.ws = null;
         if (!opened) reject(new Error('Deriv closed the connection' + (ev && ev.code ? ` (code ${ev.code})` : '') + ' — no internet, or the session expired'));
         this.onClose(opened);
       };
@@ -911,20 +1013,27 @@ class DerivWS {
   handle(msg) {
     const id = msg.req_id;
     if (this.pending.has(id)) {
-      const p = this.pending.get(id); this.pending.delete(id);
-      if (msg.error) { this.subs.delete(id); p.rej(msg.error); this.onMessage(msg); return; }
+      const p = this.pending.get(id); this.pending.delete(id); clearTimeout(p.timer);
+      if (msg.error) { this.subs.delete(id); const err = Object.assign({}, msg.error, { serverRejected: true }); p.rej(err); this.onMessage(msg); return; }
       p.res(msg);
     }
     const cb = this.subs.get(id);
     if (cb) { if (msg.error) this.subs.delete(id); cb(msg); }
     this.onMessage(msg);
   }
-  send(req, onUpdate) {
+  send(req, onUpdate, timeoutMs = 0) {
     return new Promise((res, rej) => {
-      if (!this.isOpen) { rej({ code: 'NotConnected', message: this.name + ' not connected' }); return; }
+      if (!this.isOpen) { rej({ code: 'NotConnected', message: this.name + ' not connected', wasSent: false }); return; }
       const id = ++this.reqId; req.req_id = id;
-      this.pending.set(id, { res, rej }); if (onUpdate) this.subs.set(id, onUpdate);
-      this.ws.send(JSON.stringify(req));
+      const pending = { res, rej, timer: null };
+      this.pending.set(id, pending); if (onUpdate) this.subs.set(id, onUpdate);
+      if (timeoutMs > 0) pending.timer = setTimeout(() => {
+        if (this.pending.get(id) !== pending) return;
+        this.pending.delete(id); this.subs.delete(id);
+        rej({ code: 'ResponseTimeout', message: this.name + ' did not answer before the request timed out', wasSent: true });
+      }, timeoutMs);
+      try { this.ws.send(JSON.stringify(req)); }
+      catch (e) { this.pending.delete(id); this.subs.delete(id); clearTimeout(pending.timer); e.wasSent = true; rej(e); }
     });
   }
   unsubscribe(reqId, subId) { this.subs.delete(reqId); if (subId && this.isOpen) this.send({ forget: subId }).catch(() => {}); }
@@ -933,7 +1042,7 @@ class DerivWS {
   close() {
     this.stopPing(); this.gen++;
     if (this.ws) { const ws = this.ws; this.ws = null; try { ws.onclose = null; ws.onmessage = null; ws.onerror = null; ws.close(); } catch (e) {} }
-    this.pending.forEach(p => p.rej({ code: 'Disconnected', message: 'Disconnected' })); this.pending.clear(); this.subs.clear();
+    this.pending.forEach(p => { clearTimeout(p.timer); p.rej({ code: 'Disconnected', message: 'Disconnected', wasSent: true }); }); this.pending.clear(); this.subs.clear();
   }
 }
 
@@ -943,11 +1052,10 @@ const acct = new DerivWS('Account');         // OTP-authenticated endpoint: bala
 const state = { markets: new Map(), order: [], pubRetries: 0, pubTimer: null,
   accounts: [], account: null, acctConnected: false, manualDisconnect: false, acctTimer: null, acctRetries: 0, confirmedReal: false };
 const contracts = new Map();
-const PROGRESS_HISTORY_LIMIT = 10000;
 const progressHistory = new Map();
 const savedProgressHistory = store.get('progressHistory', []);
 if (Array.isArray(savedProgressHistory)) {
-  savedProgressHistory.slice(-PROGRESS_HISTORY_LIMIT).forEach(row => {
+  savedProgressHistory.forEach(row => {
     if (!row || typeof row !== 'object') return;
     const account = String(row.account || ''), settledAt = Number(row.settledAt), profit = Number(row.profit);
     if (!account || !Number.isFinite(settledAt) || !Number.isFinite(profit) || !['won', 'lost'].includes(row.status)) return;
@@ -955,7 +1063,8 @@ if (Array.isArray(savedProgressHistory)) {
     progressHistory.set(id, { id, account, currency: String(row.currency || 'USD'), settledAt, profit, status: row.status });
   });
 }
-let session = null, lastReason = '';
+let session = null, lastReason = '', manualBatch = null;
+let pendingRecoverySnapshot = store.get('recoveryState', null), recoveryRestored = false, recoveryTimer = null, recoveryRunning = false, recoveryNoticeShown = false;
 let aiStakeAuto = true, aiStakeSyncing = false;
 const cfg = { window: 1000, over: 3, under: 6, consec: 8, strategy: 'both', priority: 'gap' };
 function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} only` : cfg.strategy === 'under' ? `Under ${cfg.under} only` : `Over ${cfg.over} & Under ${cfg.under}`; }
@@ -974,6 +1083,9 @@ function loadSettings() {
   syncCfg(); updateAIStakeAutoUI();
 }
 function saveSettings() { const s = { v: SETTINGS_V, aiStakeAuto }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
+function scannerRulesExplanation() {
+  return `<p><b>Signals:</b> Over ${cfg.over} needs ${cfg.consec} latest digits all above ${cfg.over} and a most-frequent digit of 0–${cfg.over} in the last ${cfg.window} ticks. Under ${cfg.under} needs ${cfg.consec} latest digits all below ${cfg.under} and a most-frequent digit of ${cfg.under}–9. Whichever qualifies first is used.</p><p><b>Market priority:</b> the default picks the market with the biggest percentage-point gap between its top digit and runner-up (runner-up may be any digit 0–9); ties use streak length, then top-digit percentage. Advanced settings can choose longest streak first.</p><p><b>Sessions:</b> each qualifying signal starts one session of exactly the chosen Bulk trades, either all at once or sequentially. It waits for a fresh signal for each later session and stops at Max sessions. Take profit, Stop loss, or Stop ends a manual run early.</p>`;
+}
 function syncCfg() {
   cfg.window = Math.max(10, +$('aiWindow').value || 1000);
   let t = Math.floor(+$('aiThreshold').value); if (!Number.isFinite(t)) t = 3; cfg.over = Math.min(8, Math.max(0, t));
@@ -986,6 +1098,7 @@ function syncCfg() {
   document.querySelectorAll('.ruleTh').forEach(e => e.textContent = cfg.over);
   document.querySelectorAll('.ruleTu').forEach(e => e.textContent = cfg.under);
   document.querySelectorAll('.ruleWin').forEach(e => e.textContent = cfg.window);
+  setFeatureInfoHtml('scannerRulesInfo', scannerRulesExplanation());
   $('bkBarrierBox').classList.toggle('hidden', !needsBarrier($('bkContract').value));
   updatePlan();
   state.markets.forEach(m => { recompute(m); renderMarketRow(m); });
@@ -1088,7 +1201,7 @@ function autoScheduleSummary() {
 }
 function refreshAutoScheduleHint() {
   const repeatIsClock = $('autoRunRepeat').value !== 'after-finish';
-  $('autoRunScheduleHint').textContent = autoScheduleSummary() + (repeatIsClock ? ' Example: a 2:20 p.m. finish schedules the next cycle for 3:00 p.m. local time.' : '') + ' Timing choices lock while auto-run is enabled; switch it off to edit them.';
+  setFeatureInfoHtml('autoRunScheduleHint', autoScheduleSummary() + (repeatIsClock ? ' Example: a 2:20 p.m. finish schedules the next cycle for 3:00 p.m. local time.' : '') + ' Timing choices lock while auto-run is enabled; switch it off to edit them.');
 }
 function setAutoRunScheduleLocked(locked) { $('autoRunStart').disabled = !!locked; $('autoRunRepeat').disabled = !!locked; }
 function refreshAutoPanel() {
@@ -1110,7 +1223,7 @@ function scheduleAutoRunAt(targetAt, label) {
   if (!autoRun.enabled) return;
   clearTimeout(autoRun.timer); autoRun.nextAt = targetAt; autoRun.nextLabel = label || 'Waiting for the next scheduled run.'; autoRun.status = autoRun.nextLabel;
   autoRun.timer = setTimeout(() => { autoRun.timer = null; autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRunTick(); }, Math.max(0, targetAt - Date.now()));
-  refreshAutoPanel(); updateSessionUI();
+  refreshAutoPanel(); updateSessionUI(); persistRecoveryState();
 }
 function scheduleAutoRun(delay, label) { scheduleAutoRunAt(Date.now() + Math.max(0, delay), label); }
 async function requestScreenWakeLock() {
@@ -1141,12 +1254,13 @@ function disableAutoRun(reason, stopActive) {
   }
   if (stopActive && session && session.active && session.autoRunCycle) { session.autoRunCycle = false; endSession(reason || 'Auto-run disabled'); }
   if (aiStakeAuto) syncAIStakeWithBalance();
-  refreshAutoPanel(); updateAIStakeAutoUI(); updateSessionUI();
+  refreshAutoPanel(); updateAIStakeAutoUI(); updateSessionUI(); persistRecoveryState();
 }
 async function enableAutoRun() {
   if (autoRun.enabled) return true;
   if (!state.acctConnected || !state.account || !acct.isOpen) { toast('Connect a USD trading account first', 'err'); return false; }
   if (session && session.active) { toast('Stop the current AI session before enabling hourly auto-run', 'err'); return false; }
+  if (manualBatch && manualBatch.active) { toast('Finish or stop the Bulk Trader batch before enabling hourly auto-run', 'err'); return false; }
   if (!state.markets.size) { toast('Wait for Volatility market data to load first', 'err'); return false; }
   const plan = computeAutoPlan(); if (!plan.ok) { toast(plan.reason, 'err'); return false; }
   if (!(await ensurePrivacyCredential())) return false;
@@ -1176,9 +1290,9 @@ async function autoRunTick() {
   if (!autoRun.enabled || autoRun.tickRunning) return;
   autoRun.tickRunning = true; const mySeq = autoRun.seq;
   try {
-    if (!state.acctConnected || !state.account || !acct.isOpen) { disableAutoRun('Auto-run stopped: account connection is unavailable.', false); return; }
-    if (session && session.active) { scheduleAutoRun(60000, 'A run is active; retrying in 1 minute (no overlap).'); return; }
-    if (!state.markets.size) { scheduleAutoRun(60000, 'Market data unavailable; retrying in 1 minute.'); return; }
+    if (!state.acctConnected || !state.account || !acct.isOpen) { scheduleAutoRun(30000, 'Account connection unavailable; recovery will retry in 30 seconds.'); return; }
+    if ((session && session.active) || (manualBatch && manualBatch.active)) { scheduleAutoRun(60000, 'A run is active; retrying in 1 minute (no overlap).'); return; }
+    if (!state.markets.size) { scheduleAutoRun(30000, 'Market data unavailable; retrying in 30 seconds.'); return; }
     let plan = computeAutoPlan();
     if (!plan.ok) { disableAutoRun('Auto-run stopped: ' + plan.reason, false); toast(plan.reason, 'err'); return; }
     let quote = null;
@@ -1191,8 +1305,8 @@ async function autoRunTick() {
       if (latest.stake !== plan.stake || latest.bulk !== plan.bulk || latest.sessions !== plan.sessions) { plan = latest; continue; }
       break;
     }
-    if (!quote || quote.stake !== plan.stake) { disableAutoRun('Auto-run stopped: the stake quote could not be verified.', false); toast('No trades placed: Deriv did not return a current quote for the automatic stake.', 'err'); return; }
-    if (!quote.ok) { disableAutoRun('Auto-run stopped: Deriv rejected the stake quote.', false); toast('Auto-run stopped: Deriv rejected this stake. ' + (quote.message || ''), 'err'); return; }
+    if (!quote || quote.stake !== plan.stake) { scheduleAutoRun(30000, 'Stake quote could not be verified; retrying in 30 seconds.'); toast('No trades placed: Deriv did not return a current quote. Automatic recovery will retry.', 'err'); return; }
+    if (!quote.ok) { disableAutoRun('Auto-run paused: Deriv rejected the stake quote. ' + (quote.message || ''), false); toast('Auto-run paused: Deriv rejected this stake. ' + (quote.message || ''), 'err'); return; }
     if (!startAI(true)) { disableAutoRun('Auto-run stopped because a cycle could not start.', false); return; }
     autoRun.cycleId = session.id; autoRun.status = 'ON — cycle running.'; refreshAutoPanel(); updateSessionUI();
   } finally { autoRun.tickRunning = false; refreshAutoPanel(); }
@@ -1251,7 +1365,98 @@ const subtle = (window.crypto && window.crypto.subtle) || null;
 const sec = { pin: null, tokenSaved: null, unlocked: false, lastActivity: Date.now(), mode: null, resolve: null };
 const AUTO_RUN_INTERVAL_MS = 60 * 60 * 1000;
 const AUTO_MAX_STAKE_USD = 6430, AUTO_MAX_BULK = 25, AUTO_MIN_SESSIONS = 2, AUTO_MAX_SESSIONS = 20, AUTO_MIN_STAKE_USD = 0.35;
-const autoRun = { enabled: false, timer: null, uiTimer: null, nextAt: 0, nextLabel: '', wakeLock: null, wakeNote: '', manualValues: null, cycleId: null, status: 'Off — manual Start is unchanged.', seq: 0, tickRunning: false };
+const autoRun = { enabled: false, timer: null, uiTimer: null, nextAt: 0, nextLabel: '', wakeLock: null, wakeNote: '', manualValues: null, cycleId: null, status: 'Off — manual Start is unchanged.', seq: 0, tickRunning: false, restoring: false };
+function recoverySnapshot() {
+  const liveSession = session && session.active ? { ...session, tradedSignals: [...(session.tradedSignals || [])], inFlight: 0, pendingOrders: (session.pendingOrders || []).map(job => ({ ...job })) } : null;
+  const liveBulk = manualBatch && manualBatch.active ? { ...manualBatch, inFlight: 0, pendingOrders: (manualBatch.pendingOrders || []).map(job => ({ ...job })) } : null;
+  const account = (liveSession && liveSession.accountId) || (liveBulk && liveBulk.accountId) || (state.account && state.account.id) || store.get('accountId', '');
+  const relevantIds = new Set();
+  if (liveSession) contracts.forEach(c => { if (c.account === account && c.sessionId === liveSession.id) relevantIds.add(c.id); });
+  if (liveBulk) contracts.forEach(c => { if (c.account === account && c.manualBatchId === liveBulk.id) relevantIds.add(c.id); });
+  const contractFields = ['id','txId','account','currency','reqId','symbol','name','pipDec','type','barrier','stake','payout','status','profit','time','source','sessionId','manualBatchId','exitSpot','entrySpot','currentSpot','pocSeen','checks','settledAt'];
+  const savedContracts = [...relevantIds].map(id => { const c = contracts.get(id); const out = {}; contractFields.forEach(k => { if (c && c[k] !== undefined) out[k] = c[k]; }); return out; });
+  const savedAutoRun = autoRun.enabled ? { enabled: true, nextAt: autoRun.nextAt || 0, nextLabel: autoRun.nextLabel || '', manualValues: autoRun.manualValues || null, cycleId: autoRun.cycleId || null, status: autoRun.status || '' } : null;
+  if (!liveSession && !liveBulk && !savedAutoRun) return null;
+  return { v: 1, account: String(account || ''), savedAt: Date.now(), session: liveSession, manualBatch: liveBulk, contracts: savedContracts, autoRun: savedAutoRun };
+}
+function persistRecoveryState() {
+  const snapshot = recoverySnapshot();
+  if (!snapshot) { store.del('recoveryState'); pendingRecoverySnapshot = null; recoveryRestored = false; return; }
+  pendingRecoverySnapshot = snapshot; recoveryRestored = true; store.set('recoveryState', snapshot);
+}
+function clearRecoveryState() { store.del('recoveryState'); pendingRecoverySnapshot = null; recoveryRestored = false; clearTimeout(recoveryTimer); recoveryTimer = null; recoveryRunning = false; }
+function restoreJob(job) {
+  const copy = Object.assign({}, job);
+  if (copy.status === 'proposing' || copy.status === 'working') copy.status = 'ready';
+  else if (copy.status === 'buying' && copy.buySent) copy.status = 'uncertain';
+  copy.attempts = Math.max(0, Number(copy.attempts) || 0); copy.reconcileChecks = Math.max(0, Number(copy.reconcileChecks) || 0);
+  return copy;
+}
+function restoreRecoveryForAccount(accountId) {
+  const snap = pendingRecoverySnapshot || store.get('recoveryState', null);
+  if (!snap || !accountId || recoveryRestored) return false;
+  if (String(snap.account || '') !== String(accountId)) {
+    if (!recoveryNoticeShown) { toast(`Saved recovery is for account ${snap.account || 'unknown'}; connect that same account to resume it.`, 'err'); recoveryNoticeShown = true; }
+    return false;
+  }
+  recoveryRestored = true;
+  if (Array.isArray(snap.contracts)) snap.contracts.forEach(raw => {
+    if (!raw || raw.account !== accountId || raw.id == null) return;
+    const c = Object.assign({}, raw, { id: Number(raw.id) || raw.id, subIds: [], timer: null, pocSeen: false, checks: 0 });
+    contracts.set(c.id, c); renderTradeRow(c);
+  });
+  if (snap.session) {
+    const raw = snap.session;
+    session = Object.assign({}, raw, { accountId: String(raw.accountId || accountId), active: true, inFlight: 0, recovering: true,
+      tradedSignals: new Set(raw.tradedSignals || []), pendingOrders: (raw.pendingOrders || []).map(restoreJob) });
+    session.blocked = !!raw.blocked || session.pendingOrders.some(j => j.status === 'blocked');
+    session.recovering = !session.blocked;
+    if (session.autoRunCycle && !(snap.autoRun && snap.autoRun.enabled)) session.autoRunCycle = false;
+    $('aiStake').value = String(session.stake); $('aiBulk').value = String(session.bulk); $('aiMax').value = String(session.maxSessions);
+    $('aiMode').value = session.mode || 'parallel'; $('aiDuration').value = String(session.duration || 1);
+    $('aiStrategy').value = session.strategy || 'both'; $('aiPriority').value = session.priority || 'gap';
+    if (session.over != null) $('aiThreshold').value = String(session.over);
+    if (session.under != null) $('aiThresholdUnder').value = String(session.under);
+    if (session.consec != null) $('aiConsec').value = String(session.consec);
+    if (session.window != null) $('aiWindow').value = String(session.window);
+    $('aiTP').value = session.tp ? String(session.tp) : ''; $('aiSL').value = session.sl ? String(session.sl) : '';
+    syncCfg(); $('scannerToggle').checked = true; $('scannerBody').classList.remove('hidden');
+  }
+  if (snap.manualBatch) {
+    manualBatch = Object.assign({}, snap.manualBatch, { accountId: String(snap.manualBatch.accountId || accountId), active: true, inFlight: 0, recovering: true,
+      pendingOrders: (snap.manualBatch.pendingOrders || []).map(restoreJob) });
+    manualBatch.blocked = !!snap.manualBatch.blocked || manualBatch.pendingOrders.some(j => j.status === 'blocked');
+    manualBatch.recovering = !manualBatch.blocked;
+    const c = manualBatch.config || {};
+    if (c.symbol) $('bkSymbol').value = c.symbol;
+    if (c.type) $('bkContract').value = c.type;
+    if (c.barrier != null) $('bkBarrier').value = String(c.barrier);
+    if (c.stake != null) $('bkStake').value = String(c.stake);
+    if (c.duration != null) $('bkDuration').value = String(c.duration);
+    if (c.total != null) $('bkCount').value = String(c.total);
+    $('bkBarrierBox').classList.toggle('hidden', !needsBarrier($('bkContract').value));
+  }
+  updateTotals();
+  if (snap.autoRun && snap.autoRun.enabled) {
+    autoRun.enabled = true; autoRun.restoring = true; autoRun.nextAt = Number(snap.autoRun.nextAt) || 0;
+    autoRun.nextLabel = String(snap.autoRun.nextLabel || ''); autoRun.manualValues = snap.autoRun.manualValues || null;
+    autoRun.cycleId = snap.autoRun.cycleId || (session && session.autoRunCycle ? session.id : null);
+    autoRun.status = String(snap.autoRun.status || 'Hourly auto-run resumed after reconnect.'); autoRun.seq++;
+    $('autoRunToggle').checked = true; $('scannerToggle').checked = true; $('scannerBody').classList.remove('hidden');
+    setAutoInputsLocked(true); setAutoRunScheduleLocked(true); requestScreenWakeLock();
+  }
+  if (session && session.active) { $('acctSelect').disabled = true; updateSessionUI(); }
+  updateManualBatchUI(); refreshAutoPanel(); persistRecoveryState();
+  if ((session && session.active) || (manualBatch && manualBatch.active)) {
+    log('Automatic recovery resumed saved trading state for ' + accountId, 'ok');
+    setTimeout(() => startAutomaticRecovery('Checking Deriv and resuming the saved run'), 0);
+  } else if (autoRun.enabled) {
+    if (autoRun.nextAt > Date.now()) scheduleAutoRunAt(autoRun.nextAt, autoRun.nextLabel);
+    else { autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRunTick(); }
+  }
+  return true;
+}
+
 const privacyState = { auto: false, timeoutMs: 5 * 60 * 1000, lastActivity: Date.now(), locked: false };
 const strToU8 = str => Uint8Array.from(unescape(encodeURIComponent(str)), ch => ch.charCodeAt(0));
 const u8ToStr = u => decodeURIComponent(escape(String.fromCharCode.apply(null, u)));
@@ -1511,12 +1716,14 @@ function updateAccount() {
   if (typeof renderProgressGraph === 'function') renderProgressGraph();
 }
 function setConnectedUI(on) {
-  state.acctConnected = on; $('btnConnect').disabled = on; $('btnDisconnect').disabled = !on; $('btnBulkBuy').disabled = !on;
+  state.acctConnected = on; $('btnConnect').disabled = on; $('btnDisconnect').disabled = !on;
   requestQuote('ai'); requestQuote('bk');
-  $('acctSelect').disabled = !!(session && session.active) || autoRun.enabled;
+  $('acctSelect').disabled = !!(session && session.active) || !!(manualBatch && manualBatch.active) || autoRun.enabled;
   if (typeof updateBalanceCalculator === 'function') updateBalanceCalculator();
   if (typeof refreshAutoPanel === 'function') refreshAutoPanel();
   if (typeof renderProgressGraph === 'function') renderProgressGraph();
+  if (typeof updateSessionUI === 'function') updateSessionUI();
+  if (typeof updateManualBatchUI === 'function') updateManualBatchUI();
 }
 function setMsg(text, cls = '') { $('connectMsg').className = 'msg ' + cls; $('connectMsg').textContent = text; }
 
@@ -1655,7 +1862,7 @@ async function connectAccount(isRetry) {
 function renderAccountSelect() {
   const sel = $('acctSelect'); sel.innerHTML = '';
   state.accounts.forEach(a => { const o = document.createElement('option'); o.value = a.account_id; o.textContent = `${a.account_type === 'demo' ? 'DEMO' : 'REAL'} · ${a.account_id} · ${fmt(a.balance)} ${a.currency}`; sel.appendChild(o); });
-  $('acctBox').classList.remove('hidden');
+  $('acctBox').classList.remove('hidden'); applyBalanceBlur();
 }
 async function openAccountSocket(accountId) {
   const a = state.accounts.find(x => x.account_id === accountId); if (!a) throw new Error('Account not found');
@@ -1671,59 +1878,347 @@ async function openAccountSocket(accountId) {
   $('connectCard').classList.add('collapsed');
   acct.send({ balance: 1, subscribe: 1 }, (msg) => { if (msg.balance && state.account) { state.account.balance = +msg.balance.balance; if (msg.balance.currency) state.account.currency = msg.balance.currency; updateAccount(); } })
     .catch(e => log('Balance stream: ' + (e.message || e.code), 'err'));
-  contracts.forEach(c => { if (c.status === 'open') watchContract(c, true); });
+  restoreRecoveryForAccount(accountId);
+  contracts.forEach(c => {
+    if (String(c.account) !== String(accountId) || (c.status !== 'open' && c.status !== 'unknown')) return;
+    watchContract(c, true); scheduleCheck(c, 6000);
+  });
+  if ((session && session.active && session.recovering) || (manualBatch && manualBatch.active && manualBatch.recovering)) startAutomaticRecovery('Account connection restored; verifying the interrupted trades');
+  else if (autoRun.enabled && !session?.active && !manualBatch?.active) {
+    if (autoRun.nextAt > Date.now()) scheduleAutoRunAt(autoRun.nextAt, autoRun.nextLabel);
+    else { autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRunTick(); }
+  }
 }
 function disconnectAccount() {
   state.manualDisconnect = true; clearTimeout(state.acctTimer);
   if (autoRun.enabled) disableAutoRun('Auto-run stopped: disconnected by user.', false);
   if (session && session.active) endSession('Disconnected by user');
+  if (manualBatch && manualBatch.active) endManualBatch('Disconnected by user');
   acct.close(); onAcctDown(); setMsg('Disconnected.'); log('Account disconnected');
 }
 function onAcctDown() { setAcctStatus('disconnected', 'not connected'); setConnectedUI(false); }
 acct.onClose = (wasOpen) => {
   if (!wasOpen) return;
-  if (autoRun.enabled) disableAutoRun('Auto-run stopped: account connection was lost.', false);
+  const hasWork = !!((session && session.active) || (manualBatch && manualBatch.active) || autoRun.enabled);
+  if (hasWork && !state.manualDisconnect) startAutomaticRecovery('Account connection was lost; reconnecting before any pending order is retried');
   onAcctDown();
-  if (session && session.active) endSession('Connection lost — AI trading paused for safety');
   if (!state.manualDisconnect) {
     const delay = Math.min(30000, 2000 * Math.pow(2, Math.min(4, state.acctRetries++)));
     log(`Account session closed. Reconnecting in ${Math.round(delay / 1000)}s…`, 'err'); setAcctStatus('connecting', 'reconnecting…');
     state.acctTimer = setTimeout(async () => {
-      try { await openAccountSocket(state.account.id); } catch (e) { const m = e.message || String(e); log('Reconnect failed: ' + m, 'err'); setMsg(m, 'err'); setAcctStatus('disconnected', 'not connected'); if (e.status === 401 || e.status === 403) return; acct.onClose(true); }
+      try { await openAccountSocket(state.account.id); }
+      catch (e) {
+        const m = e.message || String(e); log('Reconnect failed: ' + m, 'err'); setMsg(m, 'err'); setAcctStatus('disconnected', 'not connected');
+        if (e.status === 401 || e.status === 403) { blockRecovery('Account authorization failed. Check the PAT and trade permission, then reconnect to resume.'); return; }
+        acct.onClose(true);
+      }
     }, delay);
   }
 };
 acct.onMessage = (msg) => { if (msg.msg_type === 'proposal_open_contract' && msg.proposal_open_contract) onPOC(msg.proposal_open_contract); };
 
 /* ============================== contracts ============================== */
-function buyContract(m, o, source, sessionId, done) {
-  const params = { amount: +o.stake, basis: 'stake', contract_type: o.type, currency: state.account.currency, duration: +o.duration, duration_unit: 't', underlying_symbol: m.symbol };
-  if (needsBarrier(o.type)) params.barrier = String(o.barrier);
-  const req = { buy: '1', price: +o.stake, subscribe: 1, parameters: params };
-  acct.send(req).then((msg) => {
-    const b = msg.buy;
-    const c = { id: b.contract_id, txId: b.transaction_id, account: state.account ? state.account.id : '', currency: state.account ? state.account.currency : 'USD', reqId: req.req_id, subIds: msg.subscription ? [msg.subscription.id] : [], symbol: m.symbol, name: m.name, pipDec: m.pipDec, type: o.type,
-      barrier: needsBarrier(o.type) ? o.barrier : null, stake: +b.buy_price, payout: +b.payout, status: 'open', profit: 0, time: Date.now(), source, sessionId, exitSpot: null, pocSeen: false, checks: 0 };
-    contracts.set(c.id, c); renderTradeRow(c); updateTotals();
-    if (b.balance_after != null && state.account) { state.account.balance = +b.balance_after; updateAccount(); }
-    log(`Bought ${contractLabel(o.type, o.barrier)} on ${m.name} · stake ${fmt(b.buy_price)} · payout ${fmt(b.payout)}`);
-    scheduleCheck(c, 6000);
-    if (done) done(null, c);
-  }).catch(err => { if (done) done(err); });
+function recoveryOwner(job) {
+  if (!job) return null;
+  if (job.source === 'ai' && session && String(session.id) === String(job.sessionId)) return session;
+  if (job.source === 'manual' && manualBatch && String(manualBatch.id) === String(job.manualBatchId)) return manualBatch;
+  return null;
+}
+function recoveryJobs(owner) { return owner && Array.isArray(owner.pendingOrders) ? owner.pendingOrders : []; }
+function cancelUnsentOrders(owner) {
+  if (!owner || !Array.isArray(owner.pendingOrders)) return;
+  const keep = [];
+  owner.pendingOrders.forEach(job => {
+    if (!job.buySent || job.serverRejected) { job.cancelled = true; job.status = 'cancelled'; }
+    else keep.push(job);
+  });
+  owner.pendingOrders = keep;
+  if (owner.stopRequested && !keep.some(job => job.status === 'blocked' || job.status === 'uncertain' || (job.buySent && !job.serverRejected))) {
+    owner.blocked = false; owner.recovering = false; owner.recoveryReason = '';
+  }
+}
+function makeTradeOrder(m, o, source, owner) {
+  return { id: `${source}-${owner.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, accountId: String(state.account.id),
+    symbol: m.symbol, name: m.name, pipDec: m.pipDec, type: o.type, barrier: needsBarrier(o.type) ? Number(o.barrier) : null,
+    stake: Number(o.stake), duration: Number(o.duration), currency: String(state.account.currency), source,
+    sessionId: source === 'ai' ? owner.id : null, manualBatchId: source === 'manual' ? owner.id : null,
+    createdAt: Date.now(), submittedAt: 0, stage: 'proposal', status: 'ready', proposalId: null, buySent: false, serverRejected: false, retryDisposition: null, cancelled: false,
+    attempts: 0, reconcileChecks: 0, reconcileLastAt: 0, inFlightCounted: false, error: '' };
+}
+function persistRunState() { persistRecoveryState(); }
+function isRetryableOrderError(err) {
+  const code = String(err && err.code || '').toLowerCase(), message = String(err && err.message || '').toLowerCase();
+  if (['notconnected','disconnected','responsetimeout','ratelimit','ratelimitexceeded','toomanyrequests','marketisclosed','serviceunavailable','internalservererror','servererror','connectionclosed'].some(x => code.includes(x))) return true;
+  return /temporar|timed? ?out|rate.?limit|connection|network|unavailable|try again|maintenance/i.test(message);
+}
+function updateRecoveryViews() {
+  if (typeof updateSessionUI === 'function') updateSessionUI();
+  if (typeof updateManualBatchUI === 'function') updateManualBatchUI();
+  if (typeof refreshAutoPanel === 'function') refreshAutoPanel();
+}
+function recoveryDelay(owner) { return Math.min(30000, 1000 * Math.pow(2, Math.min(5, Math.max(0, (Number(owner && owner.recoveryAttempt) || 1) - 1)))); }
+function scheduleRecoveryAttempt(delay) {
+  if (recoveryTimer) clearTimeout(recoveryTimer);
+  recoveryTimer = setTimeout(() => { recoveryTimer = null; runAutomaticRecovery(); }, Math.max(0, delay || 0));
+}
+function blockRecovery(reason, specificOwner) {
+  const owner = specificOwner || (session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null);
+  if (owner) { owner.blocked = true; owner.recovering = false; owner.recoveryReason = String(reason || 'A trading error needs attention.'); }
+  if (autoRun.enabled) { autoRun.recoveryBlocked = true; autoRun.status = 'Recovery paused: ' + String(reason || 'a trading error needs attention.'); }
+  log('Automatic recovery paused: ' + String(reason || 'trading error needs attention'), 'err');
+  toast('Automatic recovery paused: ' + String(reason || 'check the Deriv error'), 'err');
+  updateRecoveryViews(); persistRunState();
+}
+function startAutomaticRecovery(reason) {
+  const owner = session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null;
+  if (owner) {
+    if (owner.blocked) { updateRecoveryViews(); return; }
+    owner.recovering = true; owner.recoveryReason = String(reason || 'Recovering the interrupted run'); owner.recoveryAttempt = (Number(owner.recoveryAttempt) || 0) + 1;
+    recoveryJobs(owner).forEach(job => {
+      if (job.status === 'proposing') { job.status = 'ready'; job.stage = 'proposal'; job.buySent = false; }
+      else if (job.status === 'buying' && job.buySent) job.status = 'uncertain';
+    });
+  }
+  if (autoRun.enabled) { autoRun.status = 'Automatic recovery: ' + String(reason || 'reconnecting'); autoRun.recoveryBlocked = false; }
+  log('Automatic recovery: ' + String(reason || 'resuming interrupted work'));
+  updateRecoveryViews(); persistRunState();
+  if (acct.isOpen && (owner || autoRun.enabled)) scheduleRecoveryAttempt(owner ? recoveryDelay(owner) : 0);
+}
+function retryBlockedRecovery() {
+  const owner = session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null;
+  if (owner) {
+    owner.blocked = false; owner.recovering = true; owner.recoveryAttempt = 0; owner.recoveryReason = 'Retry requested';
+    recoveryJobs(owner).forEach(job => {
+      if (job.status !== 'blocked') return;
+      job.error = '';
+      if (job.retryDisposition === 'safe' || job.serverRejected) {
+        job.status = 'ready'; job.stage = 'proposal'; job.buySent = false; job.proposalId = null;
+      } else if (job.buySent) {
+        job.status = 'uncertain'; job.reconcileChecks = 0; job.reconcileLastAt = 0;
+      } else { job.status = 'ready'; job.stage = 'proposal'; job.proposalId = null; }
+    });
+    persistRunState(); startAutomaticRecovery('Retry requested'); return;
+  }
+  if (autoRun.enabled) { autoRun.recoveryBlocked = false; autoRun.status = 'Retrying hourly cycle'; if (acct.isOpen) autoRunTick(); else startAutomaticRecovery('Waiting for account reconnect'); }
+}
+function orderAmount(row) { for (const key of ['amount','buy_price','transaction_amount','price']) { const n = Number(row && row[key]); if (Number.isFinite(n)) return Math.abs(n); } return NaN; }
+function orderTime(row) { for (const key of ['transaction_time','purchase_time','time']) { const n = Number(row && row[key]); if (Number.isFinite(n) && n > 0) return n > 1e12 ? n : n * 1000; } return NaN; }
+function statementRowMatches(row, job) {
+  if (!row || row.contract_id == null) return false;
+  if (row.action_type && String(row.action_type).toLowerCase() !== 'buy') return false;
+  const expectedAppId = creds().appId, rowAppId = row.app_id != null ? row.app_id : row.appId;
+  if (rowAppId != null && expectedAppId && String(rowAppId) !== String(expectedAppId)) return false;
+  const amount = orderAmount(row); if (!Number.isFinite(amount) || Math.abs(amount - Number(job.stake)) > 0.011) return false;
+  const time = orderTime(row);
+  if (!Number.isFinite(time) || Math.abs(time - Number(job.submittedAt || job.createdAt)) > 180000) return false;
+  const text = [row.shortcode, row.longcode, row.description, row.symbol, row.underlying_symbol, row.contract_type].filter(Boolean).join(' ').toUpperCase();
+  const symbol = String(row.underlying_symbol || row.symbol || '').toUpperCase();
+  if (symbol ? symbol !== String(job.symbol).toUpperCase() : !text.includes(String(job.symbol).toUpperCase())) return false;
+  const type = String(row.contract_type || '').toUpperCase();
+  const typeWords = { DIGITOVER: ['DIGITOVER','OVER'], DIGITUNDER: ['DIGITUNDER','UNDER'], DIGITEVEN: ['DIGITEVEN','EVEN'], DIGITODD: ['DIGITODD','ODD'], DIGITMATCH: ['DIGITMATCH','MATCH'], DIGITDIFF: ['DIGITDIFF','DIFFER'] }[job.type] || [job.type];
+  if (type ? type !== job.type : !typeWords.some(word => text.includes(word))) return false;
+  if (needsBarrier(job.type)) {
+    if (row.barrier != null && Number(row.barrier) !== Number(job.barrier)) return false;
+    if (row.barrier == null && !text.includes(String(job.barrier))) return false;
+  }
+  if (row.duration != null) { if (Number(row.duration) !== Number(job.duration)) return false; }
+  else if (!new RegExp(`(?:\\b${Number(job.duration)}\\s*T\\b|AFTER\\s+${Number(job.duration)}\\s+TICK)`, 'i').test(text)) return false;
+  return true;
+}
+function removePendingJob(owner, job) {
+  if (owner && Array.isArray(owner.pendingOrders)) owner.pendingOrders = owner.pendingOrders.filter(item => item.id !== job.id);
+}
+function acceptTradeOrder(job, b, msg, statementRow) {
+  const owner = recoveryOwner(job), contractId = Number(b.contract_id) || b.contract_id;
+  const existing = contracts.get(contractId);
+  if (existing) { removePendingJob(owner, job); return existing; }
+  const c = { id: contractId, txId: b.transaction_id || (statementRow && statementRow.transaction_id), account: job.accountId,
+    currency: job.currency, reqId: msg && msg.req_id, subIds: msg && msg.subscription ? [msg.subscription.id] : [], symbol: job.symbol, name: job.name,
+    pipDec: job.pipDec, type: job.type, barrier: job.barrier, stake: Number(b.buy_price || job.stake), payout: Number(b.payout || (statementRow && statementRow.payout) || 0),
+    status: 'open', profit: 0, time: Number(b.purchase_time) ? Number(b.purchase_time) * 1000 : Number(statementRow && orderTime(statementRow)) || job.submittedAt || Date.now(),
+    source: job.source, sessionId: job.sessionId, manualBatchId: job.manualBatchId, exitSpot: null, entrySpot: null, currentSpot: null, pocSeen: false, checks: 0, settledAt: null };
+  contracts.set(c.id, c); renderTradeRow(c); updateTotals();
+  job.status = 'accepted'; job.contractId = c.id; job.buySent = false;
+  removePendingJob(owner, job);
+  if (owner) {
+    if (job.inFlightCounted) owner.inFlight = Math.max(0, (Number(owner.inFlight) || 0) - 1);
+    owner.inFlight = Math.max(0, Number(owner.inFlight) || 0); job.inFlightCounted = false;
+    if (job.source === 'ai') {
+      owner.placed++; if (owner.batch) owner.batch.placed++;
+    } else {
+      owner.placed++; owner.contractIds = owner.contractIds || []; owner.contractIds.push(c.id);
+    }
+    if (b.balance_after != null && state.account && state.account.id === c.account) { state.account.balance = +b.balance_after; updateAccount(); }
+  }
+  log(`Bought ${contractLabel(job.type, job.barrier)} on ${job.name} · stake ${fmt(c.stake)} · payout ${fmt(c.payout)}${statementRow ? ' · recovered from Deriv statement' : ''}`);
+  if (statementRow) watchContract(c, true);
+  scheduleCheck(c, 6000); persistRunState(); updateRecoveryViews();
+  if (job.source === 'ai' && owner && owner.active && !owner.recovering && owner.inFlight === 0) scannerTick();
+  if (job.source === 'manual' && owner) maybeFinishManualBatch();
+  return c;
+}
+function failTradeOrder(job, err) {
+  const owner = recoveryOwner(job), code = String(err && err.code || 'UnknownError'), message = String(err && err.message || code);
+  if (owner && job.inFlightCounted) { owner.inFlight = Math.max(0, (Number(owner.inFlight) || 0) - 1); job.inFlightCounted = false; }
+  job.error = message;
+  if (!owner) { log(`Trade order ${job.id} ended after the run closed: ${message}`, 'err'); return; }
+  const rejected = !!(err && err.serverRejected);
+  if (owner.stopRequested && (!job.buySent || rejected)) {
+    job.cancelled = true; job.status = 'cancelled'; removePendingJob(owner, job);
+    if (owner === session) maybeFinishStoppedSession(); else maybeFinishManualBatch();
+  } else if (rejected && isRetryableOrderError(err)) {
+    job.status = 'ready'; job.stage = 'proposal'; job.buySent = false; job.serverRejected = true; job.retryDisposition = 'safe'; job.proposalId = null;
+    startAutomaticRecovery(`Temporary Deriv rejection (${code}); retrying the unfilled order`);
+  } else if (job.stage === 'buy' && job.buySent && !rejected) {
+    job.status = 'uncertain'; job.serverRejected = false; job.retryDisposition = 'uncertain'; job.reconcileChecks = 0; job.reconcileLastAt = 0;
+    startAutomaticRecovery('Buy response was lost; checking Deriv statement before any retry');
+  } else if (!rejected && (job.stage !== 'buy' || !job.buySent) && (isRetryableOrderError(err) || err.wasSent === false)) {
+    const failedStage = job.stage;
+    job.status = 'ready'; job.stage = 'proposal'; job.buySent = false; job.serverRejected = false; job.retryDisposition = 'safe'; job.proposalId = null;
+    startAutomaticRecovery(`Temporary ${failedStage === 'proposal' ? 'quote' : 'connection'} error; retrying the unfilled order`);
+  } else {
+    job.status = 'blocked'; job.serverRejected = rejected; job.retryDisposition = rejected || !job.buySent ? 'safe' : 'uncertain';
+    owner.blocked = true; owner.recovering = false; owner.recoveryReason = message;
+    blockRecovery(`${code}: ${message}`, owner);
+  }
+  persistRunState(); updateRecoveryViews();
+}
+async function executeTradeOrder(job) {
+  const owner = recoveryOwner(job);
+  if (!owner || owner.cancelled || owner.stopRequested) { if (owner) removePendingJob(owner, job); return null; }
+  if (!acct.isOpen || !state.acctConnected) { job.status = 'ready'; startAutomaticRecovery('Account connection unavailable before the next order'); return null; }
+  owner.inFlight = (Number(owner.inFlight) || 0) + 1; job.inFlightCounted = true; job.status = 'proposing'; job.stage = 'proposal'; job.buySent = false; job.serverRejected = false; job.retryDisposition = null; job.cancelled = false; job.attempts = (Number(job.attempts) || 0) + 1; job.error = '';
+  persistRunState(); updateRecoveryViews();
+  const params = { amount: Number(job.stake), basis: 'stake', contract_type: job.type, currency: job.currency, duration: Number(job.duration), duration_unit: 't', underlying_symbol: job.symbol };
+  if (needsBarrier(job.type)) params.barrier = String(job.barrier);
+  const proposalReq = Object.assign({ proposal: 1 }, params);
+  try {
+    const quote = await acct.send(proposalReq, null, TRADE_REQUEST_TIMEOUT_MS);
+    if (owner.cancelled || owner.stopRequested) {
+      owner.inFlight = Math.max(0, owner.inFlight - 1); job.inFlightCounted = false; job.cancelled = true; job.status = 'cancelled'; removePendingJob(owner, job);
+      persistRunState(); updateRecoveryViews(); if (owner === session) maybeFinishStoppedSession(); else maybeFinishManualBatch(); return null;
+    }
+    const proposalId = quote && quote.proposal && quote.proposal.id;
+    if (!proposalId) throw new Error('Deriv did not return a proposal ID');
+    job.proposalId = proposalId; job.stage = 'buy'; job.status = 'buying'; job.buySent = true; job.submittedAt = Date.now(); job.reconcileChecks = 0; persistRunState();
+    const msg = await acct.send({ buy: proposalId, price: Number(job.stake), subscribe: 1 }, null, TRADE_REQUEST_TIMEOUT_MS);
+    if (!msg || !msg.buy || msg.buy.contract_id == null) throw Object.assign(new Error('Deriv returned no contract ID after the buy request'), { wasSent: true });
+    return acceptTradeOrder(job, msg.buy, msg, null);
+  } catch (err) {
+    failTradeOrder(job, err || new Error('Unknown trading error'));
+    return null;
+  }
+}
+async function reconcileUncertainOrders(owner) {
+  const uncertain = recoveryJobs(owner).filter(job => job.status === 'uncertain');
+  if (!uncertain.length) return true;
+  const from = Math.max(0, Math.floor((Math.min(...uncertain.map(job => Number(job.submittedAt || job.createdAt))) - 60000) / 1000));
+  const statement = await acct.send({ statement: 1, action_type: 'buy', date_from: from, date_to: Math.floor(Date.now() / 1000) + 5, description: 1, limit: 999 }, null, TRADE_REQUEST_TIMEOUT_MS);
+  const rows = statement && statement.statement && statement.statement.transactions;
+  if (!Array.isArray(rows)) throw new Error('Deriv statement did not return transaction records; the order outcome cannot be verified safely.');
+  const used = new Set(), unverifiable = [];
+  contracts.forEach(c => {
+    if (c.account !== owner.accountId) return;
+    if (c.txId != null) used.add(String(c.txId));
+    if (c.id != null) used.add(String(c.id));
+  });
+  for (const job of uncertain.sort((a, b) => (a.submittedAt || 0) - (b.submittedAt || 0))) {
+    const match = rows.find(row => !used.has(String(row.transaction_id || row.contract_id)) && statementRowMatches(row, job));
+    if (match) {
+      used.add(String(match.transaction_id || match.contract_id));
+      acceptTradeOrder(job, { contract_id: match.contract_id, transaction_id: match.transaction_id, buy_price: orderAmount(match), payout: Number(match.payout) || 0, purchase_time: orderTime(match) / 1000 }, { req_id: null }, match);
+    } else {
+      job.reconcileChecks = (Number(job.reconcileChecks) || 0) + 1; job.reconcileLastAt = Date.now();
+      if (job.reconcileChecks >= MAX_UNCERTAIN_BUY_CHECKS) {
+        job.status = 'blocked'; job.retryDisposition = 'uncertain'; job.error = 'No exact matching buy appeared in Deriv statement after repeated checks.'; unverifiable.push(job);
+      }
+    }
+  }
+  persistRunState();
+  if (unverifiable.length) {
+    blockRecovery(`Could not verify ${unverifiable.length} buy outcome${unverifiable.length === 1 ? '' : 's'} in Deriv records. No replacement order was sent; retry verification or stop the run.`, owner);
+    return false;
+  }
+  return !uncertain.some(job => job.status === 'uncertain');
+}
+async function runAutomaticRecovery() {
+  if (recoveryRunning) return;
+  const owner = session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null;
+  if (!owner) {
+    if (autoRun.enabled && acct.isOpen && state.acctConnected) {
+      if (autoRun.nextAt > Date.now()) scheduleAutoRunAt(autoRun.nextAt, autoRun.nextLabel);
+      else { autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRunTick(); }
+    }
+    return;
+  }
+  if (owner.blocked || owner.cancelled) { updateRecoveryViews(); return; }
+  if (!acct.isOpen || !state.acctConnected) { owner.recovering = true; persistRunState(); updateRecoveryViews(); return; }
+  if ((Number(owner.inFlight) || 0) > 0) { owner.recovering = true; owner.recoveryReason = owner.recoveryReason || 'Waiting for in-flight requests to resolve safely'; persistRunState(); updateRecoveryViews(); scheduleRecoveryAttempt(500); return; }
+  recoveryRunning = true;
+  try {
+    owner.recovering = true; owner.recoveryReason = owner.recoveryReason || 'Verifying interrupted orders';
+    if (owner.stopRequested) cancelUnsentOrders(owner);
+    const unknownContracts = [...contracts.values()].filter(c => c.account === owner.accountId && (owner === session ? c.sessionId === owner.id : c.manualBatchId === owner.id) && c.status === 'unknown');
+    if (unknownContracts.length) unknownContracts.forEach(c => { c.checks = 0; watchContract(c, false); scheduleCheck(c, 5000); });
+    let reconciled;
+    try { reconciled = await reconcileUncertainOrders(owner); }
+    catch (e) {
+      if (isRetryableOrderError(e)) { owner.recoveryReason = 'Could not reach the statement endpoint; retrying without resending buys'; throw e; }
+      blockRecovery(e.message || 'Could not verify whether a buy was accepted.', owner); return;
+    }
+    if (!reconciled) {
+      if (owner.blocked) { updateRecoveryViews(); return; }
+      owner.recoveryReason = 'Waiting for Deriv statement confirmation; no replacement buy will be sent'; persistRunState(); updateRecoveryViews(); scheduleRecoveryAttempt(UNCERTAIN_BUY_RECHECK_MS); return;
+    }
+    const blocked = recoveryJobs(owner).find(job => job.status === 'blocked');
+    if (blocked) { blockRecovery(blocked.error || owner.recoveryReason || 'A trade was rejected and needs attention.', owner); return; }
+    if (owner.stopRequested) cancelUnsentOrders(owner);
+    const ready = owner.stopRequested ? [] : recoveryJobs(owner).filter(job => job.status === 'ready');
+    for (const job of ready) {
+      if (owner.blocked || owner.cancelled || owner.stopRequested || !owner.active) break;
+      await executeTradeOrder(job);
+      if (owner.blocked || !acct.isOpen) break;
+    }
+    if (owner.blocked) return;
+    const left = recoveryJobs(owner);
+    if (left.some(job => job.status === 'uncertain')) { owner.recoveryReason = 'Verifying buy outcome with Deriv before retrying'; persistRunState(); scheduleRecoveryAttempt(UNCERTAIN_BUY_RECHECK_MS); return; }
+    if (left.some(job => job.status === 'ready' || job.status === 'proposing' || job.status === 'buying')) {
+      owner.recoveryReason = owner.stopRequested ? 'Waiting for an in-flight order to stop safely' : 'Retrying the unfilled part of the run'; persistRunState(); scheduleRecoveryAttempt(recoveryDelay(owner)); return;
+    }
+    owner.recovering = false; owner.recoveryReason = ''; owner.recoveryAttempt = 0;
+    if (owner === session) { if (owner.stopRequested) maybeFinishStoppedSession(); else { updateSessionUI(); if (owner.active) scannerTick(); } }
+    else { updateManualBatchUI(); maybeFinishManualBatch(); }
+    persistRunState(); updateRecoveryViews();
+  } catch (e) {
+    const nextOwner = session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null;
+    if (nextOwner && !nextOwner.blocked) { nextOwner.recovering = true; nextOwner.recoveryReason = e.message || 'A temporary recovery check failed'; persistRunState(); scheduleRecoveryAttempt(recoveryDelay(nextOwner)); }
+    else if (autoRun.enabled && !nextOwner) scheduleAutoRun(30000, 'Recovery check failed; retrying in 30 seconds.');
+  } finally { recoveryRunning = false; updateRecoveryViews(); }
+}
+function buyContract(m, o, source, sessionId, done, order) {
+  // Compatibility wrapper for legacy callers; new batches create durable order records first.
+  if (!order) { const owner = source === 'ai' ? session : manualBatch; if (!owner) return; order = makeTradeOrder(m, o, source, owner); owner.pendingOrders.push(order); }
+  executeTradeOrder(order).then(c => { if (done) done(c ? null : new Error('Trade order is recovering'), c); });
 }
 function watchContract(c, subscribe) {
   if (!acct.isOpen) return;
   const req = { proposal_open_contract: 1, contract_id: c.id }; if (subscribe) req.subscribe = 1;
   acct.send(req).then(msg => { if (msg.subscription) c.subIds.push(msg.subscription.id); }).catch(e => log(`Contract ${c.id} check: ${e.message || e.code}`, 'err'));
 }
-function scheduleCheck(c, delay) {   // safety net: never leave a contract "open" forever if the stream stalls
+function scheduleCheck(c, delay) {   // safety net: keep checking open/unknown contracts; never treat an unknown result as settled
   clearTimeout(c.timer);
   c.timer = setTimeout(() => {
-    if (c.status !== 'open') return;
-    c.checks++;
+    if (c.status !== 'open' && c.status !== 'unknown') return;
+    const wasUnknown = c.status === 'unknown'; c.checks++;
     if (c.checks === 1 && !c.pocSeen) watchContract(c, true); else watchContract(c, false);
     if (c.checks < 15) scheduleCheck(c, 10000);
-    else { c.status = 'unknown'; renderTradeRow(c); updateTotals(); log(`Contract ${c.id} on ${c.name}: no result received — check it in the Deriv app`, 'err'); if (session && c.sessionId === session.id) updateSessionUI(); scannerTick(); }
+    else {
+      if (!wasUnknown) { c.status = 'unknown'; renderTradeRow(c); updateTotals(); log(`Contract ${c.id} on ${c.name}: no result received — check it in the Deriv app`, 'err'); scheduleCheck(c, 30000); }
+      else scheduleCheck(c, 30000);
+      if (session && c.sessionId === session.id) { updateSessionUI(); if (session.stopRequested) maybeFinishStoppedSession(); }
+      if (manualBatch && c.manualBatchId === manualBatch.id) { updateManualBatchUI(); if (manualBatch.stopRequested) maybeFinishManualBatch(); }
+      scannerTick();
+    }
   }, delay);
 }
 function onPOC(p) {
@@ -1751,12 +2246,19 @@ function settle(c) {
   log(line, c.status === 'won' ? 'ok' : 'err');
   if (c.source === 'ai' && session && c.sessionId === session.id) {
     session.settled++; if (c.status === 'won') session.won++; else session.lost++; session.pnl += c.profit;
-    updateSessionUI();
+    updateSessionUI(); persistRunState();
     if (session.active) {
-      if (session.tp > 0 && session.pnl >= session.tp) endSession(`Take profit reached (+${fmt(session.pnl)})`);
+      if (session.stopRequested) maybeFinishStoppedSession();
+      else if (session.tp > 0 && session.pnl >= session.tp) endSession(`Take profit reached (+${fmt(session.pnl)})`);
       else if (session.sl > 0 && session.pnl <= -session.sl) endSession(`Stop loss hit (${fmt(session.pnl)})`);
       else scannerTick();   // sequential: next trade of the session / session finished bookkeeping
     }
+  }
+  if (c.source === 'manual' && manualBatch && c.manualBatchId === manualBatch.id) {
+    manualBatch.settled = (Number(manualBatch.settled) || 0) + 1;
+    if (c.status === 'won') manualBatch.won = (Number(manualBatch.won) || 0) + 1; else manualBatch.lost = (Number(manualBatch.lost) || 0) + 1;
+    manualBatch.pnl = (Number(manualBatch.pnl) || 0) + c.profit;
+    updateManualBatchUI(); persistRunState(); maybeFinishManualBatch();
   }
 }
 
@@ -1801,10 +2303,10 @@ function bestQualifying(excludeTraded) {   // strongest untraded signal across a
   state.markets.forEach(m => m.sigs.forEach(x => { if ((!excludeTraded || !session.tradedSignals.has(x.key)) && (!best || x.score > best.s.score)) best = { m, s: x }; }));
   return best;
 }
-function sessionOpen() { let k = 0; contracts.forEach(c => { if (session && c.sessionId === session.id && c.status === 'open') k++; }); return k; }
+function sessionOpen() { let k = 0; contracts.forEach(c => { if (session && c.sessionId === session.id && (c.status === 'open' || c.status === 'unknown')) k++; }); return k; }
 function scannerTick() {
-  if (!session || !session.active) return;
-  if (session.inFlight > 0) return;
+  if (!session || !session.active || session.recovering || session.blocked || session.stopRequested) return;
+  if (session.inFlight > 0 || recoveryJobs(session).length > 0) return;
   const open = sessionOpen();
   if (session.batch) {                                   // a session is running
     const b = session.batch;
@@ -1815,10 +2317,10 @@ function scannerTick() {
     session.batch = null; session.sessionsDone++;        // all trades of the session are settled
     log(`Session ${b.no}/${session.maxSessions} finished on ${b.name} · ${b.placed} trades · P/L so far ${session.pnl >= 0 ? '+' : ''}${fmt(session.pnl)}`, 'ok');
     if (session.sessionsDone >= session.maxSessions) { endSession(`All ${session.maxSessions} session${session.maxSessions > 1 ? 's' : ''} completed (${session.placed} trades, P/L ${session.pnl >= 0 ? '+' : ''}${fmt(session.pnl)})`); return; }
-    toast(`Session ${b.no}/${session.maxSessions} done — waiting for the next signal`);
+    toast(`Session ${b.no}/${session.maxSessions} done — waiting for the next signal`); persistRunState();
   }
-  if (session.sessionsStarted >= session.maxSessions) return;
-  const best = bestQualifying(true); if (!best) { updateSessionUI(); return; }
+  if (session.sessionsStarted >= session.maxSessions) { persistRunState(); return; }
+  const best = bestQualifying(true); if (!best) { updateSessionUI(); persistRunState(); return; }
   const bm = best.m, bs = best.s;
   session.sessionsStarted++;
   session.tradedSignals.add(bs.key);
@@ -1827,18 +2329,15 @@ function scannerTick() {
   placeTrades(bm, session.mode === 'sequential' ? 1 : session.bulk);
 }
 function placeTrades(m, n) {
-  if (!state.acctConnected) { endSession('Account not connected'); return; }
+  if (!session || !session.active || session.recovering || session.blocked || session.stopRequested) return;
   const b = session.batch; if (!b) return;
+  if (!m) { startAutomaticRecovery('The selected market is not available yet; waiting before sending the next contract'); return; }
+  if (!state.acctConnected || !acct.isOpen) { startAutomaticRecovery('Account connection unavailable before the next contract'); return; }
   for (let i = 0; i < n; i++) {
-    session.placed++; session.inFlight++; b.placed++;
-    buyContract(m, { type: b.type, barrier: b.barrier, stake: session.stake, duration: session.duration }, 'ai', session.id, (err) => {
-      session.inFlight--;
-      if (err) { session.placed--; b.placed--; log(`Buy failed on ${m.name}: ${err.message || err.code}`, 'err'); toast(err.message || 'Buy failed', 'err'); if (session.active) endSession('Stopped after a buy error'); }
-      updateSessionUI();
-      if (!err && session.inFlight === 0) scannerTick();   // sequential: a contract that was already settled while in flight
-    });
+    const job = makeTradeOrder(m, { type: b.type, barrier: b.barrier, stake: session.stake, duration: session.duration }, 'ai', session);
+    session.pendingOrders.push(job); executeTradeOrder(job);
   }
-  updateSessionUI();
+  persistRunState(); updateSessionUI();
 }
 function confirmReal() {
   if (!state.account || state.account.is_virtual || state.confirmedReal) return true;
@@ -1850,6 +2349,7 @@ function startAI(fromAuto) {
   if (!state.acctConnected || !state.account) { toast('Connect your account first (top card)', 'err'); $('connectCard').classList.remove('collapsed'); return false; }
   if (autoRun.enabled && !fromAuto) { toast('Hourly auto-run is enabled. Turn it off before starting a manual run.', 'err'); return false; }
   if (session && session.active) return false;
+  if (manualBatch && manualBatch.active) { toast('Finish or stop the Bulk Trader batch before starting an AI session', 'err'); return false; }
   if (!state.markets.size) { toast('Market data not loaded yet', 'err'); return false; }
   const o = { stake: +$('aiStake').value, duration: Math.floor(+$('aiDuration').value) };
   const bulk = Math.floor(+$('aiBulk').value), max = Math.floor(+$('aiMax').value);
@@ -1860,40 +2360,71 @@ function startAI(fromAuto) {
   if (!(bulk >= 1) || !(max >= 1)) { toast('Bulk trades and max sessions must each be at least 1', 'err'); return false; }
   if (fromAuto && !(bulk <= AUTO_MAX_BULK && max <= AUTO_MAX_SESSIONS)) { toast('Auto-runs allow 1–25 bulk trades and 2–20 sessions', 'err'); return false; }
   if (!confirmReal()) return false;
-  session = { id: Date.now(), active: true, mode: $('aiMode').value, stake: o.stake, bulk, maxSessions: max, strategy: cfg.strategy, duration: o.duration,
-    tp: +$('aiTP').value || 0, sl: +$('aiSL').value || 0, placed: 0, settled: 0, won: 0, lost: 0, pnl: 0, sessionsStarted: 0, sessionsDone: 0, batch: null, tradedSignals: new Set(), inFlight: 0, autoRunCycle: fromAuto };
-  lastReason = ''; $('acctSelect').disabled = true;
+  session = { id: Date.now(), accountId: String(state.account.id), active: true, mode: $('aiMode').value, stake: o.stake, bulk, maxSessions: max, strategy: cfg.strategy, priority: cfg.priority, over: cfg.over, under: cfg.under, consec: cfg.consec, window: cfg.window, duration: o.duration,
+    tp: +$('aiTP').value || 0, sl: +$('aiSL').value || 0, placed: 0, settled: 0, won: 0, lost: 0, pnl: 0, sessionsStarted: 0, sessionsDone: 0, batch: null, tradedSignals: new Set(), pendingOrders: [], inFlight: 0, autoRunCycle: fromAuto, recovering: false, recoveryAttempt: 0, recoveryReason: '', blocked: false, stopRequested: false, stopReason: '' };
+  lastReason = ''; $('acctSelect').disabled = true; persistRunState();
   log(`${fromAuto ? 'Hourly auto-run cycle' : 'AI trading started'} · ${strategyLabel()}${cfg.strategy === 'both' ? ' (whichever comes first)' : ''} · stake ${o.stake} · ${max} session${max > 1 ? 's' : ''} × ${bulk} trade${bulk > 1 ? 's' : ''} (${bulk * max} total) · ${session.mode === 'sequential' ? 'one after another' : 'all at once'}`, 'ok');
   toast(fromAuto ? 'Scheduled AI cycle started' : 'AI scanner armed — waiting for a signal', 'ok'); updateSessionUI(); scannerTick();
   return true;
 }
-function endSession(reason) {
+function maybeFinishStoppedSession() {
+  const s = session;
+  if (!s || !s.active || !s.stopRequested) return false;
+  if (s.inFlight > 0 || recoveryJobs(s).length || sessionOpen() > 0 || s.recovering || s.blocked) { updateSessionUI(); persistRunState(); return false; }
+  finalizeSession(s.stopReason || 'Stopped'); return true;
+}
+function finalizeSession(reason) {
   if (!session || !session.active) return;
-  const finished = session; finished.active = false; lastReason = reason; $('acctSelect').disabled = autoRun.enabled;
-  log(`AI trading stopped: ${reason} · placed ${finished.placed} · won ${finished.won} · lost ${finished.lost} · P/L ${fmt(finished.pnl)}`);
+  const finished = session; finished.active = false; finished.stopRequested = false; finished.recovering = false; finished.recoveryReason = '';
+  lastReason = String(reason || 'Stopped'); $('acctSelect').disabled = !!((manualBatch && manualBatch.active) || autoRun.enabled);
+  log(`AI trading stopped: ${lastReason} · placed ${finished.placed} · won ${finished.won} · lost ${finished.lost} · P/L ${fmt(finished.pnl)}`);
   if (!autoRun.enabled && aiStakeAuto) syncAIStakeWithBalance();
-  toast(reason); updateAIStakeAutoUI(); updateSessionUI();
+  toast(lastReason); updateAIStakeAutoUI(); updateSessionUI(); updateManualBatchUI();
   if (finished.autoRunCycle && autoRun.enabled) {
     autoRun.cycleId = null;
-    if (/buy error|connection lost|account not connected|disconnected|scanner switched off/i.test(reason)) {
-      disableAutoRun('Auto-run stopped for safety: ' + reason, false);
+    if (/buy error|connection lost|account not connected|disconnected|scanner switched off/i.test(lastReason)) {
+      disableAutoRun('Auto-run stopped for safety: ' + lastReason, false);
     } else {
       const nextSchedule = nextAutoRunSchedule();
       scheduleAutoRunAt(nextSchedule.at, nextSchedule.label);
     }
   }
+  persistRunState();
+}
+function endSession(reason) {
+  if (!session || !session.active) return;
+  const s = session;
+  if (!s.stopRequested) {
+    s.stopRequested = true; s.stopReason = String(reason || 'Stopped');
+    if (s.batch) s.batch.remaining = 0;
+    cancelUnsentOrders(s);
+    if (recoveryJobs(s).some(job => job.buySent && !job.serverRejected) && !s.blocked) {
+      s.recovering = true; s.recoveryReason = 'Verifying any buy already sent before stopping';
+      if (acct.isOpen && !state.manualDisconnect) startAutomaticRecovery(s.recoveryReason);
+    }
+  }
+  updateSessionUI(); persistRunState();
+  if (!maybeFinishStoppedSession() && s.recovering && acct.isOpen && !state.manualDisconnect && !s.blocked) startAutomaticRecovery(s.recoveryReason);
 }
 function updateSessionUI() {
-  const s = session, el = $('aiStatus'), active = !!(s && s.active);
-  $('btnAiStart').disabled = active || autoRun.enabled; $('btnAiStop').disabled = !active && !autoRun.enabled;
+  const s = session, el = $('aiStatus'), retry = $('btnAiRetryRecovery'), active = !!(s && s.active), batchActive = !!(manualBatch && manualBatch.active);
+  $('btnAiStart').disabled = active || batchActive || autoRun.enabled;
+  $('btnAiStop').disabled = (!active && !autoRun.enabled) || !!(active && s.stopRequested && !autoRun.enabled);
+  $('btnAiStop').textContent = active && s.stopRequested ? 'Stopping…' : 'Stop';
+  if (retry) retry.classList.toggle('hidden', !active || !s.blocked);
+  $('btnBulkBuy').disabled = !state.acctConnected || active || batchActive || autoRun.enabled;
+  $('acctSelect').disabled = active || batchActive || autoRun.enabled;
   if (s) { $('aiPlaced').textContent = s.placed; $('aiWon').textContent = s.won; $('aiLost').textContent = s.lost; $('aiSessions').textContent = `${s.sessionsDone}/${s.maxSessions}`;
-    const p = $('aiPnl'); p.textContent = (s.pnl >= 0 ? '+' : '') + fmt(s.pnl); p.className = s.pnl > 0 ? 'pos' : s.pnl < 0 ? 'neg' : ''; }
+    const p = $('aiPnl'); p.textContent = (s.pnl >= 0 ? '+' : '') + fmt(s.pnl); p.className = s.pnl > 0 ? 'pos' : 'neg'; }
   if (!active) {
     if (autoRun.enabled) { el.className = 'status'; el.textContent = 'Hourly auto-run enabled — ' + (autoRun.nextAt ? `next start in ${autoRemaining(autoRun.nextAt - Date.now())}${autoRun.nextLabel ? ' · ' + autoRun.nextLabel : ''}` : autoRun.status); return; }
     el.className = 'status'; el.textContent = lastReason ? `Stopped — ${lastReason}` : (state.acctConnected ? 'Idle — set your amounts, then Start.' : 'Watching markets. Connect your account to trade.'); return;
   }
-  el.className = 'status live';
   const open = sessionOpen(), b = s.batch;
+  if (s.blocked) { el.className = 'status paused'; el.textContent = `Recovery paused — ${s.recoveryReason || 'a trade outcome needs attention'}. No uncertain buy will be resent. Retry verification after checking the Deriv account.`; return; }
+  if (s.recovering) { el.className = 'status recovering'; el.textContent = `Recovering — ${s.recoveryReason || 'checking Deriv before continuing'}${s.pendingOrders.length ? ` · ${s.pendingOrders.length} order${s.pendingOrders.length === 1 ? '' : 's'} pending` : ''}`; return; }
+  if (s.stopRequested) { el.className = 'status recovering'; el.textContent = `Stopping — ${s.stopReason || 'waiting for in-flight trades'} · ${open} open/unknown contract${open === 1 ? '' : 's'}${s.pendingOrders.length ? ` · ${s.pendingOrders.length} outcome check${s.pendingOrders.length === 1 ? '' : 's'}` : ''}`; return; }
+  el.className = 'status live';
   if (b) el.textContent = `${s.autoRunCycle ? 'Auto cycle · ' : ''}Session ${b.no}/${s.maxSessions} — ${b.name} · ${b.label}: ${b.placed}/${s.bulk} placed · ${open} open${b.remaining > 0 ? ` · ${b.remaining} more to send one after another` : ''}`;
   else el.textContent = `${s.autoRunCycle ? 'Auto cycle · ' : ''}Session ${s.sessionsDone + 1}/${s.maxSessions} — scanning ${state.markets.size} markets for ${strategyLabel()}… (${s.placed} trades so far)`;
 }
@@ -1963,20 +2494,68 @@ function updateTotals() {
 
 /* ======================== persistent progress graph ==================== */
 const progressPeriods = { day: 'Today', week: 'This week', month: 'This month', year: 'This year' };
-function progressPeriodBounds(period, now = new Date()) {
+const progressZoomLevels = [1, 2, 4, 8, 16];
+let progressOffset = Math.max(0, Math.floor(Number(store.get('progressOffset', 0)) || 0));
+let progressZoom = progressZoomLevels.includes(Number(store.get('progressZoom', 1))) ? Number(store.get('progressZoom', 1)) : 1;
+let progressDb = null, progressDbPromise = null;
+function openProgressDatabase() {
+  if (!window.indexedDB) return Promise.resolve(null);
+  return new Promise(resolve => {
+    try {
+      const req = window.indexedDB.open('stv-traders-progress', 1);
+      req.onupgradeneeded = () => { const db = req.result; if (!db.objectStoreNames.contains('settledTrades')) db.createObjectStore('settledTrades', { keyPath: 'id' }); };
+      req.onsuccess = () => { progressDb = req.result; progressDb.onversionchange = () => { progressDb.close(); progressDb = null; }; resolve(progressDb); };
+      req.onerror = () => resolve(null);
+      req.onblocked = () => resolve(null);
+    } catch (e) { resolve(null); }
+  });
+}
+function requestPersistentGraphStorage() {
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) {}
+}
+async function loadProgressHistory() {
+  if (!progressDbPromise) progressDbPromise = openProgressDatabase();
+  const db = await progressDbPromise;
+  if (!db) { renderProgressGraph(); return false; }
+  const allRows = await new Promise(resolve => {
+    try { const req = db.transaction('settledTrades', 'readonly').objectStore('settledTrades').getAll(); req.onsuccess = () => resolve(req.result || []); req.onerror = () => resolve([]); }
+    catch (e) { resolve([]); }
+  });
+  const merged = new Map();
+  allRows.forEach(row => { if (row && row.id) merged.set(String(row.id), row); });
+  progressHistory.forEach((row, id) => merged.set(id, row));
+  progressHistory.clear(); merged.forEach((row, id) => progressHistory.set(id, row));
+  const legacy = store.get('progressHistory', []);
+  if (Array.isArray(legacy) && legacy.length) {
+    const tx = db.transaction('settledTrades', 'readwrite'), os = tx.objectStore('settledTrades');
+    legacy.forEach(row => { if (row && row.id) { try { os.put(row); } catch (e) {} } });
+    tx.oncomplete = () => store.del('progressHistory');
+  }
+  renderProgressGraph(); return true;
+}
+function progressPeriodBounds(period, now = new Date(), offset = 0) {
+  const n = new Date(now), back = Math.max(0, Math.floor(Number(offset) || 0));
   let start;
   if (period === 'week') {
-    start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    start.setDate(start.getDate() - ((start.getDay() + 6) % 7)); // Monday, local time
-  } else if (period === 'month') start = new Date(now.getFullYear(), now.getMonth(), 1);
-  else if (period === 'year') start = new Date(now.getFullYear(), 0, 1);
-  else start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    start = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7) - back * 7);
+  } else if (period === 'month') start = new Date(n.getFullYear(), n.getMonth() - back, 1);
+  else if (period === 'year') start = new Date(n.getFullYear() - back, 0, 1);
+  else { start = new Date(n.getFullYear(), n.getMonth(), n.getDate()); start.setDate(start.getDate() - back); }
   let end;
   if (period === 'week') { end = new Date(start); end.setDate(end.getDate() + 7); }
   else if (period === 'month') end = new Date(start.getFullYear(), start.getMonth() + 1, 1);
   else if (period === 'year') end = new Date(start.getFullYear() + 1, 0, 1);
   else end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
   return { start: start.getTime(), end: end.getTime() };
+}
+function progressPeriodTitle(period, bounds, offset) {
+  if (!offset) return progressPeriods[period];
+  const a = new Date(bounds.start), b = new Date(bounds.end - 1);
+  if (period === 'day') return a.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+  if (period === 'week') return `${a.toLocaleDateString([], { month: 'short', day: 'numeric' })}–${b.toLocaleDateString([], { month: 'short', day: 'numeric' })}`;
+  if (period === 'month') return a.toLocaleDateString([], { month: 'long', year: 'numeric' });
+  return String(a.getFullYear());
 }
 function progressAccountId() {
   if (state.account && state.account.id) return String(state.account.id);
@@ -2008,46 +2587,79 @@ function progressTickLabel(time, period) {
   if (period === 'month') return String(d.getDate());
   return d.toLocaleDateString([], { month: 'short' });
 }
+function persistProgressRecord(row) {
+  if (!progressDbPromise) progressDbPromise = openProgressDatabase();
+  progressDbPromise.then(db => {
+    if (!db) { store.set('progressHistory', [...progressHistory.values()]); return; }
+    try {
+      const tx = db.transaction('settledTrades', 'readwrite'); tx.objectStore('settledTrades').put(row);
+      tx.onerror = () => { store.set('progressHistory', [...progressHistory.values()]); };
+    } catch (e) { store.set('progressHistory', [...progressHistory.values()]); }
+  }).catch(() => store.set('progressHistory', [...progressHistory.values()]));
+}
+function clearProgressStorage() {
+  store.del('progressHistory');
+  if (progressDb) { try { const tx = progressDb.transaction('settledTrades', 'readwrite'); tx.objectStore('settledTrades').clear(); } catch (e) {} }
+  else if (progressDbPromise) progressDbPromise.then(db => { if (db) try { db.transaction('settledTrades', 'readwrite').objectStore('settledTrades').clear(); } catch (e) {} }).catch(() => {});
+}
 function persistSettledTrade(c) {
   if (!c || !c.account || !['won', 'lost'].includes(c.status) || !Number.isFinite(Number(c.profit))) return;
-  const account = String(c.account), id = `${account}:${c.id}`, settledAt = Date.now();
-  progressHistory.delete(id);
-  progressHistory.set(id, { id, account, currency: String(c.currency || (state.account && state.account.currency) || 'USD'), settledAt, profit: Number(c.profit), status: c.status });
-  while (progressHistory.size > PROGRESS_HISTORY_LIMIT) progressHistory.delete(progressHistory.keys().next().value);
-  store.set('progressHistory', [...progressHistory.values()]);
-  renderProgressGraph();
+  const account = String(c.account), id = `${account}:${c.id}`, settledAt = Number(c.settledAt || Date.now());
+  const row = { id, account, currency: String(c.currency || (state.account && state.account.currency) || 'USD'), settledAt, profit: Number(c.profit), status: c.status };
+  progressHistory.set(id, row); persistProgressRecord(row); renderProgressGraph();
+}
+function setProgressOffset(offset) {
+  progressOffset = Math.max(0, Math.floor(Number(offset) || 0)); store.set('progressOffset', progressOffset); renderProgressGraph();
+}
+function stepProgressZoom(direction) {
+  let index = progressZoomLevels.indexOf(progressZoom); if (index < 0) index = 0;
+  index = Math.max(0, Math.min(progressZoomLevels.length - 1, index + direction));
+  progressZoom = progressZoomLevels[index]; store.set('progressZoom', progressZoom); renderProgressGraph();
 }
 function renderProgressGraph() {
   const chart = $('progressChart'), summary = $('progressSummary'), periodSelect = $('progressRange');
   if (!chart || !summary || !periodSelect) return;
   const period = progressPeriods[periodSelect.value] ? periodSelect.value : 'day';
-  const periodLabel = progressPeriods[period];
-  const accountId = progressAccountId();
+  const accountId = progressAccountId(), now = Date.now(), pageBounds = progressPeriodBounds(period, new Date(now), progressOffset);
+  const periodLabel = progressPeriodTitle(period, pageBounds, progressOffset);
   const accountRecords = [...progressHistory.values()].filter(row => row.account === accountId);
   const latestAccountRecord = accountRecords.reduce((latest, row) => !latest || row.settledAt > latest.settledAt ? row : latest, null);
   const currency = String((state.account && String(state.account.id) === accountId && state.account.currency) || (latestAccountRecord && latestAccountRecord.currency) || 'USD');
-  const now = Date.now(), bounds = progressPeriodBounds(period, new Date(now));
-  const entries = accountRecords.filter(row => row.currency === currency && row.settledAt >= bounds.start && row.settledAt <= now && ['won', 'lost'].includes(row.status))
+  const entries = accountRecords.filter(row => row.currency === currency && row.settledAt >= pageBounds.start && row.settledAt < pageBounds.end && ['won', 'lost'].includes(row.status))
     .sort((a, b) => a.settledAt - b.settledAt || a.id.localeCompare(b.id));
-  const clearButton = $('btnClearProgress');
-  if (clearButton) clearButton.disabled = progressHistory.size === 0;
+  const clearButton = $('btnClearProgress'); if (clearButton) clearButton.disabled = progressHistory.size === 0;
+  const olderButton = $('progressPrevious'), newerButton = $('progressNext'), windowLabel = $('progressWindowLabel');
+  if (olderButton) olderButton.disabled = false;
+  if (newerButton) newerButton.disabled = progressOffset === 0;
+  if (windowLabel) windowLabel.textContent = periodLabel;
+  const zoomIndex = progressZoomLevels.indexOf(progressZoom);
+  if ($('progressZoomLabel')) $('progressZoomLabel').textContent = `${progressZoom}×`;
+  if ($('progressZoomOut')) $('progressZoomOut').disabled = zoomIndex <= 0;
+  if ($('progressZoomIn')) $('progressZoomIn').disabled = zoomIndex >= progressZoomLevels.length - 1;
   let net = 0; entries.forEach(row => { net += row.profit; });
   if (!accountId) summary.textContent = 'Connect an account to view your recorded progress.';
   else summary.textContent = `${periodLabel} · ${entries.length} settled ${entries.length === 1 ? 'contract' : 'contracts'} · ${progressDelta(net, currency)} net P/L`;
 
-  chart.replaceChildren();
-  chart.setAttribute('viewBox', '0 0 720 250');
+  chart.replaceChildren(); chart.setAttribute('viewBox', '0 0 720 250');
   chart.setAttribute('aria-label', accountId ? `${periodLabel} cumulative net profit and loss: ${progressDelta(net, currency)} across ${entries.length} settled contracts` : 'Connect an account to view trade progress');
   chart.appendChild(progressSvgNode('title', {}, 'Cumulative net profit and loss'));
-  chart.appendChild(progressSvgNode('desc', {}, 'Settled STV Traders contracts saved locally, accumulated by settlement time.'));
+  chart.appendChild(progressSvgNode('desc', {}, `Settled STV Traders contracts saved locally, accumulated by settlement time. ${progressOffset ? 'Swipe left to move forward toward the present.' : 'Swipe right to view an older period.'} Zoom: ${progressZoom}×.`));
   const W = 720, H = 250, left = 80, right = 14, top = 16, bottom = 34;
   const plotW = W - left - right, plotH = H - top - bottom;
-  const cumulativeValues = [0]; let cumulative = 0;
-  entries.forEach(row => { cumulative += row.profit; cumulativeValues.push(cumulative); });
-  let minY = Math.min(...cumulativeValues), maxY = Math.max(...cumulativeValues);
+  const pageEnd = progressOffset === 0 ? Math.max(pageBounds.start + 1, Math.min(now, pageBounds.end)) : pageBounds.end;
+  const span = Math.max(1, (pageBounds.end - pageBounds.start) / progressZoom);
+  const viewEnd = Math.max(pageBounds.start + 1, pageEnd);
+  const viewStart = Math.max(pageBounds.start, viewEnd - span);
+  const viewDuration = Math.max(1, viewEnd - viewStart);
+  const visibleEntries = entries.filter(row => row.settledAt >= viewStart && row.settledAt <= viewEnd);
+  let base = 0; entries.forEach(row => { if (row.settledAt < viewStart) base += row.profit; });
+  const curveValues = [base]; let cumulative = base;
+  visibleEntries.forEach(row => { cumulative += row.profit; curveValues.push(cumulative); });
+  const yValues = curveValues.concat([0]);
+  let minY = Math.min(...yValues), maxY = Math.max(...yValues);
   if (minY === maxY) { minY -= 0.5; maxY += 0.5; }
   else { const pad = Math.max((maxY - minY) * 0.12, 0.05); minY -= pad; maxY += pad; }
-  const xFor = time => left + Math.max(0, Math.min(1, (time - bounds.start) / (bounds.end - bounds.start))) * plotW;
+  const xFor = time => left + Math.max(0, Math.min(1, (time - viewStart) / viewDuration)) * plotW;
   const yFor = value => top + (maxY - value) / (maxY - minY) * plotH;
   for (let i = 0; i <= 4; i++) {
     const y = top + plotH * i / 4, value = maxY - (maxY - minY) * i / 4;
@@ -2055,56 +2667,126 @@ function renderProgressGraph() {
     chart.appendChild(progressSvgNode('text', { x: left - 8, y: y + 4, 'text-anchor': 'end', class: 'progress-axis-label' }, progressAxisValue(value, currency)));
   }
   for (let i = 0; i <= 4; i++) {
-    const x = left + plotW * i / 4, time = bounds.start + (bounds.end - bounds.start) * i / 4;
+    const x = left + plotW * i / 4, time = viewStart + viewDuration * i / 4;
     chart.appendChild(progressSvgNode('line', { x1: x, y1: top, x2: x, y2: top + plotH, class: 'progress-grid' }));
     chart.appendChild(progressSvgNode('text', { x, y: H - 8, 'text-anchor': i === 0 ? 'start' : i === 4 ? 'end' : 'middle', class: 'progress-axis-label' }, progressTickLabel(time, period)));
   }
   const zeroY = yFor(0);
   chart.appendChild(progressSvgNode('line', { x1: left, y1: zeroY, x2: W - right, y2: zeroY, class: 'progress-zero' }));
   if (entries.length) {
-    const points = [{ time: bounds.start, value: 0 }];
-    cumulative = 0;
-    entries.forEach(row => { cumulative += row.profit; points.push({ time: row.settledAt, value: cumulative }); });
-    const chartNow = Math.max(bounds.start, Math.min(now, bounds.end));
-    if (chartNow > points[points.length - 1].time) points.push({ time: chartNow, value: cumulative });
+    const points = [{ time: viewStart, value: base }];
+    cumulative = base;
+    visibleEntries.forEach(row => { cumulative += row.profit; points.push({ time: row.settledAt, value: cumulative, row }); });
+    if (viewEnd > points[points.length - 1].time) points.push({ time: viewEnd, value: cumulative });
     const coords = points.map(point => ({ x: xFor(point.time), y: yFor(point.value), value: point.value }));
     const path = coords.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(' ');
     const area = `${path} L${coords[coords.length - 1].x.toFixed(2)},${zeroY.toFixed(2)} L${coords[0].x.toFixed(2)},${zeroY.toFixed(2)} Z`;
     chart.appendChild(progressSvgNode('path', { d: area, class: 'progress-area' }));
     chart.appendChild(progressSvgNode('path', { d: path, class: 'progress-line' }));
-    const markerStep = Math.max(1, Math.ceil(entries.length / 70));
-    entries.forEach((row, index) => {
-      if (index % markerStep !== 0 && index !== entries.length - 1) return;
+    const markerStep = Math.max(1, Math.ceil(visibleEntries.length / 70));
+    visibleEntries.forEach((row, index) => {
+      if (index % markerStep !== 0 && index !== visibleEntries.length - 1) return;
       const point = coords[index + 1], dot = progressSvgNode('circle', { cx: point.x, cy: point.y, r: 3.5, class: 'progress-dot' });
       dot.appendChild(progressSvgNode('title', {}, `${new Date(row.settledAt).toLocaleString()} · ${progressDelta(point.value, currency)} cumulative`));
       chart.appendChild(dot);
     });
   } else {
-    chart.appendChild(progressSvgNode('text', { x: left + plotW / 2, y: top + plotH / 2 + 4, class: 'progress-empty-label' }, accountId ? `No settled trades in ${periodLabel.toLowerCase()}` : 'Connect an account to view progress'));
+    chart.appendChild(progressSvgNode('text', { x: left + plotW / 2, y: top + plotH / 2 + 4, class: 'progress-empty-label' }, accountId ? (entries.length ? 'No trades in this zoomed window' : `No settled trades in ${periodLabel.toLowerCase()}`) : 'Connect an account to view progress'));
   }
 }
 function initProgressGraph() {
   const periodSelect = $('progressRange'), details = $('progressGraphDetails'), clearButton = $('btnClearProgress');
-  const savedPeriod = store.get('progressRange', 'day');
-  if (progressPeriods[savedPeriod]) periodSelect.value = savedPeriod;
-  periodSelect.addEventListener('change', () => {
-    if (!progressPeriods[periodSelect.value]) periodSelect.value = 'day';
-    store.set('progressRange', periodSelect.value);
-    renderProgressGraph();
-  });
+  const savedPeriod = store.get('progressRange', 'day'); if (progressPeriods[savedPeriod]) periodSelect.value = savedPeriod;
+  const goOlder = () => setProgressOffset(progressOffset + 1), goNewer = () => setProgressOffset(Math.max(0, progressOffset - 1));
+  $('progressPrevious').addEventListener('click', goOlder); $('progressNext').addEventListener('click', goNewer);
+  $('progressZoomOut').addEventListener('click', () => stepProgressZoom(-1)); $('progressZoomIn').addEventListener('click', () => stepProgressZoom(1));
+  periodSelect.addEventListener('change', () => { if (!progressPeriods[periodSelect.value]) periodSelect.value = 'day'; store.set('progressRange', periodSelect.value); progressOffset = 0; store.set('progressOffset', 0); renderProgressGraph(); });
   details.addEventListener('toggle', () => { if (details.open) renderProgressGraph(); });
+  let touchStart = null, pinchStart = null;
+  const chart = $('progressChart');
+  chart.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) { const dx = e.touches[0].clientX - e.touches[1].clientX, dy = e.touches[0].clientY - e.touches[1].clientY; pinchStart = Math.hypot(dx, dy); touchStart = null; }
+    else if (e.touches.length === 1) { touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }; pinchStart = null; }
+  }, { passive: true });
+  chart.addEventListener('touchmove', e => {
+    if (e.touches.length !== 2 || !pinchStart) return;
+    const dx = e.touches[0].clientX - e.touches[1].clientX, dy = e.touches[0].clientY - e.touches[1].clientY, dist = Math.hypot(dx, dy);
+    if (dist > pinchStart * 1.18) { stepProgressZoom(1); pinchStart = dist; }
+    else if (dist < pinchStart * .82) { stepProgressZoom(-1); pinchStart = dist; }
+  }, { passive: true });
+  chart.addEventListener('touchend', e => {
+    if (pinchStart && e.touches && e.touches.length) return;
+    if (touchStart && e.changedTouches && e.changedTouches.length === 1) {
+      const dx = e.changedTouches[0].clientX - touchStart.x, dy = e.changedTouches[0].clientY - touchStart.y;
+      if (Math.abs(dx) >= 60 && Math.abs(dx) > Math.abs(dy) * 1.2) dx > 0 ? goOlder() : goNewer();
+    }
+    touchStart = null; pinchStart = null;
+  }, { passive: true });
+  chart.addEventListener('touchcancel', () => { touchStart = null; pinchStart = null; }, { passive: true });
   clearButton.addEventListener('click', () => {
     if (!progressHistory.size) return;
     if (!window.confirm(`Clear ${progressHistory.size} locally saved settled trade records from the graph? This does not clear Deriv's official history.`)) return;
-    progressHistory.clear(); store.del('progressHistory'); renderProgressGraph();
-    toast('Local progress graph history cleared', 'ok');
+    progressHistory.clear(); clearProgressStorage(); renderProgressGraph(); toast('Local progress graph history cleared', 'ok');
   });
-  renderProgressGraph();
+  requestPersistentGraphStorage();
+  if (!progressDbPromise) progressDbPromise = openProgressDatabase();
+  loadProgressHistory(); renderProgressGraph();
 }
 
 /* ============================== bulk trader ============================ */
+function manualBatchOpen(batch = manualBatch) {
+  if (!batch) return 0;
+  let count = 0;
+  contracts.forEach(c => { if (c.manualBatchId === batch.id && c.account === batch.accountId && (c.status === 'open' || c.status === 'unknown')) count++; });
+  return count;
+}
+function updateManualBatchUI() {
+  const b = manualBatch, active = !!(b && b.active), status = $('bulkStatus'), stop = $('btnBulkStop'), retry = $('btnBulkRetry');
+  const aiActive = !!(session && session.active);
+  $('btnBulkBuy').disabled = !state.acctConnected || active || aiActive || autoRun.enabled;
+  $('btnAiStart').disabled = active || aiActive || autoRun.enabled;
+  $('acctSelect').disabled = active || aiActive || autoRun.enabled;
+  status.classList.toggle('hidden', !b);
+  stop.classList.toggle('hidden', !active); retry.classList.toggle('hidden', !active || !b.blocked);
+  stop.disabled = !active || !!b.stopRequested; stop.textContent = b && b.stopRequested ? 'Stopping…' : 'Stop batch';
+  if (!b) { status.className = 'status hidden'; status.textContent = ''; return; }
+  const open = manualBatchOpen(b), pending = (b.pendingOrders || []).length, total = Number(b.total) || 0;
+  if (b.blocked) { status.className = 'status paused'; status.textContent = `Recovery paused — ${b.recoveryReason || 'a trade outcome needs attention'}. No uncertain buy will be resent.`; }
+  else if (b.recovering) { status.className = 'status recovering'; status.textContent = `Recovering manual batch — ${b.recoveryReason || 'checking Deriv before continuing'} · ${b.placed}/${total} accepted · ${pending} pending`; }
+  else if (active && b.stopRequested) { status.className = 'status recovering'; status.textContent = `Stopping batch — ${b.stopReason || 'waiting for in-flight trades'} · ${b.placed}/${total} accepted · ${open} open/unknown · ${pending} outcome checks`; }
+  else if (active) { status.className = 'status live'; status.textContent = `Bulk batch running — ${b.placed}/${total} accepted · ${open} open · ${pending} pending/retrying`; }
+  else if (b.finishedAt) { status.className = 'status'; status.textContent = `${b.finishedReason || 'Batch finished'} · ${b.placed}/${total} accepted · ${b.settled || 0} settled · P/L ${fmt(b.pnl || 0)}`; }
+  else { status.className = 'status hidden'; status.textContent = ''; }
+}
+function finalizeManualBatch(reason) {
+  const b = manualBatch; if (!b || !b.active) return;
+  b.active = false; b.stopRequested = false; b.recovering = false; b.blocked = false; b.recoveryReason = ''; b.finishedAt = Date.now(); b.finishedReason = String(reason || 'Batch finished');
+  log(`Bulk batch finished: ${b.finishedReason} · accepted ${b.placed}/${b.total} · settled ${b.settled} · P/L ${fmt(b.pnl)}`, b.stopReason ? '' : 'ok');
+  toast(b.finishedReason); updateManualBatchUI(); updateSessionUI(); persistRunState();
+}
+function maybeFinishManualBatch() {
+  const b = manualBatch; if (!b || !b.active) { updateManualBatchUI(); return false; }
+  const open = manualBatchOpen(b), pending = (b.pendingOrders || []).length, inFlight = Number(b.inFlight) || 0;
+  if (b.blocked || b.recovering || pending || inFlight || open) { updateManualBatchUI(); persistRunState(); return false; }
+  if (!b.stopRequested && b.placed < Number(b.total)) {
+    blockRecovery('Manual batch is missing an order record; it was paused instead of sending an unverified replacement.', b); return false;
+  }
+  const reason = b.stopRequested ? (b.stopReason || 'Batch stopped by user') : `Batch complete (${b.placed} trade${b.placed === 1 ? '' : 's'})`;
+  finalizeManualBatch(reason); return true;
+}
+function endManualBatch(reason) {
+  const b = manualBatch; if (!b || !b.active) return;
+  if (!b.stopRequested) { b.stopRequested = true; b.stopReason = String(reason || 'Batch stopped'); cancelUnsentOrders(b); }
+  if (recoveryJobs(b).some(job => job.buySent && !job.serverRejected) && !b.blocked) {
+    b.recovering = true; b.recoveryReason = 'Verifying any buy already sent before stopping';
+    if (acct.isOpen && !state.manualDisconnect) startAutomaticRecovery(b.recoveryReason);
+  }
+  updateManualBatchUI(); persistRunState(); maybeFinishManualBatch();
+}
 function bulkBuy() {
   if (!state.acctConnected || !state.account) { toast('Connect your account first', 'err'); return; }
+  if (autoRun.enabled || (session && session.active)) { toast('Finish or stop the AI session and hourly auto-run before starting a Bulk Trader batch', 'err'); return; }
+  if (manualBatch && manualBatch.active) { toast('A Bulk Trader batch is already active', 'err'); return; }
   const m = state.markets.get($('bkSymbol').value); if (!m) { toast('Pick a market', 'err'); return; }
   const o = { stake: +$('bkStake').value, type: $('bkContract').value, barrier: Math.floor(+$('bkBarrier').value), duration: Math.floor(+$('bkDuration').value) };
   const count = Math.floor(+$('bkCount').value);
@@ -2112,10 +2794,16 @@ function bulkBuy() {
   if (!(count >= 1 && count <= 50)) { toast('Number of trades must be 1–50', 'err'); return; }
   const qb = quoteBlocks('bk', o.stake); if (qb) { toast('Stake not accepted by Deriv: ' + qb, 'err'); return; }
   if (!confirmReal()) return;
-  const btn = $('btnBulkBuy'); btn.disabled = true; setTimeout(() => { btn.disabled = !state.acctConnected; }, 1500);
+  manualBatch = { id: `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, accountId: String(state.account.id), currency: String(state.account.currency),
+    active: true, stopRequested: false, stopReason: '', mode: 'parallel', total: count, placed: 0, settled: 0, won: 0, lost: 0, pnl: 0, inFlight: 0,
+    config: { symbol: m.symbol, name: m.name, pipDec: m.pipDec, type: o.type, barrier: o.barrier, stake: o.stake, duration: o.duration, total: count },
+    contractIds: [], pendingOrders: [], recovering: false, recoveryAttempt: 0, recoveryReason: '', blocked: false, createdAt: Date.now() };
+  for (let i = 0; i < count; i++) manualBatch.pendingOrders.push(makeTradeOrder(m, o, 'manual', manualBatch));
+  persistRunState(); updateManualBatchUI();
   log(`Bulk buy: ${count} × ${contractLabel(o.type, o.barrier)} on ${m.name} · stake ${o.stake}`, 'ok');
-  let fails = 0;
-  for (let i = 0; i < count; i++) buyContract(m, o, 'manual', null, (e) => { if (e) { fails++; log(`Buy failed: ${e.message || e.code}`, 'err'); if (fails === 1) toast(e.message || 'Buy failed', 'err'); } });
+  toast(`Bulk batch started · ${count} trade${count === 1 ? '' : 's'}`, 'ok');
+  manualBatch.pendingOrders.slice().forEach(job => executeTradeOrder(job));
+  persistRunState(); updateManualBatchUI();
 }
 
 /* ================================ wiring =============================== */
@@ -2125,7 +2813,7 @@ $('btnForget').addEventListener('click', () => { if (autoRun.enabled) disableAut
 $('rememberTok').addEventListener('change', (e) => { if (autoRun.enabled && !e.target.checked) { e.target.checked = true; toast('Stop hourly auto-run before removing the saved token', 'err'); return; } store.set('remember', e.target.checked); if (!e.target.checked) { store.del('vault'); sec.tokenSaved = null; refreshPrivacyStatus(); toast('Token will not be saved on this phone'); } });
 $('btnEye').addEventListener('click', () => { const t = $('token'); t.type = t.type === 'password' ? 'text' : 'password'; $('btnEye').textContent = t.type === 'password' ? 'show' : 'hide'; });
 $('acctSelect').addEventListener('change', async () => {
-  if (autoRun.enabled || (session && session.active)) { toast('Stop the AI session and hourly auto-run before switching accounts', 'err'); $('acctSelect').value = state.account.id; return; }
+  if (autoRun.enabled || (session && session.active) || (manualBatch && manualBatch.active)) { toast('Stop the active AI or Bulk Trader batch before switching accounts', 'err'); $('acctSelect').value = state.account.id; return; }
   const id = $('acctSelect').value; acct.close(); onAcctDown(); state.manualDisconnect = false;
   try { await openAccountSocket(id); } catch (e) { const m = e.message || String(e); setMsg(m, 'err'); toast(m, 'err'); setAcctStatus('disconnected', 'not connected'); }
 });
@@ -2177,7 +2865,7 @@ function activateTab(name) {
 document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => activateTab(button.dataset.tab)));
 let tabSwipeStart = null;
 function swipeTargetIsInteractive(target) {
-  return !target || typeof target.closest !== 'function' || !!target.closest('button,input,select,textarea,a,label,summary,details,.tabs,[role="button"],.key');
+  return !target || typeof target.closest !== 'function' || !!target.closest('button,input,select,textarea,a,label,summary,details,.tabs,#progressChart,.progress-graph-body,[role="button"],.key');
 }
 document.addEventListener('touchstart', e => {
   if (e.touches.length !== 1 || swipeTargetIsInteractive(e.target) || !$('lockScreen').classList.contains('hidden')) { tabSwipeStart = null; return; }
@@ -2224,7 +2912,10 @@ $('btnAiStop').addEventListener('click', () => {
   if (autoRun.enabled) disableAutoRun('Off — stopped by user.', false);
   if (session && session.active) { session.autoRunCycle = false; endSession('Stopped by user'); }
 });
+$('btnAiRetryRecovery').addEventListener('click', retryBlockedRecovery);
 $('btnBulkBuy').addEventListener('click', bulkBuy);
+$('btnBulkStop').addEventListener('click', () => endManualBatch('Batch stopped by user'));
+$('btnBulkRetry').addEventListener('click', retryBlockedRecovery);
 $('bkSymbol').addEventListener('change', () => updateBulkStrip());
 function exportCsv() {
   if (!contracts.size) { toast('No trades to export yet'); return; }
@@ -2239,7 +2930,7 @@ function exportCsv() {
 }
 $('btnExportCsv').addEventListener('click', exportCsv);
 $('btnClearTrades').addEventListener('click', () => { contracts.forEach((c, id) => { if (c.status !== 'open') contracts.delete(id); }); $('tradeRows').innerHTML = '<tr><td colspan="7" style="color:var(--dim)">No trades yet.</td></tr>'; contracts.forEach(c => renderTradeRow(c)); updateTotals(); });
-window.addEventListener('beforeunload', (e) => { if ((session && session.active) || autoRun.enabled) { e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('beforeunload', (e) => { if ((session && session.active) || (manualBatch && manualBatch.active) || autoRun.enabled) { e.preventDefault(); e.returnValue = ''; } });
 
 /* ============================== calculator ============================= */
 const calc = { tokens: [], cur: '0', fresh: true, pending: false, open: 0, expr: '' };
@@ -2470,10 +3161,10 @@ calcRender(); updateBalanceCalculator();
 /* ============================== motion helpers ========================== */
 window.addEventListener('scroll', () => document.querySelector('header').classList.toggle('scrolled', window.scrollY > 4), { passive: true });
 
-loadSettings(); initAutomationSettings(); initProgressGraph(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
+initBalanceBlur(); initFeatureInfo(); loadSettings(); initAutomationSettings(); initProgressGraph(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
 log('Ready. Market data connects automatically; add your App ID + PAT to trade.');
 connectPublic();
-window.__dbt = { state, contracts, progressHistory, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, activateTab, renderProgressGraph, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; }, get aiStakeAuto() { return aiStakeAuto; }, get calculatedStake() { return calcSplitStake; } }; // debugging hook
+window.__dbt = { state, contracts, progressHistory, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, retryBlockedRecovery, scannerTick, bulkBuy, activateTab, renderProgressGraph, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; }, get manualBatch() { return manualBatch; }, get recoveryState() { return store.get('recoveryState', null); }, get aiStakeAuto() { return aiStakeAuto; }, get calculatedStake() { return calcSplitStake; } }; // debugging hook
 })();
 </script>
 </body>

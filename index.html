@@ -685,7 +685,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       </div>
       <div class="card-b hidden" id="scannerBody"><div class="inner">
         <div class="grid3">
-          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true">AUTO</button><button type="button" class="info-trigger" id="aiStakeInfo" data-info-title="Automatic stake" data-info-html="The stake follows the balance-based calculation until you edit it. Tap AUTO to restore automatic updates." aria-label="Show automatic stake explanation"><span class="info-glyph">𝒊</span></button></div><input id="aiStake" inputmode="decimal" /></div>
+          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true">AUTO</button><button type="button" class="info-trigger" id="aiStakeInfo" data-info-title="Stake and stop loss" data-info-html="With AUTO on, manual AI trades use the live balance-based stake. Hourly auto-run uses the same AI Scanner Bulk trades and Max sessions; AUTO stake is the 2.5% USD balance budget per session divided across the selected bulk count. Turn AUTO off and the exact custom stake is used for both manual and hourly trades. Default Stop loss is 2× the per-contract stake (for example, $0.35 → $0.70). Edit Stop loss under Advanced settings to choose a custom amount; clearing it restores the 2× default, and entering 0 turns it off." aria-label="Show stake and stop-loss explanation"><span class="info-glyph">𝒊</span></button></div><input id="aiStake" inputmode="decimal" /></div>
           <div class="f"><label>Bulk trades</label><input id="aiBulk" inputmode="numeric" /></div>
           <div class="f"><label>Max sessions</label><input id="aiMax" inputmode="numeric" /></div>
         </div>
@@ -732,7 +732,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
           <div class="hint privacy-hint" data-info-source data-info-title="Privacy screen limits">The privacy screen prevents casual viewing only; it does not encrypt the running page or protect it from device-level access. Use a strong screen lock and keep the device secure.</div>
           <div class="grid2">
             <div class="f"><label>Take profit</label><input id="aiTP" inputmode="decimal" placeholder="off" /></div>
-            <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="off" /></div>
+            <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="2× stake" /></div>
           </div>
           <div class="sub">Scanner rules</div>
           <div class="grid2">
@@ -746,7 +746,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
         </details>
         <details class="auto-run-settings" id="autoRunSettings">
           <summary>Hourly auto-run schedule</summary>
-          <label class="chk auto-check"><input type="checkbox" id="autoRunToggle" /><span><b>Automatically run my strategy on an hourly schedule</b><br><small data-info-source data-info-title="Hourly auto-run">Choose when the first cycle starts and when later cycles repeat. Runs never overlap.</small></span></label>
+          <label class="chk auto-check"><input type="checkbox" id="autoRunToggle" /><span><b>Automatically run my strategy on an hourly schedule</b><br><small data-info-source data-info-title="Hourly auto-run">Each cycle uses the AI Scanner's current stake, Bulk trades, and Max sessions. Choose when the first cycle starts and when later cycles repeat.</small></span></label>
           <div class="auto-schedule" aria-label="Cycle timing">
             <div class="auto-schedule-field">
               <label class="auto-schedule-label" for="autoRunStart"><span class="auto-schedule-step">01</span><span class="auto-schedule-copy"><b>First cycle</b><small>When should it start?</small></span></label>
@@ -757,12 +757,12 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
               <select id="autoRunRepeat"><option value="clock-hour">At the next local clock-hour</option><option value="after-finish">60 minutes after each cycle finishes</option></select>
             </div>
           </div>
-          <button type="button" class="info-trigger info-trigger-block auto-schedule-hint" id="autoRunScheduleHint" data-info-title="Hourly schedule timing" data-info-html="First cycle: immediately. Repeat: at the next local clock-hour after each cycle finishes." aria-label="Show hourly schedule timing explanation"><span class="info-glyph">𝒊</span></button>
+          <button type="button" class="info-trigger info-trigger-block auto-schedule-hint" id="autoRunScheduleHint" data-info-title="Hourly schedule timing" data-info-html="Each cycle uses the AI Scanner's current stake, Bulk trades, and Max sessions. AUTO stake splits the 2.5% live USD balance per-session budget across the selected bulk trades; a custom stake is used exactly. Default stop loss is 2× the per-contract stake; on a hit the current cycle ends and waits for the next scheduled run." aria-label="Show hourly schedule timing explanation"><span class="info-glyph">𝒊</span></button>
           <div class="plan auto-plan" id="autoRunPanel">
             <div class="hint" id="autoRunStatus">Off — manual Start is unchanged.</div>
-            <div class="hint" id="autoRunPlan">Connect a USD trading account to calculate the 2.5% balance plan.</div>
+            <div class="hint" id="autoRunPlan">Connect a USD account; hourly runs use the AI Scanner stake, Bulk trades, and Max sessions above.</div>
           </div>
-          <div class="note warn auto-warning" data-info-source data-info-title="Auto-run limits and risk">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Auto sizing uses 2.5% of the live USD balance, max $6,430 per trade. If 2.5% is below Deriv's $0.35 minimum, it uses $0.35 per contract; the preview shows the resulting exposure, which can exceed 2.5%. Losses can still occur.
+          <div class="note warn auto-warning" data-info-source data-info-title="Auto-run limits and risk">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Hourly cycles use the AI Scanner's configured Bulk trades and Max sessions. A custom stake is reused exactly; AUTO stake splits 2.5% of the live USD balance per session across the chosen bulk trades. Hourly limits are 1–25 bulk trades, 1–20 sessions, and $0.35–$6,430 per contract. The default stop loss is 2× stake; when hit, that cycle ends and the schedule waits for the next start. Any contract can lose.
         </details>
         <button type="button" class="info-trigger info-trigger-block scanner-rules-info" id="scannerRulesInfo" data-info-title="How the scanner decides" aria-label="Show scanner rules explanation"><span class="info-glyph">𝒊</span></button>
       </div></div>
@@ -840,14 +840,14 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
     <div class="card"><div class="calc">
       <div class="calc-disp" aria-live="polite"><small id="calcExpr"></small><b id="calcOut">0</b></div>
       <div class="keys" id="calcKeys">
-        <button type="button" class="key fn" data-k="AC">AC</button><button type="button" class="key fn" data-k="⌫">⌫</button><button type="button" class="key fn calc-paren-key" data-k="()" aria-label="Open or close parentheses">()</button><button type="button" class="key op" data-k="÷">÷</button>
+        <button type="button" class="key fn" data-k="AC">AC</button><button type="button" class="key fn" data-k="⌫" aria-label="Delete previous digit or math sign" title="Delete the previous digit, operator, or parenthesis">⌫</button><button type="button" class="key fn calc-paren-key" data-k="()" aria-label="Open or close parentheses">()</button><button type="button" class="key op" data-k="÷">÷</button>
         <button type="button" class="key" data-k="7">7</button><button type="button" class="key" data-k="8">8</button><button type="button" class="key" data-k="9">9</button><button type="button" class="key op" data-k="×">×</button>
         <button type="button" class="key" data-k="4">4</button><button type="button" class="key" data-k="5">5</button><button type="button" class="key" data-k="6">6</button><button type="button" class="key op" data-k="−">−</button>
         <button type="button" class="key" data-k="1">1</button><button type="button" class="key" data-k="2">2</button><button type="button" class="key" data-k="3">3</button><button type="button" class="key op" data-k="+">+</button>
         <button type="button" class="key fn" data-k="±">±</button><button type="button" class="key" data-k="0">0</button><button type="button" class="key" data-k=".">.</button><button type="button" class="key eq" data-k="=">=</button>
       </div>
       <div class="btns"><button type="button" class="btn ghost" id="btnCalcStake">Use result as stake</button></div>
-      <div class="hint" style="text-align:center" data-info-source data-info-title="Basic calculator">Basic calculator — works with the keyboard too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
+      <div class="hint" style="text-align:center" data-info-source data-info-title="Basic calculator">Basic calculator — works with the keyboard too. Backspace deletes the previous digit or calculator entry, including an operator or parenthesis; keyboard Backspace works too. "Use result as stake" copies the number into the Scanner and Bulk Trader stake fields.</div>
       <div class="calc-split">
         <div class="calc-split-head"><b>Balance stake</b><button type="button" class="info-trigger" id="balanceStakeInfo" data-info-title="Balance stake calculation" data-info-html="Calculated stake = current connected balance × 2.5% ÷ Value. Value defaults to 1; change it to divide the stake. The current balance is read-only." aria-label="Show balance stake calculation"><span class="info-glyph">𝒊</span></button></div>
         <div class="calc-split-grid">
@@ -1065,7 +1065,7 @@ if (Array.isArray(savedProgressHistory)) {
 }
 let session = null, lastReason = '', manualBatch = null;
 let pendingRecoverySnapshot = store.get('recoveryState', null), recoveryRestored = false, recoveryTimer = null, recoveryRunning = false, recoveryNoticeShown = false;
-let aiStakeAuto = true, aiStakeSyncing = false;
+let aiStakeAuto = true, aiStakeSyncing = false, aiSLAuto = true;
 const cfg = { window: 1000, over: 3, under: 6, consec: 8, strategy: 'both', priority: 'gap' };
 function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} only` : cfg.strategy === 'under' ? `Under ${cfg.under} only` : `Over ${cfg.over} & Under ${cfg.under}`; }
 
@@ -1073,18 +1073,30 @@ function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} on
 const SETTINGS_V = 2;
 const DEFAULTS = { appId: '', aiStake: '0.35', aiBulk: '3', aiMax: '2', aiMode: 'parallel', aiStrategy: 'both', aiPriority: 'gap', aiDuration: '1',
   aiConsec: '8', aiThreshold: '3', aiThresholdUnder: '6', aiWindow: '1000', aiTP: '', aiSL: '', bkContract: 'DIGITOVER', bkBarrier: '3', bkStake: '0.35', bkDuration: '1', bkCount: '3' };
+function defaultStopLossForStake(stake) { const n = Number(stake); return Number.isFinite(n) && n > 0 ? Math.round((n * 2 + 1e-9) * 100) / 100 : 0; }
+function syncAIStopLoss() {
+  if (!aiSLAuto || !$('aiSL') || !$('aiStake')) return false;
+  const next = defaultStopLossForStake($('aiStake').value); if (!(next > 0)) return false;
+  const formatted = fmt(next); if ($('aiSL').value === formatted) return false; $('aiSL').value = formatted; return true;
+}
+function effectiveStopLoss(stake) {
+  if (aiSLAuto) return defaultStopLossForStake(stake);
+  const raw = String($('aiSL').value || '').trim(); if (!raw) return defaultStopLossForStake(stake);
+  const custom = Number(raw); return Number.isFinite(custom) && custom >= 0 ? custom : defaultStopLossForStake(stake);
+}
 function loadSettings() {
   const saved = store.get('settings', {});
   if (saved.v !== SETTINGS_V) delete saved.aiMax;   // "Max" used to mean trades, now it means sessions
   aiStakeAuto = typeof saved.aiStakeAuto === 'boolean' ? saved.aiStakeAuto : (!saved.aiStake || String(saved.aiStake) === DEFAULTS.aiStake);
+  aiSLAuto = typeof saved.aiSLAuto === 'boolean' ? saved.aiSLAuto : !String(saved.aiSL || '').trim();
   const s = Object.assign({}, DEFAULTS, saved);
   Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.value = s[k]; });
   $('rememberTok').checked = store.get('remember', true) !== false;
-  syncCfg(); updateAIStakeAutoUI();
+  syncAIStopLoss(); syncCfg(); updateAIStakeAutoUI();
 }
-function saveSettings() { const s = { v: SETTINGS_V, aiStakeAuto }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
+function saveSettings() { const s = { v: SETTINGS_V, aiStakeAuto, aiSLAuto }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
 function scannerRulesExplanation() {
-  return `<p><b>Signals:</b> Over ${cfg.over} needs ${cfg.consec} latest digits all above ${cfg.over} and a most-frequent digit of 0–${cfg.over} in the last ${cfg.window} ticks. Under ${cfg.under} needs ${cfg.consec} latest digits all below ${cfg.under} and a most-frequent digit of ${cfg.under}–9. Whichever qualifies first is used.</p><p><b>Market priority:</b> the default picks the market with the biggest percentage-point gap between its top digit and runner-up (runner-up may be any digit 0–9); ties use streak length, then top-digit percentage. Advanced settings can choose longest streak first.</p><p><b>Sessions:</b> each qualifying signal starts one session of exactly the chosen Bulk trades, either all at once or sequentially. It waits for a fresh signal for each later session and stops at Max sessions. Take profit, Stop loss, or Stop ends a manual run early.</p>`;
+  return `<p><b>Signals:</b> Over ${cfg.over} needs ${cfg.consec} latest digits all above ${cfg.over} and a most-frequent digit of 0–${cfg.over} in the last ${cfg.window} ticks. Under ${cfg.under} needs ${cfg.consec} latest digits all below ${cfg.under} and a most-frequent digit of ${cfg.under}–9. Whichever qualifies first is used.</p><p><b>Market priority:</b> the default picks the market with the biggest percentage-point gap between its top digit and runner-up (runner-up may be any digit 0–9); ties use streak length, then top-digit percentage. Advanced settings can choose longest streak first.</p><p><b>Sessions:</b> each qualifying signal starts one session of exactly the chosen Bulk trades, either all at once or sequentially. It waits for a fresh signal for each later session and stops at Max sessions.</p><p><b>Stop loss:</b> defaults to two times the per-contract stake (for example, $0.35 stake → $0.70 stop loss). Reaching the loss limit ends the current AI run/cycle; already-open contracts settle normally. Hourly auto-run stays enabled and waits for its next scheduled cycle (by default, the next local clock-hour).</p>`;
 }
 function syncCfg() {
   cfg.window = Math.max(10, +$('aiWindow').value || 1000);
@@ -1104,8 +1116,9 @@ function syncCfg() {
   state.markets.forEach(m => { recompute(m); renderMarketRow(m); });
   refreshBest(); updateBulkStrip();
 }
-Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.addEventListener('change', () => { saveSettings(); syncCfg(); }); });
+Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.addEventListener('change', () => { if (k === 'aiSL') { if (el.value.trim()) aiSLAuto = false; else { aiSLAuto = true; syncAIStopLoss(); } } saveSettings(); syncCfg(); }); });
 function updatePlan() {
+  syncAIStopLoss();
   const bulk = Math.floor(+$('aiBulk').value), max = Math.floor(+$('aiMax').value), stake = +$('aiStake').value;
   const el = $('aiPlan'); if (!(bulk >= 1) || !(max >= 1)) { el.textContent = 'Plan: enter bulk trades (≥1) and max sessions (≥1)'; requestQuote('ai'); return; }
   el.textContent = `Plan: ${max} session${max > 1 ? 's' : ''} × ${bulk} trade${bulk > 1 ? 's' : ''} = ${bulk * max} trades in total` +
@@ -1113,9 +1126,13 @@ function updatePlan() {
   requestQuote('ai');
 }
 ['aiBulk', 'aiMax', 'aiStake', 'aiMode'].forEach(k => $(k).addEventListener('input', updatePlan));
+$('aiSL').addEventListener('input', () => {
+  if ($('aiSL').value.trim()) aiSLAuto = false;
+  else { aiSLAuto = true; syncAIStopLoss(); }
+});
 
 /* ========================= hourly auto-run ============================ */
-function computeAutoPlan(balanceValue, currencyValue) {
+function computeBalanceAutoPlan(balanceValue, currencyValue) {
   const a = state.account;
   const balance = balanceValue == null ? (a ? Number(a.balance) : NaN) : Number(balanceValue);
   const currency = String(currencyValue || (a && a.currency) || '').toUpperCase();
@@ -1143,11 +1160,42 @@ function computeAutoPlan(balanceValue, currencyValue) {
   const totalExposure = Math.round(stake * bulk * sessions * 100) / 100;
   return { ok: true, balance, currency, budget, stake, bulk, sessions, totalExposure, splitAcrossSessions, minStakeApplied: false, maxStake: AUTO_MAX_STAKE_USD };
 }
+function computeConfiguredAutoPlan(balanceValue, currencyValue) {
+  const a = state.account;
+  const balance = balanceValue == null ? (a ? Number(a.balance) : NaN) : Number(balanceValue);
+  const currency = String(currencyValue || (a && a.currency) || '').toUpperCase();
+  if (balanceValue == null && (!a || !state.acctConnected)) return { ok: false, reason: 'Connect a trading account first.' };
+  if (currency !== 'USD') return { ok: false, reason: 'Hourly auto-run is limited to USD accounts; no currency conversion is guessed.' };
+  if (!Number.isFinite(balance) || balance <= 0) return { ok: false, reason: 'Current account balance is unavailable.' };
+  const bulk = Math.floor(Number($('aiBulk').value)), sessions = Math.floor(Number($('aiMax').value));
+  if (!(bulk >= 1 && bulk <= AUTO_MAX_BULK)) return { ok: false, reason: `AI Scanner Bulk trades must be 1–${AUTO_MAX_BULK} for hourly auto-run.` };
+  if (!(sessions >= 1 && sessions <= AUTO_MAX_SESSIONS)) return { ok: false, reason: `AI Scanner Max sessions must be 1–${AUTO_MAX_SESSIONS} for hourly auto-run.` };
+  const budget = Math.floor((balance * 0.025 + 1e-9) * 100) / 100;
+  const manualStake = !aiStakeAuto;
+  let stake, minStakeApplied = false;
+  if (manualStake) stake = Number($('aiStake').value);
+  else {
+    stake = Math.floor((budget / bulk + 1e-9) * 100) / 100;
+    if (stake < AUTO_MIN_STAKE_USD) { stake = AUTO_MIN_STAKE_USD; minStakeApplied = true; }
+  }
+  if (!Number.isFinite(stake) || stake < AUTO_MIN_STAKE_USD || stake > AUTO_MAX_STAKE_USD) {
+    const reason = manualStake
+      ? `Your manual AI Scanner stake must be between $${fmt(AUTO_MIN_STAKE_USD)} and $${fmt(AUTO_MAX_STAKE_USD)} USD per contract for hourly auto-run.`
+      : `The 2.5% per-session budget divided across ${bulk} configured bulk trades gives ${fmt(stake)} USD per contract, outside the $${fmt(AUTO_MIN_STAKE_USD)}–$${fmt(AUTO_MAX_STAKE_USD)} supported range. Increase Bulk trades or set a valid manual stake.`;
+    return { ok: false, reason };
+  }
+  const totalExposure = Math.round(stake * bulk * sessions * 100) / 100;
+  return { ok: true, configured: true, balance, currency, budget, stake, bulk, sessions, totalExposure, manualStake, autoStake: !manualStake, minStakeApplied, maxStake: AUTO_MAX_STAKE_USD };
+}
+function computeAutoPlan(balanceValue, currencyValue) {
+  if (arguments.length === 0) return computeConfiguredAutoPlan();
+  return computeBalanceAutoPlan(balanceValue, currencyValue);
+}
 function autoPlanText(p) {
-  if (!p.ok) return 'Auto sizing unavailable: ' + p.reason;
-  if (p.minStakeApplied) return `2.5% budget ${fmt(p.budget)} USD per session is below the $0.35 minimum · using $0.35 per contract · ${p.bulk} trade per session × ${p.sessions} sessions · up to ${fmt(p.totalExposure)} USD total stake (above 2.5% because of the minimum).`;
-  if (p.splitAcrossSessions) return `2.5% budget ${fmt(p.budget)} USD · ${p.bulk} bulk trades × ${p.sessions} sessions · ${fmt(p.stake)} USD per contract · up to ${fmt(p.totalExposure)} USD staked across this run (large-budget split).`;
-  return `2.5% per session = ${fmt(p.budget)} USD · ${p.bulk} bulk trade${p.bulk > 1 ? 's' : ''} × ${p.sessions} sessions · ${fmt(p.stake)} USD per contract · up to ${fmt(p.totalExposure)} USD staked across the run.`;
+  if (!p.ok) return 'Auto-run settings unavailable: ' + p.reason;
+  const sizing = p.manualStake ? 'manual AI Scanner stake' : `2.5% USD balance per session ÷ ${p.bulk} configured bulk trades`;
+  const min = p.minStakeApplied ? ' · $0.35 minimum applies (exposure can exceed the 2.5% budget)' : '';
+  return `AI Scanner settings · ${sizing} = ${fmt(p.stake)} USD per contract · ${p.bulk} bulk trades × ${p.sessions} max sessions · up to ${fmt(p.totalExposure)} USD staked per cycle${min}.`;
 }
 function setAutoInputsLocked(on) {
   ['aiStake', 'aiBulk', 'aiMax'].forEach(id => { $(id).readOnly = !!on; $(id).classList.toggle('auto-input', !!on); });
@@ -1155,15 +1203,8 @@ function setAutoInputsLocked(on) {
 }
 function applyAutoPlan(p) {
   if (!p || !p.ok) return;
-  const next = { aiStake: fmt(p.stake), aiBulk: String(p.bulk), aiMax: String(p.sessions) };
-  let changed = false;
-  Object.keys(next).forEach(id => {
-    if ($(id).value === next[id]) return;
-    if (id === 'aiStake') setAIStakeProgrammatically(next[id], false);
-    else { $(id).value = next[id]; $(id).dispatchEvent(new Event('input', { bubbles: true })); }
-    changed = true;
-  });
-  if (!changed) updatePlan();
+  if (p.autoStake && aiStakeAuto && $('aiStake').value !== fmt(p.stake)) setAIStakeProgrammatically(p.stake, false);
+  else updatePlan();
 }
 function autoRemaining(ms) {
   const sec = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), r = sec % 60;
@@ -1201,7 +1242,10 @@ function autoScheduleSummary() {
 }
 function refreshAutoScheduleHint() {
   const repeatIsClock = $('autoRunRepeat').value !== 'after-finish';
-  setFeatureInfoHtml('autoRunScheduleHint', autoScheduleSummary() + (repeatIsClock ? ' Example: a 2:20 p.m. finish schedules the next cycle for 3:00 p.m. local time.' : '') + ' Timing choices lock while auto-run is enabled; switch it off to edit them.');
+  const stakeRule = aiStakeAuto ? 'With AUTO stake, each cycle splits the 2.5% live USD balance budget across the selected Bulk trades.' : 'With a custom stake, each cycle uses that exact AI Scanner stake.';
+  const lossRule = aiSLAuto ? 'The default stop loss is 2× the per-contract stake.' : (effectiveStopLoss(+$('aiStake').value) > 0 ? 'The custom Stop loss amount is used.' : 'A custom 0 turns the stop loss off.');
+  const copy = `${autoScheduleSummary()} Each cycle uses the AI Scanner settings: stake, Bulk trades, and Max sessions. ${stakeRule} ${lossRule} When the stop-loss limit is reached, that cycle ends; auto-run stays enabled and waits for the next scheduled cycle. ${repeatIsClock ? 'Example: a 2:20 p.m. finish schedules 3:00 p.m. local time.' : ''} Timing choices lock while auto-run is enabled; switch it off to edit them.`;
+  setFeatureInfoHtml('autoRunScheduleHint', copy);
 }
 function setAutoRunScheduleLocked(locked) { $('autoRunStart').disabled = !!locked; $('autoRunRepeat').disabled = !!locked; }
 function refreshAutoPanel() {
@@ -1268,12 +1312,16 @@ async function enableAutoRun() {
   const firstSchedule = firstAutoRunSchedule();
   const minStakeWarning = plan.minStakeApplied ? `
 
-Minimum-stake warning: the $0.35 per-contract minimum is above 2.5% of this balance. The planned $${fmt(plan.totalExposure)} total exposure can therefore exceed the 2.5% budget.` : '';
+Minimum-stake warning: after splitting the 2.5% per-session budget across ${plan.bulk} configured bulk trades, the per-contract amount was below Deriv's $0.35 minimum. Using $0.35 means planned exposure ${fmt(plan.totalExposure)} USD can exceed the 2.5% budget.` : '';
+  const stopLoss = effectiveStopLoss(plan.stake);
+  const stopLossText = stopLoss > 0 ? `Stop loss per cycle: ${fmt(stopLoss)} USD${aiSLAuto ? ' (default: 2× stake)' : ' (custom)'}` : 'Stop loss per cycle: off (custom value 0)';
+  const stakeDescription = plan.manualStake ? 'manual AI Scanner value' : '2.5% USD balance per session divided by the chosen bulk count';
   const accepted = window.confirm(`Enable hourly auto-run on the ${state.account.is_virtual ? 'DEMO' : 'REAL'} account?
 
 ${autoScheduleSummary()}
 Strategy: ${strategyLabel()}
-Stake per contract: ${fmt(plan.stake)} USD · bulk ${plan.bulk} · max sessions ${plan.sessions}
+AI Scanner settings: ${fmt(plan.stake)} USD per contract (${stakeDescription}) · ${plan.bulk} bulk trades · ${plan.sessions} max sessions
+${stopLossText}
 Estimated total stake across a completed run: up to ${fmt(plan.totalExposure)} USD. Any or all contracts can lose.${minStakeWarning}
 
 The browser page must remain open and connected. Auto-run cannot guarantee 24/7 operation if the OS suspends or closes the browser.`);
@@ -2361,7 +2409,7 @@ function startAI(fromAuto) {
   if (fromAuto && !(bulk <= AUTO_MAX_BULK && max <= AUTO_MAX_SESSIONS)) { toast('Auto-runs allow 1–25 bulk trades and 2–20 sessions', 'err'); return false; }
   if (!confirmReal()) return false;
   session = { id: Date.now(), accountId: String(state.account.id), active: true, mode: $('aiMode').value, stake: o.stake, bulk, maxSessions: max, strategy: cfg.strategy, priority: cfg.priority, over: cfg.over, under: cfg.under, consec: cfg.consec, window: cfg.window, duration: o.duration,
-    tp: +$('aiTP').value || 0, sl: +$('aiSL').value || 0, placed: 0, settled: 0, won: 0, lost: 0, pnl: 0, sessionsStarted: 0, sessionsDone: 0, batch: null, tradedSignals: new Set(), pendingOrders: [], inFlight: 0, autoRunCycle: fromAuto, recovering: false, recoveryAttempt: 0, recoveryReason: '', blocked: false, stopRequested: false, stopReason: '' };
+    tp: +$('aiTP').value || 0, sl: effectiveStopLoss(o.stake), placed: 0, settled: 0, won: 0, lost: 0, pnl: 0, sessionsStarted: 0, sessionsDone: 0, batch: null, tradedSignals: new Set(), pendingOrders: [], inFlight: 0, autoRunCycle: fromAuto, recovering: false, recoveryAttempt: 0, recoveryReason: '', blocked: false, stopRequested: false, stopReason: '' };
   lastReason = ''; $('acctSelect').disabled = true; persistRunState();
   log(`${fromAuto ? 'Hourly auto-run cycle' : 'AI trading started'} · ${strategyLabel()}${cfg.strategy === 'both' ? ' (whichever comes first)' : ''} · stake ${o.stake} · ${max} session${max > 1 ? 's' : ''} × ${bulk} trade${bulk > 1 ? 's' : ''} (${bulk * max} total) · ${session.mode === 'sequential' ? 'one after another' : 'all at once'}`, 'ok');
   toast(fromAuto ? 'Scheduled AI cycle started' : 'AI scanner armed — waiting for a signal', 'ok'); updateSessionUI(); scannerTick();
@@ -2386,6 +2434,7 @@ function finalizeSession(reason) {
       disableAutoRun('Auto-run stopped for safety: ' + lastReason, false);
     } else {
       const nextSchedule = nextAutoRunSchedule();
+      if (/stop loss hit/i.test(lastReason)) log(`Stop-loss limit reached; this hourly cycle has ended. ${nextSchedule.label}`, 'err');
       scheduleAutoRunAt(nextSchedule.at, nextSchedule.label);
     }
   }
@@ -2933,7 +2982,7 @@ $('btnClearTrades').addEventListener('click', () => { contracts.forEach((c, id) 
 window.addEventListener('beforeunload', (e) => { if ((session && session.active) || (manualBatch && manualBatch.active) || autoRun.enabled) { e.preventDefault(); e.returnValue = ''; } });
 
 /* ============================== calculator ============================= */
-const calc = { tokens: [], cur: '0', fresh: true, pending: false, open: 0, expr: '' };
+const calc = { tokens: [], cur: '0', fresh: true, pending: false, open: 0, expr: '', history: [] };
 let calcSplitStake = null;
 function setAIStakeProgrammatically(value, dispatchChange = true) {
   const input = $('aiStake'); if (!input) return false;
@@ -3003,6 +3052,15 @@ function calcRender() {
   $('calcExpr').textContent = calc.expr || calcLiveText(); const out = $('calcOut'); out.textContent = calc.cur;
   out.style.fontSize = calc.cur.length > 13 ? '24px' : calc.cur.length > 9 ? '32px' : '40px';
 }
+function calcSnapshot() { return { tokens: calc.tokens.slice(), cur: calc.cur, fresh: calc.fresh, pending: calc.pending, open: calc.open, expr: calc.expr }; }
+function calcRestore(snapshot) {
+  calc.tokens = snapshot.tokens.slice(); calc.cur = snapshot.cur; calc.fresh = snapshot.fresh;
+  calc.pending = snapshot.pending; calc.open = snapshot.open; calc.expr = snapshot.expr;
+}
+function calcRemember() {
+  calc.history.push(calcSnapshot());
+  if (calc.history.length > 100) calc.history.shift();
+}
 function calcEvalTokens(tokens) {
   let i = 0;
   function primary() {
@@ -3057,6 +3115,16 @@ function calcToggleParen() {
   if (canClose) calcCloseParen(); else calcOpenParen();
 }
 function calcKey(k) {
+  if (k === '⌫') {
+    const previous = calc.history.pop();
+    if (previous) calcRestore(previous);
+    calcRender(); return;
+  }
+  if (k === 'AC') {
+    calc.history = []; calc.tokens = []; calc.cur = '0'; calc.fresh = true; calc.pending = false; calc.open = 0; calc.expr = '';
+    calcRender(); return;
+  }
+  calcRemember();
   if (calc.cur === 'Error' && k !== 'AC') {
     calc.tokens = []; calc.cur = '0'; calc.fresh = true; calc.pending = false; calc.open = 0; calc.expr = '';
     if (!/^[0-9.]$/.test(k) && k !== '(' && k !== '()' && k !== '+' && k !== '−') { calcRender(); return; }
@@ -3074,13 +3142,6 @@ function calcKey(k) {
       if (calc.tokens[calc.tokens.length - 1] === ')') calc.tokens.push('×');
       calc.cur = '0.'; calc.fresh = false; calc.pending = true;
     } else if (!calc.cur.includes('.')) calc.cur += '.';
-  } else if (k === '⌫') {
-    if (calc.pending && !calc.fresh) {
-      calc.cur = calc.cur.length > 1 ? calc.cur.slice(0, -1) : '0';
-      if (calc.cur === '-' || calc.cur === '-0') calc.cur = '0';
-    }
-  } else if (k === 'AC') {
-    calc.tokens = []; calc.cur = '0'; calc.fresh = true; calc.pending = false; calc.open = 0; calc.expr = '';
   } else if (k === '±') {
     if (calc.pending && calc.cur !== '0') calc.cur = calc.cur.startsWith('-') ? calc.cur.slice(1) : '-' + calc.cur;
     else if (!calc.pending && !calc.tokens.length && calc.expr.endsWith('=') && calc.cur !== '0') calc.cur = calc.cur.startsWith('-') ? calc.cur.slice(1) : '-' + calc.cur;
@@ -3164,7 +3225,7 @@ window.addEventListener('scroll', () => document.querySelector('header').classLi
 initBalanceBlur(); initFeatureInfo(); loadSettings(); initAutomationSettings(); initProgressGraph(); updateAccount(); updateSessionUI(); updateTotals(); bootSecurity();
 log('Ready. Market data connects automatically; add your App ID + PAT to trade.');
 connectPublic();
-window.__dbt = { state, contracts, progressHistory, pub, acct, cfg, computeAutoPlan, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, retryBlockedRecovery, scannerTick, bulkBuy, activateTab, renderProgressGraph, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; }, get manualBatch() { return manualBatch; }, get recoveryState() { return store.get('recoveryState', null); }, get aiStakeAuto() { return aiStakeAuto; }, get calculatedStake() { return calcSplitStake; } }; // debugging hook
+window.__dbt = { state, contracts, progressHistory, pub, acct, cfg, computeAutoPlan, computeConfiguredAutoPlan, defaultStopLossForStake, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, retryBlockedRecovery, scannerTick, bulkBuy, activateTab, renderProgressGraph, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; }, get manualBatch() { return manualBatch; }, get recoveryState() { return store.get('recoveryState', null); }, get aiStakeAuto() { return aiStakeAuto; }, get aiSLAuto() { return aiSLAuto; }, effectiveStopLoss, get calculatedStake() { return calcSplitStake; } }; // debugging hook
 })();
 </script>
 </body>

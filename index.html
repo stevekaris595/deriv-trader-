@@ -395,6 +395,8 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
 .info-dialog-body :first-child{margin-top:0}
 .info-dialog-body ol,.info-dialog-body ul{padding-left:20px}
 .info-dialog-body a{word-break:break-word}
+.resume-actions{margin-top:14px}.resume-actions .btn{flex:1;white-space:normal}
+@media(max-width:420px){.resume-actions{flex-direction:column}.resume-actions .btn{width:100%}}
 .note ol,.note ul{margin:6px 0 0 18px;padding:0}.note li{margin:4px 0}
 .stripbox{margin-top:12px;padding:12px 14px;background:var(--card2);border-radius:var(--rs);border:1px solid var(--border)}
 .stripbox .top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
@@ -685,7 +687,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
       </div>
       <div class="card-b hidden" id="scannerBody"><div class="inner">
         <div class="grid3">
-          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true">AUTO</button><button type="button" class="info-trigger" id="aiStakeInfo" data-info-title="Stake and stop loss" data-info-html="With AUTO on, manual AI trades use the live balance-based stake. Hourly auto-run uses the same AI Scanner Bulk trades and Max sessions; AUTO stake is the 2.5% USD balance budget per session divided across the selected bulk count. Turn AUTO off and the exact custom stake is used for both manual and hourly trades. Default Stop loss is 2× the per-contract stake (for example, $0.35 → $0.70). Edit Stop loss under Advanced settings to choose a custom amount; clearing it restores the 2× default, and entering 0 turns it off." aria-label="Show stake and stop-loss explanation"><span class="info-glyph">𝒊</span></button></div><input id="aiStake" inputmode="decimal" /></div>
+          <div class="f"><div class="ai-stake-label"><label for="aiStake">Stake</label><button type="button" class="linkbtn ai-stake-auto active" id="btnAiStakeAuto" aria-pressed="true">AUTO</button><button type="button" class="info-trigger" id="aiStakeInfo" data-info-title="Stake and stop loss" data-info-html="With AUTO on, manual AI trades use the live balance-based stake. Hourly auto-run uses the same AI Scanner Bulk trades and Max sessions; AUTO stake is the 2.5% USD balance budget per session divided across the selected bulk count. Turn AUTO off and the exact custom stake is used for both manual and hourly trades. Default Stop loss is 1.01× the per-contract stake (for example, $0.35 → $0.3535). Edit Stop loss under Advanced settings to choose a custom amount; clearing it restores the 1.01× default, and entering 0 turns it off." aria-label="Show stake and stop-loss explanation"><span class="info-glyph">𝒊</span></button></div><input id="aiStake" inputmode="decimal" /></div>
           <div class="f"><label>Bulk trades</label><input id="aiBulk" inputmode="numeric" /></div>
           <div class="f"><label>Max sessions</label><input id="aiMax" inputmode="numeric" /></div>
         </div>
@@ -732,7 +734,7 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
           <div class="hint privacy-hint" data-info-source data-info-title="Privacy screen limits">The privacy screen prevents casual viewing only; it does not encrypt the running page or protect it from device-level access. Use a strong screen lock and keep the device secure.</div>
           <div class="grid2">
             <div class="f"><label>Take profit</label><input id="aiTP" inputmode="decimal" placeholder="off" /></div>
-            <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="2× stake" /></div>
+            <div class="f"><label>Stop loss</label><input id="aiSL" inputmode="decimal" placeholder="1.01× stake" /></div>
           </div>
           <div class="sub">Scanner rules</div>
           <div class="grid2">
@@ -757,12 +759,12 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
               <select id="autoRunRepeat"><option value="clock-hour">At the next local clock-hour</option><option value="after-finish">60 minutes after each cycle finishes</option></select>
             </div>
           </div>
-          <button type="button" class="info-trigger info-trigger-block auto-schedule-hint" id="autoRunScheduleHint" data-info-title="Hourly schedule timing" data-info-html="Each cycle uses the AI Scanner's current stake, Bulk trades, and Max sessions. AUTO stake splits the 2.5% live USD balance per-session budget across the selected bulk trades; a custom stake is used exactly. Default stop loss is 2× the per-contract stake; on a hit the current cycle ends and waits for the next scheduled run." aria-label="Show hourly schedule timing explanation"><span class="info-glyph">𝒊</span></button>
+          <button type="button" class="info-trigger info-trigger-block auto-schedule-hint" id="autoRunScheduleHint" data-info-title="Hourly schedule timing" data-info-html="Each cycle uses the AI Scanner's current stake, Bulk trades, and Max sessions. AUTO stake splits the 2.5% live USD balance per-session budget across the selected bulk trades; a custom stake is used exactly. Default stop loss is 1.01× the per-contract stake; on a hit the current cycle ends and waits for the next scheduled run." aria-label="Show hourly schedule timing explanation"><span class="info-glyph">𝒊</span></button>
           <div class="plan auto-plan" id="autoRunPanel">
             <div class="hint" id="autoRunStatus">Off — manual Start is unchanged.</div>
             <div class="hint" id="autoRunPlan">Connect a USD account; hourly runs use the AI Scanner stake, Bulk trades, and Max sessions above.</div>
           </div>
-          <div class="note warn auto-warning" data-info-source data-info-title="Auto-run limits and risk">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Hourly cycles use the AI Scanner's configured Bulk trades and Max sessions. A custom stake is reused exactly; AUTO stake splits 2.5% of the live USD balance per session across the chosen bulk trades. Hourly limits are 1–25 bulk trades, 1–20 sessions, and $0.35–$6,430 per contract. The default stop loss is 2× stake; when hit, that cycle ends and the schedule waits for the next start. Any contract can lose.
+          <div class="note warn auto-warning" data-info-source data-info-title="Auto-run limits and risk">Best-effort only: this page must stay open and connected. A phone/computer/browser can suspend or close it; this single-file app cannot guarantee 24/7 trading. Wake Lock asks the device to keep the display awake while enabled, but the browser/OS can still release it. Hourly cycles use the AI Scanner's configured Bulk trades and Max sessions. A custom stake is reused exactly; AUTO stake splits 2.5% of the live USD balance per session across the chosen bulk trades. Hourly limits are 1–25 bulk trades, 1–20 sessions, and $0.35–$6,430 per contract. The default stop loss is 1.01× stake; when hit, that cycle ends and the schedule waits for the next start. Any contract can lose.
         </details>
         <button type="button" class="info-trigger info-trigger-block scanner-rules-info" id="scannerRulesInfo" data-info-title="How the scanner decides" aria-label="Show scanner rules explanation"><span class="info-glyph">𝒊</span></button>
       </div></div>
@@ -874,6 +876,16 @@ details[open]>*:not(summary){animation:fadeDown .28s cubic-bezier(.2,.7,.2,1) bo
   <div class="info-dialog" role="document">
     <div class="info-dialog-head"><b id="infoTitle">Feature information</b><button type="button" class="info-close" id="infoClose" aria-label="Close explanation">×</button></div>
     <div class="info-dialog-body" id="infoBody"></div>
+  </div>
+</div>
+<div class="info-overlay hidden" id="hourlyResumeOverlay" role="alertdialog" aria-modal="true" aria-labelledby="hourlyResumeTitle" aria-describedby="hourlyResumeText">
+  <div class="info-dialog" role="document">
+    <div class="info-dialog-head"><b id="hourlyResumeTitle">Continue hourly auto-run?</b></div>
+    <div class="info-dialog-body">
+      <p id="hourlyResumeText"></p>
+      <div class="note warn">Nothing will trade until you choose. If you stop, already-open Deriv contracts remain on the account and settle normally.</div>
+      <div class="btns resume-actions"><button type="button" class="btn primary" id="hourlyResumeContinue">Continue hourly system</button><button type="button" class="btn ghost" id="hourlyResumeStop">Stop hourly system</button></div>
+    </div>
   </div>
 </div>
 <div id="toast"></div>
@@ -1073,11 +1085,16 @@ function strategyLabel() { return cfg.strategy === 'over' ? `Over ${cfg.over} on
 const SETTINGS_V = 2;
 const DEFAULTS = { appId: '', aiStake: '0.35', aiBulk: '3', aiMax: '2', aiMode: 'parallel', aiStrategy: 'both', aiPriority: 'gap', aiDuration: '1',
   aiConsec: '8', aiThreshold: '3', aiThresholdUnder: '6', aiWindow: '1000', aiTP: '', aiSL: '', bkContract: 'DIGITOVER', bkBarrier: '3', bkStake: '0.35', bkDuration: '1', bkCount: '3' };
-function defaultStopLossForStake(stake) { const n = Number(stake); return Number.isFinite(n) && n > 0 ? Math.round((n * 2 + 1e-9) * 100) / 100 : 0; }
+function defaultStopLossForStake(stake) { const n = Number(stake); return Number.isFinite(n) && n > 0 ? Math.round((n * 1.01 + 1e-9) * 10000) / 10000 : 0; }
+function formatStopLoss(value) {
+  const n = Number(value); if (!Number.isFinite(n)) return '0.00';
+  const cents = Math.round(n * 100) / 100;
+  return Math.abs(n - cents) < 1e-9 ? fmt(n) : String(Number(n.toFixed(4)));
+}
 function syncAIStopLoss() {
   if (!aiSLAuto || !$('aiSL') || !$('aiStake')) return false;
   const next = defaultStopLossForStake($('aiStake').value); if (!(next > 0)) return false;
-  const formatted = fmt(next); if ($('aiSL').value === formatted) return false; $('aiSL').value = formatted; return true;
+  const formatted = formatStopLoss(next); if ($('aiSL').value === formatted) return false; $('aiSL').value = formatted; return true;
 }
 function effectiveStopLoss(stake) {
   if (aiSLAuto) return defaultStopLossForStake(stake);
@@ -1088,7 +1105,12 @@ function loadSettings() {
   const saved = store.get('settings', {});
   if (saved.v !== SETTINGS_V) delete saved.aiMax;   // "Max" used to mean trades, now it means sessions
   aiStakeAuto = typeof saved.aiStakeAuto === 'boolean' ? saved.aiStakeAuto : (!saved.aiStake || String(saved.aiStake) === DEFAULTS.aiStake);
-  aiSLAuto = typeof saved.aiSLAuto === 'boolean' ? saved.aiSLAuto : !String(saved.aiSL || '').trim();
+  if (typeof saved.aiSLAuto === 'boolean') aiSLAuto = saved.aiSLAuto;
+  else {
+    const oldStake = Number(saved.aiStake || DEFAULTS.aiStake), oldDefault = Number.isFinite(oldStake) && oldStake > 0 ? Math.round((oldStake * 2 + 1e-9) * 100) / 100 : 0;
+    const oldValue = Number(String(saved.aiSL || '').trim());
+    aiSLAuto = !String(saved.aiSL || '').trim() || (oldDefault > 0 && Number.isFinite(oldValue) && Math.abs(oldValue - oldDefault) < 1e-9);
+  }
   const s = Object.assign({}, DEFAULTS, saved);
   Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) el.value = s[k]; });
   $('rememberTok').checked = store.get('remember', true) !== false;
@@ -1096,7 +1118,7 @@ function loadSettings() {
 }
 function saveSettings() { const s = { v: SETTINGS_V, aiStakeAuto, aiSLAuto }; Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) s[k] = el.value; }); store.set('settings', s); }
 function scannerRulesExplanation() {
-  return `<p><b>Signals:</b> Over ${cfg.over} needs ${cfg.consec} latest digits all above ${cfg.over} and a most-frequent digit of 0–${cfg.over} in the last ${cfg.window} ticks. Under ${cfg.under} needs ${cfg.consec} latest digits all below ${cfg.under} and a most-frequent digit of ${cfg.under}–9. Whichever qualifies first is used.</p><p><b>Market priority:</b> the default picks the market with the biggest percentage-point gap between its top digit and runner-up (runner-up may be any digit 0–9); ties use streak length, then top-digit percentage. Advanced settings can choose longest streak first.</p><p><b>Sessions:</b> each qualifying signal starts one session of exactly the chosen Bulk trades, either all at once or sequentially. It waits for a fresh signal for each later session and stops at Max sessions.</p><p><b>Stop loss:</b> defaults to two times the per-contract stake (for example, $0.35 stake → $0.70 stop loss). Reaching the loss limit ends the current AI run/cycle; already-open contracts settle normally. Hourly auto-run stays enabled and waits for its next scheduled cycle (by default, the next local clock-hour).</p>`;
+  return `<p><b>Signals:</b> Over ${cfg.over} needs ${cfg.consec} latest digits all above ${cfg.over} and a most-frequent digit of 0–${cfg.over} in the last ${cfg.window} ticks. Under ${cfg.under} needs ${cfg.consec} latest digits all below ${cfg.under} and a most-frequent digit of ${cfg.under}–9. Whichever qualifies first is used.</p><p><b>Market priority:</b> the default picks the market with the biggest percentage-point gap between its top digit and runner-up (runner-up may be any digit 0–9); ties use streak length, then top-digit percentage. Advanced settings can choose longest streak first.</p><p><b>Sessions:</b> each qualifying signal starts one session of exactly the chosen Bulk trades, either all at once or sequentially. It waits for a fresh signal for each later session and stops at Max sessions.</p><p><b>Stop loss:</b> defaults to 1.01 times the per-contract stake (for example, $0.35 stake → $0.3535 stop loss). Reaching the loss limit ends the current AI run/cycle; already-open contracts settle normally. Hourly auto-run stays enabled and waits for its next scheduled cycle (by default, the next local clock-hour).</p>`;
 }
 function syncCfg() {
   cfg.window = Math.max(10, +$('aiWindow').value || 1000);
@@ -1243,7 +1265,7 @@ function autoScheduleSummary() {
 function refreshAutoScheduleHint() {
   const repeatIsClock = $('autoRunRepeat').value !== 'after-finish';
   const stakeRule = aiStakeAuto ? 'With AUTO stake, each cycle splits the 2.5% live USD balance budget across the selected Bulk trades.' : 'With a custom stake, each cycle uses that exact AI Scanner stake.';
-  const lossRule = aiSLAuto ? 'The default stop loss is 2× the per-contract stake.' : (effectiveStopLoss(+$('aiStake').value) > 0 ? 'The custom Stop loss amount is used.' : 'A custom 0 turns the stop loss off.');
+  const lossRule = aiSLAuto ? 'The default stop loss is 1.01× the per-contract stake.' : (effectiveStopLoss(+$('aiStake').value) > 0 ? 'The custom Stop loss amount is used.' : 'A custom 0 turns the stop loss off.');
   const copy = `${autoScheduleSummary()} Each cycle uses the AI Scanner settings: stake, Bulk trades, and Max sessions. ${stakeRule} ${lossRule} When the stop-loss limit is reached, that cycle ends; auto-run stays enabled and waits for the next scheduled cycle. ${repeatIsClock ? 'Example: a 2:20 p.m. finish schedules 3:00 p.m. local time.' : ''} Timing choices lock while auto-run is enabled; switch it off to edit them.`;
   setFeatureInfoHtml('autoRunScheduleHint', copy);
 }
@@ -1253,6 +1275,7 @@ function refreshAutoPanel() {
   $('autoRunPlan').textContent = autoPlanText(plan);
   if (autoRun.enabled && !autoRun.tickRunning && !session?.active && plan.ok) applyAutoPlan(plan);
   if (!autoRun.enabled) $('autoRunStatus').textContent = autoRun.status || 'Off — manual Start is unchanged.';
+  else if (autoRun.resumePending) $('autoRunStatus').textContent = 'Paused · choose whether to resume the saved hourly system.';
   else if (session && session.active && session.autoRunCycle) $('autoRunStatus').textContent = 'ON · scheduled strategy cycle is running; Privacy mode does not stop trades.';
   else if (autoRun.nextAt) $('autoRunStatus').textContent = `ON · next start in ${autoRemaining(autoRun.nextAt - Date.now())}${autoRun.nextLabel ? ' · ' + autoRun.nextLabel : ''}${autoRun.wakeNote ? ' · ' + autoRun.wakeNote : ''}`;
   else $('autoRunStatus').textContent = `ON · preparing the next cycle${autoRun.wakeNote ? ' · ' + autoRun.wakeNote : ''}`;
@@ -1271,7 +1294,7 @@ function scheduleAutoRunAt(targetAt, label) {
 }
 function scheduleAutoRun(delay, label) { scheduleAutoRunAt(Date.now() + Math.max(0, delay), label); }
 async function requestScreenWakeLock() {
-  if (!autoRun.enabled) return false;
+  if (!autoRun.enabled || autoRun.resumePending) return false;
   if (!navigator.wakeLock || typeof navigator.wakeLock.request !== 'function') { autoRun.wakeNote = 'Screen Wake Lock unavailable; device may dim'; refreshAutoPanel(); return false; }
   if (document.visibilityState === 'hidden') { autoRun.wakeNote = 'Page hidden; Wake Lock can be requested again when visible'; refreshAutoPanel(); return false; }
   try {
@@ -1287,7 +1310,7 @@ function releaseScreenWakeLock() {
 }
 function disableAutoRun(reason, stopActive) {
   if (!autoRun.enabled) { $('autoRunToggle').checked = false; return; }
-  autoRun.enabled = false; autoRun.seq++; clearTimeout(autoRun.timer); autoRun.timer = null; autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRun.cycleId = null;
+  autoRun.enabled = false; autoRun.resumePending = false; autoRun.seq++; clearTimeout(autoRun.timer); autoRun.timer = null; autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRun.cycleId = null;
   $('autoRunToggle').checked = false; autoRun.status = reason || 'Off — manual Start is unchanged.';
   releaseScreenWakeLock(); setAutoInputsLocked(false); setAutoRunScheduleLocked(false);
   const restore = autoRun.manualValues; autoRun.manualValues = null;
@@ -1314,7 +1337,7 @@ async function enableAutoRun() {
 
 Minimum-stake warning: after splitting the 2.5% per-session budget across ${plan.bulk} configured bulk trades, the per-contract amount was below Deriv's $0.35 minimum. Using $0.35 means planned exposure ${fmt(plan.totalExposure)} USD can exceed the 2.5% budget.` : '';
   const stopLoss = effectiveStopLoss(plan.stake);
-  const stopLossText = stopLoss > 0 ? `Stop loss per cycle: ${fmt(stopLoss)} USD${aiSLAuto ? ' (default: 2× stake)' : ' (custom)'}` : 'Stop loss per cycle: off (custom value 0)';
+  const stopLossText = stopLoss > 0 ? `Stop loss per cycle: ${formatStopLoss(stopLoss)} USD${aiSLAuto ? ' (default: 1.01× stake)' : ' (custom)'}` : 'Stop loss per cycle: off (custom value 0)';
   const stakeDescription = plan.manualStake ? 'manual AI Scanner value' : '2.5% USD balance per session divided by the chosen bulk count';
   const accepted = window.confirm(`Enable hourly auto-run on the ${state.account.is_virtual ? 'DEMO' : 'REAL'} account?
 
@@ -1327,7 +1350,7 @@ Estimated total stake across a completed run: up to ${fmt(plan.totalExposure)} U
 The browser page must remain open and connected. Auto-run cannot guarantee 24/7 operation if the OS suspends or closes the browser.`);
   if (!accepted) return false;
   autoRun.manualValues = { stake: $('aiStake').value, bulk: $('aiBulk').value, max: $('aiMax').value };
-  autoRun.enabled = true; autoRun.seq++; autoRun.status = 'ON — ' + firstSchedule.label;
+  autoRun.enabled = true; autoRun.resumePending = false; autoRun.seq++; autoRun.status = 'ON — ' + firstSchedule.label;
   $('scannerToggle').checked = true; if ($('scannerBody').classList.contains('hidden')) $('scannerToggle').dispatchEvent(new Event('change', { bubbles: true }));
   setAutoInputsLocked(true); setAutoRunScheduleLocked(true); applyAutoPlan(plan); refreshAutoPanel(); updateSessionUI();
   requestScreenWakeLock(); scheduleAutoRunAt(firstSchedule.at, firstSchedule.label);
@@ -1335,7 +1358,7 @@ The browser page must remain open and connected. Auto-run cannot guarantee 24/7 
   return true;
 }
 async function autoRunTick() {
-  if (!autoRun.enabled || autoRun.tickRunning) return;
+  if (!autoRun.enabled || autoRun.resumePending || autoRun.tickRunning) return;
   autoRun.tickRunning = true; const mySeq = autoRun.seq;
   try {
     if (!state.acctConnected || !state.account || !acct.isOpen) { scheduleAutoRun(30000, 'Account connection unavailable; recovery will retry in 30 seconds.'); return; }
@@ -1368,6 +1391,45 @@ async function onAutoRunToggle() {
     if (active && session && session.active) { session.autoRunCycle = false; endSession('Auto-run switched off by user'); }
   }
 }
+function showHourlyResumePrompt(snapshot) {
+  const snap = snapshot || pendingRecoverySnapshot || store.get('recoveryState', null), auto = snap && snap.autoRun;
+  const hasCycle = !!(snap && snap.session && snap.session.active && snap.session.autoRunCycle);
+  const when = snap && Number(snap.savedAt) ? new Date(Number(snap.savedAt)).toLocaleString() : 'the last visit';
+  const timing = auto && Number(auto.nextAt) > Date.now() ? ` The saved schedule was due ${formatLocalClock(Number(auto.nextAt))} local time.` : '';
+  $('hourlyResumeText').textContent = `The 24/7 hourly system was on when this page was last saved (${when}) for ${snap && snap.account ? `account ${snap.account}` : 'your Deriv account'}. ${hasCycle ? 'An hourly AI cycle was in progress; continuing will safely check any interrupted orders before the scanner proceeds.' : 'The schedule was waiting for its next cycle.'}${timing} Do you want to continue the saved hourly system?`;
+  $('hourlyResumeOverlay').classList.remove('hidden');
+  setTimeout(() => $('hourlyResumeContinue').focus(), 0);
+}
+function closeHourlyResumePrompt() { $('hourlyResumeOverlay').classList.add('hidden'); }
+function continueSavedHourlySystem() {
+  if (!autoRun.enabled || !autoRun.resumePending) return;
+  closeHourlyResumePrompt(); autoRun.resumePending = false; autoRun.restoring = false;
+  autoRun.status = 'Hourly auto-run resumed by your choice.';
+  requestScreenWakeLock();
+  if (session && session.active) {
+    session.recovering = true;
+    persistRunState(); updateRecoveryViews();
+    startAutomaticRecovery('User chose to continue the saved hourly system');
+  } else if (manualBatch && manualBatch.active) {
+    manualBatch.recovering = true;
+    persistRunState(); updateRecoveryViews();
+    startAutomaticRecovery('User chose to continue the saved trading recovery');
+  } else if (autoRun.nextAt > Date.now()) scheduleAutoRunAt(autoRun.nextAt, autoRun.nextLabel);
+  else { autoRun.nextAt = 0; autoRun.nextLabel = ''; persistRecoveryState(); autoRunTick(); }
+  refreshAutoPanel(); updateSessionUI();
+}
+function stopSavedHourlySystem() {
+  if (!autoRun.enabled || !autoRun.resumePending) return;
+  closeHourlyResumePrompt(); autoRun.resumePending = false;
+  const stopCycle = !!(session && session.active && session.autoRunCycle);
+  if (stopCycle) { session.autoRunCycle = false; session.blocked = false; session.recovering = false; }
+  disableAutoRun('Off — saved hourly system stopped by user on return.', false);
+  if (stopCycle && session && session.active) endSession('Hourly cycle stopped by user on return');
+  persistRunState(); toast('Hourly system stopped. No new scheduled trades will be placed.');
+}
+$('hourlyResumeContinue').addEventListener('click', continueSavedHourlySystem);
+$('hourlyResumeStop').addEventListener('click', stopSavedHourlySystem);
+$('hourlyResumeOverlay').addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); } });
 async function onPrivacyToggle() {
   if ($('privacyAutoToggle').checked) {
     if (!(await ensurePrivacyCredential())) { $('privacyAutoToggle').checked = false; privacyState.auto = false; store.set('privacyAuto', false); }
@@ -1401,11 +1463,16 @@ function initAutomationSettings() {
   autoRun.uiTimer = setInterval(refreshAutoPanel, 1000);
   refreshPrivacyStatus(); refreshAutoPanel();
 }
+function persistForPageSuspend() {
+  if ((session && session.active) || (manualBatch && manualBatch.active) || autoRun.enabled || [...contracts.values()].some(c => ['open', 'unknown', 'unverified'].includes(c.status))) persistRunState();
+}
 document.addEventListener('visibilitychange', () => {
-  if (autoRun.enabled && document.visibilityState === 'visible') {
+  if (document.visibilityState === 'hidden') persistForPageSuspend();
+  if (autoRun.enabled && !autoRun.resumePending && document.visibilityState === 'visible') {
     requestScreenWakeLock(); if (autoRun.nextAt && Date.now() >= autoRun.nextAt) { clearTimeout(autoRun.timer); autoRun.timer = null; autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRunTick(); }
   }
 });
+window.addEventListener('pagehide', persistForPageSuspend);
 
 /* ============================== security =============================== */
 const framed = (() => { try { return window.top !== window.self; } catch (e) { return true; } })();
@@ -1413,19 +1480,18 @@ const subtle = (window.crypto && window.crypto.subtle) || null;
 const sec = { pin: null, tokenSaved: null, unlocked: false, lastActivity: Date.now(), mode: null, resolve: null };
 const AUTO_RUN_INTERVAL_MS = 60 * 60 * 1000;
 const AUTO_MAX_STAKE_USD = 6430, AUTO_MAX_BULK = 25, AUTO_MIN_SESSIONS = 2, AUTO_MAX_SESSIONS = 20, AUTO_MIN_STAKE_USD = 0.35;
-const autoRun = { enabled: false, timer: null, uiTimer: null, nextAt: 0, nextLabel: '', wakeLock: null, wakeNote: '', manualValues: null, cycleId: null, status: 'Off — manual Start is unchanged.', seq: 0, tickRunning: false, restoring: false };
+const autoRun = { enabled: false, timer: null, uiTimer: null, nextAt: 0, nextLabel: '', wakeLock: null, wakeNote: '', manualValues: null, cycleId: null, status: 'Off — manual Start is unchanged.', seq: 0, tickRunning: false, restoring: false, resumePending: false };
 function recoverySnapshot() {
   const liveSession = session && session.active ? { ...session, tradedSignals: [...(session.tradedSignals || [])], inFlight: 0, pendingOrders: (session.pendingOrders || []).map(job => ({ ...job })) } : null;
   const liveBulk = manualBatch && manualBatch.active ? { ...manualBatch, inFlight: 0, pendingOrders: (manualBatch.pendingOrders || []).map(job => ({ ...job })) } : null;
   const account = (liveSession && liveSession.accountId) || (liveBulk && liveBulk.accountId) || (state.account && state.account.id) || store.get('accountId', '');
   const relevantIds = new Set();
-  if (liveSession) contracts.forEach(c => { if (c.account === account && c.sessionId === liveSession.id) relevantIds.add(c.id); });
-  if (liveBulk) contracts.forEach(c => { if (c.account === account && c.manualBatchId === liveBulk.id) relevantIds.add(c.id); });
-  const contractFields = ['id','txId','account','currency','reqId','symbol','name','pipDec','type','barrier','stake','payout','status','profit','time','source','sessionId','manualBatchId','exitSpot','entrySpot','currentSpot','pocSeen','checks','settledAt'];
+  contracts.forEach(c => { if (String(c.account) === String(account) && ['open', 'unknown', 'unverified'].includes(c.status)) relevantIds.add(c.id); });
+  const contractFields = ['id','txId','account','currency','reqId','symbol','name','pipDec','type','barrier','stake','payout','status','profit','time','source','sessionId','manualBatchId','exitSpot','entrySpot','currentSpot','pocSeen','checks','unknownChecks','unverifiedAt','unverifiedBackground','settledAt'];
   const savedContracts = [...relevantIds].map(id => { const c = contracts.get(id); const out = {}; contractFields.forEach(k => { if (c && c[k] !== undefined) out[k] = c[k]; }); return out; });
   const savedAutoRun = autoRun.enabled ? { enabled: true, nextAt: autoRun.nextAt || 0, nextLabel: autoRun.nextLabel || '', manualValues: autoRun.manualValues || null, cycleId: autoRun.cycleId || null, status: autoRun.status || '' } : null;
-  if (!liveSession && !liveBulk && !savedAutoRun) return null;
-  return { v: 1, account: String(account || ''), savedAt: Date.now(), session: liveSession, manualBatch: liveBulk, contracts: savedContracts, autoRun: savedAutoRun };
+  if (!liveSession && !liveBulk && !savedAutoRun && !savedContracts.length) return null;
+  return { v: 2, account: String(account || ''), savedAt: Date.now(), session: liveSession, manualBatch: liveBulk, contracts: savedContracts, autoRun: savedAutoRun };
 }
 function persistRecoveryState() {
   const snapshot = recoverySnapshot();
@@ -1450,15 +1516,27 @@ function restoreRecoveryForAccount(accountId) {
   recoveryRestored = true;
   if (Array.isArray(snap.contracts)) snap.contracts.forEach(raw => {
     if (!raw || raw.account !== accountId || raw.id == null) return;
-    const c = Object.assign({}, raw, { id: Number(raw.id) || raw.id, subIds: [], timer: null, pocSeen: false, checks: 0 });
+    const c = Object.assign({}, raw, { id: Number(raw.id) || raw.id, subIds: [], timer: null, pocSeen: false,
+      checks: Math.max(0, Number(raw.checks) || 0), unknownChecks: Math.max(0, Number(raw.unknownChecks) || 0) });
     contracts.set(c.id, c); renderTradeRow(c);
   });
   if (snap.session) {
-    const raw = snap.session;
+    const raw = snap.session, restoredJobs = (raw.pendingOrders || []).map(restoreJob);
+    const hadBlockedOrder = restoredJobs.some(job => job.status === 'blocked');
+    const migratedSkipped = [];
+    restoredJobs.forEach(job => {
+      if (job.status !== 'blocked') return;
+      if (job.buySent && !job.serverRejected) {
+        job.status = 'uncertain'; job.retryDisposition = 'uncertain'; job.error = '';
+        job.reconcileChecks = Math.min(Math.max(0, Number(job.reconcileChecks) || 0), MAX_UNCERTAIN_BUY_CHECKS - 1);
+      } else { job.status = 'skipped'; migratedSkipped.push(job); }
+    });
     session = Object.assign({}, raw, { accountId: String(raw.accountId || accountId), active: true, inFlight: 0, recovering: true,
-      tradedSignals: new Set(raw.tradedSignals || []), pendingOrders: (raw.pendingOrders || []).map(restoreJob) });
-    session.blocked = !!raw.blocked || session.pendingOrders.some(j => j.status === 'blocked');
+      tradedSignals: new Set(raw.tradedSignals || []), pendingOrders: restoredJobs.filter(job => job.status !== 'skipped'),
+      unverifiedOrders: Array.isArray(raw.unverifiedOrders) ? raw.unverifiedOrders : [] });
+    session.blocked = (!!raw.blocked && !hadBlockedOrder) || session.pendingOrders.some(j => j.status === 'blocked');
     session.recovering = !session.blocked;
+    migratedSkipped.forEach(job => rememberAIOrderOutcome(session, job, job.error || 'A previous AI order could not be recovered; it was skipped without resending.', 'skipped', false));
     if (session.autoRunCycle && !(snap.autoRun && snap.autoRun.enabled)) session.autoRunCycle = false;
     $('aiStake').value = String(session.stake); $('aiBulk').value = String(session.bulk); $('aiMax').value = String(session.maxSessions);
     $('aiMode').value = session.mode || 'parallel'; $('aiDuration').value = String(session.duration || 1);
@@ -1467,7 +1545,9 @@ function restoreRecoveryForAccount(accountId) {
     if (session.under != null) $('aiThresholdUnder').value = String(session.under);
     if (session.consec != null) $('aiConsec').value = String(session.consec);
     if (session.window != null) $('aiWindow').value = String(session.window);
-    $('aiTP').value = session.tp ? String(session.tp) : ''; $('aiSL').value = session.sl ? String(session.sl) : '';
+    $('aiTP').value = session.tp ? String(session.tp) : '';
+    if (aiSLAuto) session.sl = defaultStopLossForStake(session.stake);
+    $('aiSL').value = aiSLAuto ? formatStopLoss(session.sl) : (session.sl ? String(session.sl) : '');
     syncCfg(); $('scannerToggle').checked = true; $('scannerBody').classList.remove('hidden');
   }
   if (snap.manualBatch) {
@@ -1489,13 +1569,17 @@ function restoreRecoveryForAccount(accountId) {
     autoRun.enabled = true; autoRun.restoring = true; autoRun.nextAt = Number(snap.autoRun.nextAt) || 0;
     autoRun.nextLabel = String(snap.autoRun.nextLabel || ''); autoRun.manualValues = snap.autoRun.manualValues || null;
     autoRun.cycleId = snap.autoRun.cycleId || (session && session.autoRunCycle ? session.id : null);
-    autoRun.status = String(snap.autoRun.status || 'Hourly auto-run resumed after reconnect.'); autoRun.seq++;
+    autoRun.status = String(snap.autoRun.status || 'Saved hourly auto-run is ready for your choice.'); autoRun.seq++;
+    autoRun.resumePending = true;
     $('autoRunToggle').checked = true; $('scannerToggle').checked = true; $('scannerBody').classList.remove('hidden');
-    setAutoInputsLocked(true); setAutoRunScheduleLocked(true); requestScreenWakeLock();
+    setAutoInputsLocked(true); setAutoRunScheduleLocked(true);
   }
   if (session && session.active) { $('acctSelect').disabled = true; updateSessionUI(); }
   updateManualBatchUI(); refreshAutoPanel(); persistRecoveryState();
-  if ((session && session.active) || (manualBatch && manualBatch.active)) {
+  if (autoRun.enabled && autoRun.resumePending) {
+    log('Saved hourly auto-run found; waiting for the user to choose whether to continue.', 'ok');
+    showHourlyResumePrompt(snap);
+  } else if ((session && session.active) || (manualBatch && manualBatch.active)) {
     log('Automatic recovery resumed saved trading state for ' + accountId, 'ok');
     setTimeout(() => startAutomaticRecovery('Checking Deriv and resuming the saved run'), 0);
   } else if (autoRun.enabled) {
@@ -1928,11 +2012,11 @@ async function openAccountSocket(accountId) {
     .catch(e => log('Balance stream: ' + (e.message || e.code), 'err'));
   restoreRecoveryForAccount(accountId);
   contracts.forEach(c => {
-    if (String(c.account) !== String(accountId) || (c.status !== 'open' && c.status !== 'unknown')) return;
+    if (String(c.account) !== String(accountId) || !['open', 'unknown', 'unverified'].includes(c.status)) return;
     watchContract(c, true); scheduleCheck(c, 6000);
   });
   if ((session && session.active && session.recovering) || (manualBatch && manualBatch.active && manualBatch.recovering)) startAutomaticRecovery('Account connection restored; verifying the interrupted trades');
-  else if (autoRun.enabled && !session?.active && !manualBatch?.active) {
+  else if (autoRun.enabled && !autoRun.resumePending && !session?.active && !manualBatch?.active) {
     if (autoRun.nextAt > Date.now()) scheduleAutoRunAt(autoRun.nextAt, autoRun.nextLabel);
     else { autoRun.nextAt = 0; autoRun.nextLabel = ''; autoRunTick(); }
   }
@@ -2018,6 +2102,7 @@ function blockRecovery(reason, specificOwner) {
   updateRecoveryViews(); persistRunState();
 }
 function startAutomaticRecovery(reason) {
+  if (autoRun.enabled && autoRun.resumePending) { updateRecoveryViews(); return; }
   const owner = session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null;
   if (owner) {
     if (owner.blocked) { updateRecoveryViews(); return; }
@@ -2076,6 +2161,30 @@ function statementRowMatches(row, job) {
 function removePendingJob(owner, job) {
   if (owner && Array.isArray(owner.pendingOrders)) owner.pendingOrders = owner.pendingOrders.filter(item => item.id !== job.id);
 }
+function rememberAIOrderOutcome(owner, job, reason, outcome, notify = true) {
+  if (!owner || owner !== session || !job) return null;
+  outcome = outcome === 'skipped' ? 'skipped' : 'unverified';
+  owner.unverifiedOrders = Array.isArray(owner.unverifiedOrders) ? owner.unverifiedOrders : [];
+  let record = owner.unverifiedOrders.find(item => item.id === job.id);
+  if (!record) {
+    record = { id: job.id, symbol: job.symbol, name: job.name, type: job.type, barrier: job.barrier, stake: job.stake,
+      submittedAt: job.submittedAt || job.createdAt, buySent: !!job.buySent, outcome, reason: String(reason || 'The order could not be recovered automatically.') };
+    owner.unverifiedOrders.push(record);
+  } else { record.outcome = outcome; record.reason = String(reason || record.reason); }
+  job.status = outcome; job.error = record.reason;
+  removePendingJob(owner, job);
+  owner.blocked = false; owner.recovering = false; owner.recoveryReason = '';
+  log(`${outcome === 'unverified' ? 'Unverified' : 'Skipped'} AI order on ${job.name || job.symbol} · ${contractLabel(job.type, job.barrier)} · ${record.reason}. Continuing without resending this order.`, 'err');
+  if (notify) toast(outcome === 'unverified' ? 'An AI trade outcome could not be verified; continuing without resending it.' : 'An AI trade could not be recovered; skipping it and continuing.', 'err');
+  return record;
+}
+function continueAfterAIOrderFailure(owner, job, reason) {
+  rememberAIOrderOutcome(owner, job, reason, job.buySent && !job.serverRejected ? 'unverified' : 'skipped');
+  persistRunState(); updateRecoveryViews();
+  if (!owner.active) return;
+  if (owner.stopRequested) maybeFinishStoppedSession();
+  else if ((Number(owner.inFlight) || 0) === 0) scannerTick();
+}
 function acceptTradeOrder(job, b, msg, statementRow) {
   const owner = recoveryOwner(job), contractId = Number(b.contract_id) || b.contract_id;
   const existing = contracts.get(contractId);
@@ -2124,6 +2233,10 @@ function failTradeOrder(job, err) {
     const failedStage = job.stage;
     job.status = 'ready'; job.stage = 'proposal'; job.buySent = false; job.serverRejected = false; job.retryDisposition = 'safe'; job.proposalId = null;
     startAutomaticRecovery(`Temporary ${failedStage === 'proposal' ? 'quote' : 'connection'} error; retrying the unfilled order`);
+  } else if (owner === session) {
+    job.serverRejected = rejected; job.retryDisposition = rejected || !job.buySent ? 'safe' : 'uncertain';
+    continueAfterAIOrderFailure(owner, job, `${code}: ${message}`);
+    return;
   } else {
     job.status = 'blocked'; job.serverRejected = rejected; job.retryDisposition = rejected || !job.buySent ? 'safe' : 'uncertain';
     owner.blocked = true; owner.recovering = false; owner.recoveryReason = message;
@@ -2178,7 +2291,9 @@ async function reconcileUncertainOrders(owner) {
     } else {
       job.reconcileChecks = (Number(job.reconcileChecks) || 0) + 1; job.reconcileLastAt = Date.now();
       if (job.reconcileChecks >= MAX_UNCERTAIN_BUY_CHECKS) {
-        job.status = 'blocked'; job.retryDisposition = 'uncertain'; job.error = 'No exact matching buy appeared in Deriv statement after repeated checks.'; unverifiable.push(job);
+        const reason = 'No exact matching buy appeared in Deriv statement after repeated checks.';
+        if (owner === session) rememberAIOrderOutcome(owner, job, reason, 'unverified');
+        else { job.status = 'blocked'; job.retryDisposition = 'uncertain'; job.error = reason; unverifiable.push(job); }
       }
     }
   }
@@ -2190,7 +2305,7 @@ async function reconcileUncertainOrders(owner) {
   return !uncertain.some(job => job.status === 'uncertain');
 }
 async function runAutomaticRecovery() {
-  if (recoveryRunning) return;
+  if (recoveryRunning || (autoRun.enabled && autoRun.resumePending)) return;
   const owner = session && session.active ? session : manualBatch && manualBatch.active ? manualBatch : null;
   if (!owner) {
     if (autoRun.enabled && acct.isOpen && state.acctConnected) {
@@ -2200,23 +2315,40 @@ async function runAutomaticRecovery() {
     return;
   }
   if (owner.blocked || owner.cancelled) { updateRecoveryViews(); return; }
+  if (owner === session && !owner.stopRequested && stopLossReached(owner)) { endSession(`Stop loss hit (${fmt(owner.pnl)})`); return; }
   if (!acct.isOpen || !state.acctConnected) { owner.recovering = true; persistRunState(); updateRecoveryViews(); return; }
   if ((Number(owner.inFlight) || 0) > 0) { owner.recovering = true; owner.recoveryReason = owner.recoveryReason || 'Waiting for in-flight requests to resolve safely'; persistRunState(); updateRecoveryViews(); scheduleRecoveryAttempt(500); return; }
   recoveryRunning = true;
   try {
     owner.recovering = true; owner.recoveryReason = owner.recoveryReason || 'Verifying interrupted orders';
     if (owner.stopRequested) cancelUnsentOrders(owner);
-    const unknownContracts = [...contracts.values()].filter(c => c.account === owner.accountId && (owner === session ? c.sessionId === owner.id : c.manualBatchId === owner.id) && c.status === 'unknown');
-    if (unknownContracts.length) unknownContracts.forEach(c => { c.checks = 0; watchContract(c, false); scheduleCheck(c, 5000); });
+    const unknownContracts = [...contracts.values()].filter(c => c.account === owner.accountId && (owner === session ? c.sessionId === owner.id : c.manualBatchId === owner.id) && (c.status === 'unknown' || c.status === 'unverified'));
+    if (unknownContracts.length) unknownContracts.forEach(c => { if (c.status === 'unknown') c.checks = 0; watchContract(c, false); scheduleCheck(c, 5000); });
     let reconciled;
     try { reconciled = await reconcileUncertainOrders(owner); }
     catch (e) {
-      if (isRetryableOrderError(e)) { owner.recoveryReason = 'Could not reach the statement endpoint; retrying without resending buys'; throw e; }
-      blockRecovery(e.message || 'Could not verify whether a buy was accepted.', owner); return;
+      if (isRetryableOrderError(e)) {
+        const uncertainOrders = owner === session ? recoveryJobs(owner).filter(job => job.status === 'uncertain') : [];
+        if (uncertainOrders.length) {
+          uncertainOrders.forEach(job => { job.reconcileChecks = (Number(job.reconcileChecks) || 0) + 1; job.reconcileLastAt = Date.now(); });
+          const exhausted = uncertainOrders.filter(job => job.reconcileChecks >= MAX_UNCERTAIN_BUY_CHECKS);
+          if (exhausted.length) {
+            const reason = `Deriv statement checks repeatedly failed (${e.code || e.message || 'temporary error'}).`;
+            exhausted.forEach(job => rememberAIOrderOutcome(owner, job, reason, 'unverified'));
+            reconciled = !recoveryJobs(owner).some(job => job.status === 'uncertain');
+          } else { owner.recoveryReason = 'Could not reach the statement endpoint; retrying without resending buys'; throw e; }
+        } else { owner.recoveryReason = 'Could not reach the statement endpoint; retrying without resending buys'; throw e; }
+      } else {
+        const uncertainOrders = owner === session ? recoveryJobs(owner).filter(job => job.status === 'uncertain') : [];
+        if (uncertainOrders.length) {
+          uncertainOrders.forEach(job => rememberAIOrderOutcome(owner, job, e.message || 'Deriv statement could not verify the buy outcome.', 'unverified'));
+          reconciled = true;
+        } else { blockRecovery(e.message || 'Could not verify whether a buy was accepted.', owner); return; }
+      }
     }
     if (!reconciled) {
       if (owner.blocked) { updateRecoveryViews(); return; }
-      owner.recoveryReason = 'Waiting for Deriv statement confirmation; no replacement buy will be sent'; persistRunState(); updateRecoveryViews(); scheduleRecoveryAttempt(UNCERTAIN_BUY_RECHECK_MS); return;
+      owner.recovering = true; owner.recoveryReason = 'Waiting for Deriv statement confirmation; no replacement buy will be sent'; persistRunState(); updateRecoveryViews(); scheduleRecoveryAttempt(UNCERTAIN_BUY_RECHECK_MS); return;
     }
     const blocked = recoveryJobs(owner).find(job => job.status === 'blocked');
     if (blocked) { blockRecovery(blocked.error || owner.recoveryReason || 'A trade was rejected and needs attention.', owner); return; }
@@ -2253,20 +2385,30 @@ function watchContract(c, subscribe) {
   const req = { proposal_open_contract: 1, contract_id: c.id }; if (subscribe) req.subscribe = 1;
   acct.send(req).then(msg => { if (msg.subscription) c.subIds.push(msg.subscription.id); }).catch(e => log(`Contract ${c.id} check: ${e.message || e.code}`, 'err'));
 }
-function scheduleCheck(c, delay) {   // safety net: keep checking open/unknown contracts; never treat an unknown result as settled
+function scheduleCheck(c, delay) {   // keep checking unresolved contracts; after bounded AI retries, let the scanner continue without treating it as settled
   clearTimeout(c.timer);
   c.timer = setTimeout(() => {
-    if (c.status !== 'open' && c.status !== 'unknown') return;
-    const wasUnknown = c.status === 'unknown'; c.checks++;
+    if (!['open', 'unknown', 'unverified'].includes(c.status)) return;
+    const priorStatus = c.status; c.checks = (Number(c.checks) || 0) + 1;
     if (c.checks === 1 && !c.pocSeen) watchContract(c, true); else watchContract(c, false);
-    if (c.checks < 15) scheduleCheck(c, 10000);
-    else {
-      if (!wasUnknown) { c.status = 'unknown'; renderTradeRow(c); updateTotals(); log(`Contract ${c.id} on ${c.name}: no result received — check it in the Deriv app`, 'err'); scheduleCheck(c, 30000); }
-      else scheduleCheck(c, 30000);
-      if (session && c.sessionId === session.id) { updateSessionUI(); if (session.stopRequested) maybeFinishStoppedSession(); }
-      if (manualBatch && c.manualBatchId === manualBatch.id) { updateManualBatchUI(); if (manualBatch.stopRequested) maybeFinishManualBatch(); }
-      scannerTick();
-    }
+    if (priorStatus === 'open' && c.checks < 15) scheduleCheck(c, 10000);
+    else if (priorStatus === 'open') {
+      c.status = 'unknown'; c.unknownChecks = 0; renderTradeRow(c); updateTotals();
+      log(`Contract ${c.id} on ${c.name}: no result received — checking Deriv again`, 'err'); persistRunState(); scheduleCheck(c, 30000);
+    } else if (priorStatus === 'unknown') {
+      c.unknownChecks = (Number(c.unknownChecks) || 0) + 1;
+      if (c.source === 'ai' && c.unknownChecks >= 3) {
+        c.status = 'unverified'; c.unverifiedAt = Date.now(); c.unverifiedBackground = true;
+        renderTradeRow(c); updateTotals();
+        log(`Contract ${c.id} on ${c.name} is still unverified after repeated checks. AI trading will continue while monitoring it in the background.`, 'err');
+        toast('A contract result is still unverified; AI trading will continue without resending it.', 'err');
+        persistRunState(); scannerTick();
+      }
+      scheduleCheck(c, 30000);
+    } else scheduleCheck(c, 30000); // unverified AI contracts remain monitored in the background
+    if (session && c.sessionId === session.id) { updateSessionUI(); if (session.stopRequested) maybeFinishStoppedSession(); }
+    if (manualBatch && c.manualBatchId === manualBatch.id) { updateManualBatchUI(); if (manualBatch.stopRequested) maybeFinishManualBatch(); }
+    scannerTick();
   }, delay);
 }
 function onPOC(p) {
@@ -2277,7 +2419,7 @@ function onPOC(p) {
   if (p.exit_spot != null) c.exitSpot = p.exit_spot;
   if (p.current_spot != null) c.currentSpot = p.current_spot;
   const finished = p.is_sold === 1 || p.is_sold === true || ['won', 'lost', 'sold'].includes(p.status);
-  if (finished && (c.status === 'open' || c.status === 'unknown')) {
+  if (finished && ['open', 'unknown', 'unverified'].includes(c.status)) {
     clearTimeout(c.timer);
     c.profit = Number(p.profit); if (!isFinite(c.profit)) c.profit = (Number(p.sell_price) || 0) - c.stake;
     c.status = p.status === 'won' || p.status === 'lost' ? p.status : (c.profit >= 0 ? 'won' : 'lost');
@@ -2298,8 +2440,12 @@ function settle(c) {
     if (session.active) {
       if (session.stopRequested) maybeFinishStoppedSession();
       else if (session.tp > 0 && session.pnl >= session.tp) endSession(`Take profit reached (+${fmt(session.pnl)})`);
-      else if (session.sl > 0 && session.pnl <= -session.sl) endSession(`Stop loss hit (${fmt(session.pnl)})`);
+      else if (stopLossReached(session)) endSession(`Stop loss hit (${fmt(session.pnl)})`);
       else scannerTick();   // sequential: next trade of the session / session finished bookkeeping
+    } else if (session.autoRunCycle && autoRun.enabled && stopLossReached(session)) {
+      const next = nextAutoRunSchedule();
+      scheduleAutoRunAt(next.at, `A late recovered result reached the stop-loss limit. ${next.label}`);
+      log(`Late recovered AI result reached the stop loss (${fmt(session.pnl)}); the hourly schedule is waiting for ${formatLocalClock(next.at)}.`, 'err');
     }
   }
   if (c.source === 'manual' && manualBatch && c.manualBatchId === manualBatch.id) {
@@ -2352,8 +2498,11 @@ function bestQualifying(excludeTraded) {   // strongest untraded signal across a
   return best;
 }
 function sessionOpen() { let k = 0; contracts.forEach(c => { if (session && c.sessionId === session.id && (c.status === 'open' || c.status === 'unknown')) k++; }); return k; }
+function stopLossReached(owner) { return !!(owner && Number(owner.sl) > 0 && Number(owner.pnl) <= -Number(owner.sl) + 1e-9); }
 function scannerTick() {
-  if (!session || !session.active || session.recovering || session.blocked || session.stopRequested) return;
+  if (!session || !session.active) return;
+  if (!session.stopRequested && stopLossReached(session)) { endSession(`Stop loss hit (${fmt(session.pnl)})`); return; }
+  if (session.recovering || session.blocked || session.stopRequested) return;
   if (session.inFlight > 0 || recoveryJobs(session).length > 0) return;
   const open = sessionOpen();
   if (session.batch) {                                   // a session is running
@@ -2457,25 +2606,30 @@ function endSession(reason) {
 }
 function updateSessionUI() {
   const s = session, el = $('aiStatus'), retry = $('btnAiRetryRecovery'), active = !!(s && s.active), batchActive = !!(manualBatch && manualBatch.active);
-  $('btnAiStart').disabled = active || batchActive || autoRun.enabled;
+  const savedPending = !recoveryRestored && (pendingRecoverySnapshot || store.get('recoveryState', null));
+  $('btnAiStart').disabled = active || batchActive || autoRun.enabled || !!(savedPending && (savedPending.session || savedPending.manualBatch || savedPending.autoRun));
   $('btnAiStop').disabled = (!active && !autoRun.enabled) || !!(active && s.stopRequested && !autoRun.enabled);
   $('btnAiStop').textContent = active && s.stopRequested ? 'Stopping…' : 'Stop';
   if (retry) retry.classList.toggle('hidden', !active || !s.blocked);
-  $('btnBulkBuy').disabled = !state.acctConnected || active || batchActive || autoRun.enabled;
+  $('btnBulkBuy').disabled = !state.acctConnected || active || batchActive || autoRun.enabled || !!(savedPending && (savedPending.session || savedPending.manualBatch || savedPending.autoRun));
   $('acctSelect').disabled = active || batchActive || autoRun.enabled;
   if (s) { $('aiPlaced').textContent = s.placed; $('aiWon').textContent = s.won; $('aiLost').textContent = s.lost; $('aiSessions').textContent = `${s.sessionsDone}/${s.maxSessions}`;
     const p = $('aiPnl'); p.textContent = (s.pnl >= 0 ? '+' : '') + fmt(s.pnl); p.className = s.pnl > 0 ? 'pos' : 'neg'; }
   if (!active) {
+    if (autoRun.enabled && autoRun.resumePending) { el.className = 'status recovering'; el.textContent = 'Saved hourly system paused — choose whether to continue.'; return; }
     if (autoRun.enabled) { el.className = 'status'; el.textContent = 'Hourly auto-run enabled — ' + (autoRun.nextAt ? `next start in ${autoRemaining(autoRun.nextAt - Date.now())}${autoRun.nextLabel ? ' · ' + autoRun.nextLabel : ''}` : autoRun.status); return; }
+    if (savedPending && savedPending.session) { el.className = 'status recovering'; el.textContent = `Saved AI session found for ${savedPending.account || 'your Deriv account'} — reconnect that account to resume automatic recovery.`; return; }
+    if (savedPending && savedPending.autoRun) { el.className = 'status recovering'; el.textContent = `Saved hourly system found for ${savedPending.account || 'your Deriv account'} — reconnect that account to choose whether to continue.`; return; }
     el.className = 'status'; el.textContent = lastReason ? `Stopped — ${lastReason}` : (state.acctConnected ? 'Idle — set your amounts, then Start.' : 'Watching markets. Connect your account to trade.'); return;
   }
   const open = sessionOpen(), b = s.batch;
   if (s.blocked) { el.className = 'status paused'; el.textContent = `Recovery paused — ${s.recoveryReason || 'a trade outcome needs attention'}. No uncertain buy will be resent. Retry verification after checking the Deriv account.`; return; }
-  if (s.recovering) { el.className = 'status recovering'; el.textContent = `Recovering — ${s.recoveryReason || 'checking Deriv before continuing'}${s.pendingOrders.length ? ` · ${s.pendingOrders.length} order${s.pendingOrders.length === 1 ? '' : 's'} pending` : ''}`; return; }
+  if (s.recovering) { el.className = 'status recovering'; el.textContent = autoRun.resumePending ? 'Saved hourly cycle paused — waiting for your choice before checking or placing orders.' : `Recovering — ${s.recoveryReason || 'checking Deriv before continuing'}${s.pendingOrders.length ? ` · ${s.pendingOrders.length} order${s.pendingOrders.length === 1 ? '' : 's'} pending` : ''}`; return; }
   if (s.stopRequested) { el.className = 'status recovering'; el.textContent = `Stopping — ${s.stopReason || 'waiting for in-flight trades'} · ${open} open/unknown contract${open === 1 ? '' : 's'}${s.pendingOrders.length ? ` · ${s.pendingOrders.length} outcome check${s.pendingOrders.length === 1 ? '' : 's'}` : ''}`; return; }
   el.className = 'status live';
-  if (b) el.textContent = `${s.autoRunCycle ? 'Auto cycle · ' : ''}Session ${b.no}/${s.maxSessions} — ${b.name} · ${b.label}: ${b.placed}/${s.bulk} placed · ${open} open${b.remaining > 0 ? ` · ${b.remaining} more to send one after another` : ''}`;
-  else el.textContent = `${s.autoRunCycle ? 'Auto cycle · ' : ''}Session ${s.sessionsDone + 1}/${s.maxSessions} — scanning ${state.markets.size} markets for ${strategyLabel()}… (${s.placed} trades so far)`;
+  const skippedText = s.unverifiedOrders && s.unverifiedOrders.length ? ` · ${s.unverifiedOrders.length} unrecoverable order${s.unverifiedOrders.length === 1 ? '' : 's'} skipped; no duplicate resent` : '';
+  if (b) el.textContent = `${s.autoRunCycle ? 'Auto cycle · ' : ''}Session ${b.no}/${s.maxSessions} — ${b.name} · ${b.label}: ${b.placed}/${s.bulk} placed · ${open} open${b.remaining > 0 ? ` · ${b.remaining} more to send one after another` : ''}${skippedText}`;
+  else el.textContent = `${s.autoRunCycle ? 'Auto cycle · ' : ''}Session ${s.sessionsDone + 1}/${s.maxSessions} — scanning ${state.markets.size} markets for ${strategyLabel()}… (${s.placed} trades so far)${skippedText}`;
 }
 
 /* ============================ UI: market table ========================= */
@@ -2791,14 +2945,17 @@ function manualBatchOpen(batch = manualBatch) {
 }
 function updateManualBatchUI() {
   const b = manualBatch, active = !!(b && b.active), status = $('bulkStatus'), stop = $('btnBulkStop'), retry = $('btnBulkRetry');
-  const aiActive = !!(session && session.active);
-  $('btnBulkBuy').disabled = !state.acctConnected || active || aiActive || autoRun.enabled;
-  $('btnAiStart').disabled = active || aiActive || autoRun.enabled;
+  const aiActive = !!(session && session.active), savedPending = !recoveryRestored && (pendingRecoverySnapshot || store.get('recoveryState', null));
+  $('btnBulkBuy').disabled = !state.acctConnected || active || aiActive || autoRun.enabled || !!(savedPending && (savedPending.session || savedPending.manualBatch || savedPending.autoRun));
+  $('btnAiStart').disabled = active || aiActive || autoRun.enabled || !!(savedPending && (savedPending.session || savedPending.manualBatch || savedPending.autoRun));
   $('acctSelect').disabled = active || aiActive || autoRun.enabled;
-  status.classList.toggle('hidden', !b);
-  stop.classList.toggle('hidden', !active); retry.classList.toggle('hidden', !active || !b.blocked);
+  status.classList.toggle('hidden', !b && !(savedPending && savedPending.manualBatch));
+  stop.classList.toggle('hidden', !active); retry.classList.toggle('hidden', !active || !b || !b.blocked);
   stop.disabled = !active || !!b.stopRequested; stop.textContent = b && b.stopRequested ? 'Stopping…' : 'Stop batch';
-  if (!b) { status.className = 'status hidden'; status.textContent = ''; return; }
+  if (!b) {
+    if (savedPending && savedPending.manualBatch) { status.className = 'status recovering'; status.textContent = `Saved Bulk Trader batch found for ${savedPending.account || 'your Deriv account'} — reconnect that account to resume recovery.`; return; }
+    status.className = 'status hidden'; status.textContent = ''; return;
+  }
   const open = manualBatchOpen(b), pending = (b.pendingOrders || []).length, total = Number(b.total) || 0;
   if (b.blocked) { status.className = 'status paused'; status.textContent = `Recovery paused — ${b.recoveryReason || 'a trade outcome needs attention'}. No uncertain buy will be resent.`; }
   else if (b.recovering) { status.className = 'status recovering'; status.textContent = `Recovering manual batch — ${b.recoveryReason || 'checking Deriv before continuing'} · ${b.placed}/${total} accepted · ${pending} pending`; }
@@ -2979,7 +3136,7 @@ function exportCsv() {
 }
 $('btnExportCsv').addEventListener('click', exportCsv);
 $('btnClearTrades').addEventListener('click', () => { contracts.forEach((c, id) => { if (c.status !== 'open') contracts.delete(id); }); $('tradeRows').innerHTML = '<tr><td colspan="7" style="color:var(--dim)">No trades yet.</td></tr>'; contracts.forEach(c => renderTradeRow(c)); updateTotals(); });
-window.addEventListener('beforeunload', (e) => { if ((session && session.active) || (manualBatch && manualBatch.active) || autoRun.enabled) { e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('beforeunload', (e) => { persistForPageSuspend(); if ((session && session.active) || (manualBatch && manualBatch.active) || autoRun.enabled) { e.preventDefault(); e.returnValue = ''; } });
 
 /* ============================== calculator ============================= */
 const calc = { tokens: [], cur: '0', fresh: true, pending: false, open: 0, expr: '', history: [] };
@@ -3228,5 +3385,5 @@ connectPublic();
 window.__dbt = { state, contracts, progressHistory, pub, acct, cfg, computeAutoPlan, computeConfiguredAutoPlan, defaultStopLossForStake, nextLocalHourAt, selectedAutoStartAt, selectedAutoRepeatAt, endSession, retryBlockedRecovery, scannerTick, bulkBuy, activateTab, renderProgressGraph, runAutoTick: autoRunTick, get autoRun() { return autoRun; }, get privacyState() { return privacyState; }, get session() { return session; }, get manualBatch() { return manualBatch; }, get recoveryState() { return store.get('recoveryState', null); }, get aiStakeAuto() { return aiStakeAuto; }, get aiSLAuto() { return aiSLAuto; }, effectiveStopLoss, get calculatedStake() { return calcSplitStake; } }; // debugging hook
 })();
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a56cfd4cfe3eca00',t:'MTc5NDA2MTMzOQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a56cfd4cfe3eca00',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
